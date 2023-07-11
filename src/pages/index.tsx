@@ -1,7 +1,7 @@
 import React from 'react'
 
-import '../assets/styles/globals.css'
-
-export default function Home() {
-  return <div>Home</div>
+const HomePage = () => {
+  return <div>HomePage</div>
 }
+
+export default HomePage
