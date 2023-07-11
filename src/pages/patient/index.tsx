@@ -1,5 +1,8 @@
+import { Container } from '@mui/material'
+import React from 'react'
+
 const PatientPage = () => {
-  return <div>PatientPage</div>
+  return <Container>PatientPage</Container>
 }
 
 export default PatientPage
