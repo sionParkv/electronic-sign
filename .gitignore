@@ -30,6 +30,13 @@ package-lock.json
 logs
 *.log
 
+# Next.js ----------------------------------------------------------------------
+.next/
+out/
+
+## Production
+build
+
 # Visual Studio Code -----------------------------------------------------------
 ## Settings
 .vscode
