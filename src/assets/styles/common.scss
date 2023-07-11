@@ -129,25 +129,36 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+/* Definition
+----------------------------------------------------------------------------- */
+$font-family-default:
+  'Pretendard Variable',
+  Pretendard,
+  -apple-system,
+  BlinkMacSystemFont,
+  system-ui,
+  Roboto,
+  'Helvetica Neue',
+  'Segoe UI',
+  'Apple SD Gothic Neo',
+  'Noto Sans KR',
+  'Malgun Gothic',
+  'Apple Color Emoji',
+  'Segoe UI Emoji',
+  'Segoe UI Symbol',
+  sans-serif !important;
+/* Function
+----------------------------------------------------------------------------- */
+@mixin font($weight, $size, $line-height) {
+  font-weight: $weight;
+  font-size: sp($size);
+  line-height: sp($line-height);
+  font-family: $font-family-default;
+}
 /* Basic Tag
 ----------------------------------------------------------------------------- */
 * {
-  font-family:
-    'Pretendard Variable',
-    Pretendard,
-    -apple-system,
-    BlinkMacSystemFont,
-    system-ui,
-    Roboto,
-    'Helvetica Neue',
-    'Segoe UI',
-    'Apple SD Gothic Neo',
-    'Noto Sans KR',
-    'Malgun Gothic',
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    sans-serif !important;
+  font-family: $font-family-default;
 }
 body {
   background-color: #f0f0f0;
@@ -155,6 +166,60 @@ body {
 /* Common Classes
 ----------------------------------------------------------------------------- */
 .Pages {
+  margin: 0;
+  padding: 0;
+
+  .MuiToolbar-root {
+    min-height: 50px !important;
+    padding-right: 0;
+    padding-left: 50px;
+  }
+}
+
+.Header {
+  color: black;
+  background-color: white;
+  box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.16);
+
+  .MuiToolbar-root {
+    justify-content: space-between;
+
+    button {
+      min-width: auto;
+      padding: 0;
+
+      img {
+        max-height: 28px;
+      }
+
+      &.Logout {
+        min-width: 80px;
+        height: 32px;
+        border: 1px solid #dddddd;
+        border-radius: 16px;
+        margin: 0 8px;
+        color: #777777;
+        @include font(400, 14px, 1.5);
+      }
+
+      &.Menu {
+        min-width: 50px;
+        min-height: 50px;
+        border-left: 1px solid #dcdcdc;
+        border-radius: 0;
+        color: #242d63;
+      }
+    }
+
+    p {
+      width: 100%;
+      text-align: right;
+      @include font(700, 16px, 1.5);
+    }
+  }
+}
+
+.Contents {
   margin: 0;
   padding: 0;
 }
