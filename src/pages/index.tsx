@@ -14,9 +14,11 @@ const HomePage = () => {
   return (
     <Container className={className}>
       <COMP.Header {...propsHeader} />
-      <Container className="Contents">
+      <Container className="PageWrapper">
         <Toolbar />
-        HomePage
+        <Container className="Contents">
+          <COMP.SearchBar />
+        </Container>
       </Container>
       <COMP.Footer />
     </Container>

@@ -1,6 +1,7 @@
-import Header from './Header'
 import Footer from './Footer'
+import Header from './Header'
+import SearchBar from './SearchBar'
 
-const components = { Header, Footer }
+const components = { Footer, Header, SearchBar }
 
 export default components
