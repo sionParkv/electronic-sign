@@ -2,7 +2,9 @@ import { Container } from '@mui/material'
 import React from 'react'
 
 const LoginPage = () => {
-  return <Container>LoginPage</Container>
+  const className = 'Pages HomePage'
+
+  return <Container className={className}>LoginPage</Container>
 }
 
 export default LoginPage

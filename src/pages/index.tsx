@@ -2,7 +2,9 @@ import { Container } from '@mui/material'
 import React from 'react'
 
 const HomePage = () => {
-  return <Container>HomePage</Container>
+  const className = 'Pages HomePage'
+
+  return <Container className={className}>HomePage</Container>
 }
 
 export default HomePage
