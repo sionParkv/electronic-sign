@@ -43,5 +43,17 @@
     .MuiTabs-indicator {
       display: none;
     }
+
+    .TabPanel {
+      padding: 25px 20px 30px;
+      border: 1px solid #dddddd;
+      border-radius: 0 0 10px 10px;
+      background-color: white;
+
+      &[hidden] {
+        border: 0;
+        padding: 0;
+      }
+    }
   }
 }

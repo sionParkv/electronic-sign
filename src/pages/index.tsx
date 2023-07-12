@@ -13,7 +13,7 @@ const PatientListTabPanel = (props: TabPanelProps) => {
   const { children, index, value } = props
 
   return (
-    <Container hidden={value != index}>
+    <Container className="TabPanel" hidden={value != index}>
       {value === index && <Box>{children}</Box>}
     </Container>
   )
@@ -48,13 +48,13 @@ const HomePage = () => {
               </Tabs>
             </Box>
             <PatientListTabPanel value={tab} index={0}>
-              PatientListTabPanel 1
+              입원 환자 목록
             </PatientListTabPanel>
             <PatientListTabPanel value={tab} index={1}>
-              PatientListTabPanel 2
+              외래 환자 목록
             </PatientListTabPanel>
             <PatientListTabPanel value={tab} index={2}>
-              PatientListTabPanel 3
+              수술 환자 목록
             </PatientListTabPanel>
           </Container>
         </Container>
