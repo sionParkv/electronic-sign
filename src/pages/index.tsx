@@ -1,12 +1,12 @@
-import { Box, Container, Tab, Tabs, Toolbar } from '@mui/material'
+import { Box, Container, Tab, Tabs } from '@mui/material'
 import React, { useState } from 'react'
 
 import COMP from '../components'
 
 interface TabPanelProps {
   children: React.ReactNode
-  index: Number
-  value: Number
+  index: number
+  value: number
 }
 
 const PatientListTabPanel = (props: TabPanelProps) => {
@@ -14,16 +14,16 @@ const PatientListTabPanel = (props: TabPanelProps) => {
 
   return (
     <Container className="TabPanel" hidden={value != index}>
-      {value === index && <Box>{children}</Box>}
+      {value === index && <Box className="Panel">{children}</Box>}
     </Container>
   )
 }
 
 const HomePage = () => {
-  const [tab, setTab] = useState<Number>(0)
+  const [tab, setTab] = useState<number>(0)
   const className = 'Pages HomePage'
 
-  const handleChange = (event: React.SyntheticEvent, newTab: Number) => {
+  const handleChange = (event: React.SyntheticEvent, newTab: number) => {
     setTab(newTab)
   }
 
@@ -47,13 +47,13 @@ const HomePage = () => {
               </Tabs>
             </Box>
             <PatientListTabPanel value={tab} index={0}>
-              입원 환자 목록
+              <COMP.PatientList />
             </PatientListTabPanel>
             <PatientListTabPanel value={tab} index={1}>
-              외래 환자 목록
+              <COMP.PatientList />
             </PatientListTabPanel>
             <PatientListTabPanel value={tab} index={2}>
-              수술 환자 목록
+              <COMP.PatientList />
             </PatientListTabPanel>
           </Container>
         </Container>

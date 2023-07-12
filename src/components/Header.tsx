@@ -5,7 +5,7 @@ import React from 'react'
 
 import IMGS from '../assets/images'
 
-const Header = (props: { userInfo: String }) => {
+const Header = (props: { userInfo: string }) => {
   const { userInfo } = props
 
   return (
