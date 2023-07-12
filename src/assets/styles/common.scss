@@ -166,6 +166,10 @@ body {
 /* Common Classes
 ----------------------------------------------------------------------------- */
 .Pages {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
   margin: 0;
   padding: 0;
 
@@ -177,10 +181,12 @@ body {
 
   .PageWrapper {
     padding: 0;
+    height: 100%;
   }
 }
 
 .Header {
+  position: relative;
   color: black;
   background-color: white;
   box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.16);
@@ -235,6 +241,9 @@ body {
 }
 
 .Contents {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   margin: 0;
   padding: 20px 50px;
 }

@@ -36,7 +36,6 @@ const HomePage = () => {
     <Container className={className}>
       <COMP.Header {...propsHeader} />
       <Container className="PageWrapper">
-        <Toolbar />
         <Container className="Contents">
           <COMP.SearchBar />
           <Container className="TabContainer">

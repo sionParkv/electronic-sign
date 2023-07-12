@@ -1,5 +1,4 @@
-import { Container } from '@mui/material'
-import { Typography as T } from '@mui/material'
+import { Container, Typography as T } from '@mui/material'
 import Image from 'next/image'
 import React from 'react'
 

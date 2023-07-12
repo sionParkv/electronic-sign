@@ -1,5 +1,8 @@
 .HomePage {
   .TabContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     padding: 20px 0 0;
 
     .MuiTabs-flexContainer {
@@ -45,14 +48,17 @@
     }
 
     .TabPanel {
+      height: 100%;
       padding: 25px 20px 30px;
       border: 1px solid #dddddd;
+      border-top: 0;
       border-radius: 0 0 10px 10px;
       background-color: white;
 
       &[hidden] {
-        border: 0;
+        display: none;
         padding: 0;
+        border: 0;
       }
     }
   }
