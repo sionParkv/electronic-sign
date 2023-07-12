@@ -1,4 +1,80 @@
 .HomePage {
+  .SearchBar {
+    min-height: 115px;
+    padding: 18px 0 16px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+
+    .Fields {
+      display: flex;
+      flex-wrap: wrap;
+
+      .MuiBox-root {
+        padding-bottom: 12px;
+        text-align: center;
+        width: 50%; /* Del */
+      }
+
+      label {
+        display: inline-block;
+        height: 20px;
+        margin: 0;
+        padding: 6px 8px 0 10px;
+        color: #2e5bdb;
+        vertical-align: middle;
+        @include font(700, 12px, 1.2);
+      }
+
+      .MuiInputBase-root {
+        .MuiSelect-select {
+          box-sizing: border-box;
+          height: 26px;
+          padding: 5px 30px 5px 6px;
+          color: black;
+          vertical-align: middle;
+          @include font(500, 14px, 1.2);
+        }
+
+        svg {
+          right: 4px;
+          font-size: 22px;
+        }
+
+        fieldset {
+          padding: 0 0 0 8px;
+          border: 1px solid #dddddd;
+          border-radius: 2px;
+        }
+      }
+    }
+
+    .Buttons {
+      text-align: center;
+
+      button {
+        width: 120px;
+        margin: 0 2.5px;
+        padding: 10px 31px 10px 24px;
+        border-color: #257cfd;
+        border-radius: 5px;
+        color: #257cfd;
+        text-align: center;
+        @include font(500, 14, 1);
+
+        .MuiButton-startIcon {
+          margin-right: 6.2px;
+        }
+
+        &:nth-child(2) {
+          border: 1px solid #2e5bdb;
+          color: white;
+          background-color: #2e5bdb;
+        }
+      }
+    }
+  }
+
   .TabContainer {
     display: flex;
     flex-direction: column;
