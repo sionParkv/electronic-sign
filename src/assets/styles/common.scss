@@ -151,8 +151,8 @@ $font-family-default:
 ----------------------------------------------------------------------------- */
 @mixin font($weight, $size, $line-height) {
   font-weight: $weight;
-  font-size: sp($size);
-  line-height: sp($line-height);
+  font-size: $size;
+  line-height: $line-height;
   font-family: $font-family-default;
 }
 /* Basic Tag
@@ -220,6 +220,17 @@ body {
       text-align: right;
       @include font(700, 16px, 1.5);
     }
+  }
+}
+
+.Footer {
+  padding: 24px 0 42px;
+  text-align: center;
+
+  .MuiTypography-root {
+    padding-top: 5px;
+    color: #555555;
+    @include font(400, 12px, 1.5);
   }
 }
 
