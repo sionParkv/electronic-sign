@@ -1,0 +1,47 @@
+.HomePage {
+  .TabContainer {
+    padding: 20px 0 0;
+
+    .MuiTabs-flexContainer {
+      justify-content: space-between;
+      align-items: flex-end;
+
+      button {
+        width: calc(100% / 3);
+        height: 45px;
+        min-height: auto;
+        padding: 0;
+        border: 1px solid #d5d5d5;
+        border-radius: 10px 10px 0 0;
+        color: #555555;
+        background-color: white;
+        @include font(400, 16px, 1.5);
+
+        &.Mui-selected {
+          height: 55px;
+          color: white;
+          background: rgb(34, 71, 177);
+          background: linear-gradient(
+            90deg,
+            rgba(34, 71, 177, 1) 0%,
+            rgba(46, 91, 219, 1) 100%
+          );
+          background: -moz-linear-gradient(
+            90deg,
+            rgba(34, 71, 177, 1) 0%,
+            rgba(46, 91, 219, 1) 100%
+          );
+          background: -webkit-linear-gradient(
+            90deg,
+            rgba(34, 71, 177, 1) 0%,
+            rgba(46, 91, 219, 1) 100%
+          );
+        }
+      }
+    }
+
+    .MuiTabs-indicator {
+      display: none;
+    }
+  }
+}
