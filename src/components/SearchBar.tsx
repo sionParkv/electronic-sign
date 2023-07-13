@@ -1,14 +1,25 @@
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { koKR } from '@mui/x-date-pickers/locales'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import {
   Box,
   Button,
   Container,
+  FormControlLabel,
   InputLabel,
   MenuItem,
-  Select
+  Radio,
+  RadioGroup,
+  Select,
+  TextField
 } from '@mui/material'
+import dayjs from 'dayjs'
+import moment from 'moment'
 import React from 'react'
+import 'dayjs/locale/ko'
 
 interface Department {
   [key: string]: string
@@ -21,6 +32,8 @@ interface Doctor {
   code: string
   name: string
 }
+
+const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 
 const SearchBar = () => {
   // TODO: 데이터베이스 데이터 연동
@@ -53,7 +66,7 @@ const SearchBar = () => {
   return (
     <Container className="SearchBar">
       <Box className="Fields">
-        <Box>
+        <Box className="Field1">
           <InputLabel>진료과</InputLabel>
           <Select value="-">
             <MenuItem disabled value="-">
@@ -76,8 +89,27 @@ const SearchBar = () => {
               </MenuItem>
             ))}
           </Select>
+          <InputLabel>진료일 조회</InputLabel>
+          <LocalizationProvider
+            adapterLocale="ko"
+            dateAdapter={AdapterDayjs}
+            localeText={koLocale}
+          >
+            <DatePicker
+              className="DatePicker"
+              defaultValue={dayjs(moment().format('YYYY-MM-DD'))}
+              format="YYYY-MM-DD"
+            />
+          </LocalizationProvider>
         </Box>
-        <Box>필드 2</Box>
+        <Box className="Field2">
+          <RadioGroup className="RadioGroup" defaultValue="pat">
+            <FormControlLabel value="sta" control={<Radio />} label="담당" />
+            <FormControlLabel value="all" control={<Radio />} label="전체" />
+            <FormControlLabel value="pat" control={<Radio />} label="환자명" />
+          </RadioGroup>
+          <TextField className="Keyword" variant="outlined" />
+        </Box>
       </Box>
       <Box className="Buttons">
         <Button variant="outlined" startIcon={<RestartAltIcon />}>

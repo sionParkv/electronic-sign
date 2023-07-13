@@ -180,8 +180,8 @@ body {
   }
 
   .PageWrapper {
-    padding: 0;
     height: 100%;
+    padding: 0;
   }
 }
 
@@ -205,9 +205,9 @@ body {
       &.Logout {
         min-width: 80px;
         height: 32px;
+        margin: 0 8px;
         border: 1px solid #dddddd;
         border-radius: 16px;
-        margin: 0 8px;
         color: #777777;
         @include font(400, 14px, 1.5);
       }

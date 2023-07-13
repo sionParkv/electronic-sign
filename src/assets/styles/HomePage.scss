@@ -1,6 +1,5 @@
 .HomePage {
   .SearchBar {
-    min-height: 115px;
     padding: 18px 0 16px;
     border-radius: 10px;
     background-color: white;
@@ -9,42 +8,112 @@
     .Fields {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
 
       .MuiBox-root {
+        display: flex;
         padding-bottom: 12px;
-        text-align: center;
-        width: 50%; /* Del */
       }
 
-      label {
-        display: inline-block;
-        height: 20px;
-        margin: 0;
-        padding: 6px 8px 0 10px;
-        color: #2e5bdb;
-        vertical-align: middle;
-        @include font(700, 12px, 1.2);
-      }
+      .Field1 {
+        padding-left: 20px;
 
-      .MuiInputBase-root {
-        .MuiSelect-select {
-          box-sizing: border-box;
-          height: 26px;
-          padding: 5px 30px 5px 6px;
-          color: black;
+        label {
+          display: inline-block;
+          height: 20px;
+          margin: 0;
+          padding: 6px 8px 0 10px;
+          color: #2e5bdb;
           vertical-align: middle;
-          @include font(500, 14px, 1.2);
+          @include font(700, 12px, 1.2);
         }
 
-        svg {
-          right: 4px;
-          font-size: 22px;
+        .MuiInputBase-root {
+          .MuiSelect-select {
+            box-sizing: border-box;
+            height: 26px;
+            padding: 5px 30px 5px 6px;
+            color: black;
+            vertical-align: middle;
+            @include font(500, 14px, 1.2);
+          }
+
+          svg {
+            right: 4px;
+            font-size: 22px;
+          }
+
+          fieldset {
+            padding: 0 0 0 8px;
+            border: 1px solid #dddddd;
+            border-radius: 2px;
+          }
         }
 
-        fieldset {
-          padding: 0 0 0 8px;
-          border: 1px solid #dddddd;
-          border-radius: 2px;
+        .DatePicker {
+          input {
+            box-sizing: border-box;
+            width: 90px;
+            height: 26px;
+            padding: 5px 6px;
+            color: black;
+            vertical-align: middle;
+            @include font(500, 14px, 1.2);
+          }
+        }
+      }
+
+      .Field2 {
+        padding-right: 20px;
+        padding-left: 20px;
+
+        .RadioGroup {
+          flex-direction: row;
+          flex-wrap: nowrap;
+
+          label {
+            margin: 0;
+            padding: 0 10px 0 0;
+
+            .MuiRadio-root {
+              padding: 0;
+
+              svg {
+                width: 18px;
+                height: 18px;
+              }
+            }
+
+            .MuiTypography-root {
+              padding: 0 0 0 5px;
+              color: black;
+              @include font(500, 14px, 1.2);
+            }
+          }
+        }
+
+        .Keyword {
+          input {
+            box-sizing: border-box;
+            width: 120px;
+            height: 26px;
+            padding: 5px 6px;
+            padding: 5px 6px;
+            outline: none;
+            color: black;
+            vertical-align: middle;
+            @include font(500, 14px, 1.2);
+          }
+
+          fieldset {
+            border-radius: 2px;
+          }
+
+          .Mui-focused {
+            fieldset {
+              border-width: 1px !important;
+            }
+          }
         }
       }
     }
