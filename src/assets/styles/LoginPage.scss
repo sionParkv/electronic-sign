@@ -1,0 +1,38 @@
+.LoginPage {
+  align-items: center;
+  justify-content: center;
+
+  .Logo {
+    padding-bottom: 25px;
+
+    img {
+      height: 30px;
+    }
+  }
+
+  .LoginBox {
+    width: 450px;
+    height: 433px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 3px 5px 10px 0 rgba(0, 0, 0, 0.05);
+
+    h1 {
+      padding-top: 32px;
+      color: black;
+      text-align: center;
+      @include font(500, 19px, 1.2);
+    }
+
+    h2 {
+      padding-top: 4px;
+      color: #2e5bdb;
+      text-align: center;
+      @include font(800, 25px, 1.2);
+    }
+  }
+
+  .Footer {
+    padding-top: 56px;
+  }
+}
