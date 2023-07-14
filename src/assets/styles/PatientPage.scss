@@ -6,10 +6,10 @@
 
     .PatientInfo {
       padding: 0 20px 27px;
+      margin-bottom: 16px;
       border-radius: 10px;
       background-color: white;
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
-      margin-bottom: 16px;
 
       .PatientTitle {
         display: flex;
@@ -47,15 +47,17 @@
   }
 
   .DocumentContainer {
+    display: flex;
+    max-height: 520px;
     padding: 22px 4px 30px;
     border-radius: 10px;
     background-color: white;
     box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
-    display: flex;
 
     .DocumentBox {
       width: 50%;
       padding: 0 16px;
+      overflow-y: scroll;
 
       .DocumentTitle {
         display: flex;
@@ -73,31 +75,38 @@
       }
 
       .TabContainer {
-        .MuiTabs-root {
-          min-height: auto;
+        .MuiContainer-root {
+          overflow-y: scroll;
+          height: 326px;
 
-          .MuiTabs-flexContainer {
-            button {
-              width: 50%;
-              padding: 12px 0;
-              min-height: auto;
-              border: 1px solid #cccccc;
-              border-radius: 5px 5px 0 0;
-              color: #999999;
+          .MuiTabs-root {
+            min-height: auto;
 
-              &.Mui-selected {
-                color: #257cfd;
-                border: 1px solid #257cfd;
+            .MuiTabs-flexContainer {
+              button {
+                width: 50%;
+                min-height: auto;
+                padding: 12px 0;
+                border: 1px solid #cccccc;
+                border-radius: 5px 5px 0 0;
+                color: #999999;
+
+                &.Mui-selected {
+                  border: 1px solid #257cfd;
+                  color: #257cfd;
+                }
               }
             }
-          }
 
-          .MuiTabs-indicator {
-            display: none;
+            .MuiTabs-indicator {
+              display: none;
+            }
           }
         }
 
         .TabPanel {
+          overflow-y: scroll;
+          height: 500px;
           padding: 0;
 
           .Panel {
@@ -108,19 +117,19 @@
               padding: 0;
 
               .DocumentList {
-                padding: 8px 0;
                 display: flex;
                 flex-direction: row;
+                padding: 8px 0;
                 flex-wrap: wrap;
 
                 li {
-                  width: calc(50% - 4px);
-                  background-color: #fafafa;
-                  border: 1px solid #dce2f2;
-                  margin: 4px 4px;
-                  padding: 11px 13px;
                   flex-direction: column;
                   align-items: flex-start;
+                  width: calc(50% - 4px);
+                  padding: 11px 13px;
+                  margin: 4px 4px;
+                  border: 1px solid #dce2f2;
+                  background-color: #fafafa;
 
                   .Title {
                     color: black;
