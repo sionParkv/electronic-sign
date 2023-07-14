@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import Image from 'next/image'
 import React, { useState } from 'react'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
 import IMGS from '../assets/images'
 
@@ -25,6 +26,7 @@ const Header = (props: { userInfo: string }) => {
 
   const getList = () => (
     <div onClick={() => setOpen(false)} className="DrawerMenu">
+      <Button startIcon={<KeyboardArrowUpIcon />}>Close</Button>
       <Image src={IMGS.WhiteLogo} alt="Logo" />
       {data.map((item, index) => (
         <ListItem key={index}>
