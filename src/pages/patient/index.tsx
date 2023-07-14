@@ -1,17 +1,22 @@
-import { Container, Toolbar } from '@mui/material'
+import { Container } from '@mui/material'
 import React from 'react'
 
 import COMP from '../../components'
+import PatientInfo from '@/components/PatientInfo'
 
 const PatientPage = () => {
-  const className = 'Pages HomePage'
+  const className = 'Pages PatientPage'
+
+  const propsHeader = {
+    // TODO: 로그인 사용자 정보
+    userInfo: '홍길동 CY DC00001'
+  }
 
   return (
     <Container className={className}>
-      <COMP.Header />
+      <COMP.Header {...propsHeader} />
       <Container>
-        <Toolbar />
-        PatientPage
+        <PatientInfo />
       </Container>
       <COMP.Footer />
     </Container>
