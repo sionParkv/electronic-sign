@@ -2,7 +2,6 @@ import { Container } from '@mui/material'
 import React from 'react'
 
 import COMP from '../../components'
-import PatientInfo from '@/components/PatientInfo'
 
 const PatientPage = () => {
   const className = 'Pages PatientPage'
@@ -16,7 +15,8 @@ const PatientPage = () => {
     <Container className={className}>
       <COMP.Header {...propsHeader} />
       <Container>
-        <PatientInfo />
+        <COMP.PatientInfo />
+        <COMP.Document />
       </Container>
       <COMP.Footer />
     </Container>
