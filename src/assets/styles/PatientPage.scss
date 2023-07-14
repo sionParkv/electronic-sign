@@ -2,14 +2,14 @@
   justify-content: normal;
 
   .MuiContainer-root {
-    padding: 20px 50px 16px;
-    margin-bottom: 16px;
+    padding: 20px 50px 5px;
 
     .PatientInfo {
       padding: 0 20px 27px;
       border-radius: 10px;
       background-color: white;
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+      margin-bottom: 16px;
 
       .PatientTitle {
         display: flex;
@@ -47,18 +47,20 @@
   }
 
   .DocumentContainer {
-    padding: 22px 20px 0 20px;
+    padding: 22px 4px 30px;
     border-radius: 10px;
     background-color: white;
     box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
     display: flex;
 
-    .Document {
+    .DocumentBox {
       width: 50%;
+      padding: 0 16px;
 
       .DocumentTitle {
         display: flex;
         align-items: center;
+        padding-bottom: 12px;
 
         img {
           padding-right: 3px;
@@ -67,6 +69,86 @@
         p {
           font-weight: bold;
           font-size: 16px;
+        }
+      }
+
+      .TabContainer {
+        .MuiTabs-root {
+          min-height: auto;
+
+          .MuiTabs-flexContainer {
+            button {
+              width: 50%;
+              padding: 12px 0;
+              min-height: auto;
+              border: 1px solid #cccccc;
+              border-radius: 5px 5px 0 0;
+              color: #999999;
+
+              &.Mui-selected {
+                color: #257cfd;
+                border: 1px solid #257cfd;
+              }
+            }
+          }
+
+          .MuiTabs-indicator {
+            display: none;
+          }
+        }
+
+        .TabPanel {
+          padding: 0;
+
+          .Panel {
+            position: relative;
+            height: 100%;
+
+            .DocumentListContainer {
+              padding: 0;
+
+              .DocumentList {
+                padding: 8px 0;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+
+                li {
+                  width: calc(50% - 4px);
+                  background-color: #fafafa;
+                  border: 1px solid #dce2f2;
+                  margin: 4px 4px;
+                  padding: 11px 13px;
+                  flex-direction: column;
+                  align-items: flex-start;
+
+                  .Title {
+                    color: black;
+                    @include font(700, 14px, 1.5);
+                  }
+
+                  .Date {
+                    color: #787878;
+                    @include font(400, 12px, 1.5);
+                  }
+
+                  &:nth-child(odd) {
+                    margin-left: 0;
+                  }
+
+                  &:nth-child(even) {
+                    margin-right: 0;
+                  }
+                }
+              }
+            }
+          }
+
+          &[hidden] {
+            display: none;
+            padding: 0;
+            border: 0;
+          }
         }
       }
     }
