@@ -25,22 +25,18 @@ const LoginPage = () => {
         <Box className="LoginText">
           <Box>
             <T>사번</T>
-            <T>|</T>
             <TextField />
           </Box>
           <Box>
             <T>이름</T>
-            <T>|</T>
             <TextField />
           </Box>
           <Box>
             <T>부서</T>
-            <T>|</T>
             <TextField />
           </Box>
           <Box>
             <T>비밀번호</T>
-            <T>|</T>
             <TextField type="password" />
           </Box>
         </Box>
