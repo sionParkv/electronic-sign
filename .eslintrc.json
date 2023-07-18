@@ -22,8 +22,6 @@
     "sourceType": "module"
   },
   "plugins": ["import"],
-  "rules": {
-    "no-console": "error"
-  },
+  "rules": {},
   "settings": {}
 }
