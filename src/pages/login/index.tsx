@@ -9,8 +9,9 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import axios from 'axios'
 
-import Footer from '../../components/Footer'
+import components from '@/components'
 import IMGS from '../../assets/images'
+import Link from 'next/link'
 
 const LoginPage = () => {
   const [values, setValues] = useState({
@@ -20,7 +21,10 @@ const LoginPage = () => {
   const className = 'Pages LoginPage'
 
   const handleChangeEmpNo = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, empNo: event.target.value })
+    setValues({
+      ...values,
+      empNo: event.target.value
+    })
   }
 
   const handleLogin = () => {
@@ -30,16 +34,17 @@ const LoginPage = () => {
     })
 
     if (!values.empNo.length) {
-      alert('이름을 입력해 줘!')
+      alert('사번을 입력해주세요')
       document.getElementsByTagName('input')[0].focus()
     }
 
     axios
       .post('/api/login', {
         EMPL_NO: values.empNo,
-        PASS_WORD: ''
+        PASS_WORD: values.password
       })
       .then((response) => {
+        ;<Link href="/" />
         console.log(response.data)
       })
       .catch(() => {
@@ -49,6 +54,7 @@ const LoginPage = () => {
 
   return (
     <Container className={className}>
+      <components.Alert />
       <Box className="Logo">
         <Image src={IMGS.Logo} alt="Logo" />
       </Box>
@@ -73,14 +79,18 @@ const LoginPage = () => {
           </Box>
           <Box>
             <T>비밀번호</T>
-            <TextField type="password" defaultValue={values.password} />
+            <TextField
+              type="password"
+              defaultValue={values.password}
+              onChange={handleChangeEmpNo}
+            />
           </Box>
         </Box>
         <Box className="LoginBtn">
           <Button onClick={handleLogin}>로그인</Button>
         </Box>
       </Box>
-      <Footer />
+      <components.Footer />
     </Container>
   )
 }
