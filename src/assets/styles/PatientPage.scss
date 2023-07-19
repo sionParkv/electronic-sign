@@ -48,35 +48,36 @@
 
   .DocumentContainer {
     display: flex;
-    max-height: 520px;
+    flex-direction: column;
+    height: 531px;
     padding: 22px 4px 30px;
     border-radius: 10px;
     background-color: white;
     box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
 
-    .DocumentBox {
-      width: 50%;
-      padding: 0 16px;
+    .Division {
+      display: flex;
 
-      .DocumentTitle {
-        display: flex;
-        align-items: center;
-        padding-bottom: 12px;
+      .DocumentBox {
+        width: 50%;
+        padding: 0 16px;
 
-        img {
-          padding-right: 3px;
+        .DocumentTitle {
+          display: flex;
+          align-items: center;
+          padding-bottom: 12px;
+
+          img {
+            padding-right: 3px;
+          }
+
+          p {
+            font-weight: bold;
+            font-size: 16px;
+          }
         }
 
-        p {
-          font-weight: bold;
-          font-size: 16px;
-        }
-      }
-
-      .TabContainer {
-        .MuiContainer-root {
-          height: 326px;
-
+        .TabContainer {
           .MuiTabs-root {
             min-height: auto;
 
@@ -100,62 +101,75 @@
               display: none;
             }
           }
-        }
 
-        .TabPanel {
-          padding: 0;
-          overflow-y: scroll;
+          .TabPanel {
+            padding: 0;
+            overflow-y: scroll;
+            height: 326px;
 
-          .Panel {
-            position: relative;
-            height: 100%;
+            .Panel {
+              position: relative;
+              height: 100%;
 
-            .DocumentListContainer {
-              padding: 0;
+              .DocumentListContainer {
+                padding: 0;
 
-              .DocumentList {
-                display: flex;
-                flex-direction: row;
-                padding: 8px 0;
-                flex-wrap: wrap;
+                .DocumentList {
+                  display: flex;
+                  flex-direction: row;
+                  padding: 8px 0;
+                  flex-wrap: wrap;
 
-                li {
-                  flex-direction: column;
-                  align-items: flex-start;
-                  width: calc(50% - 4px);
-                  padding: 11px 13px;
-                  margin: 4px 4px;
-                  border: 1px solid #dce2f2;
-                  background-color: #fafafa;
+                  li {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    width: calc(50% - 4px);
+                    padding: 11px 13px;
+                    margin: 4px 4px;
+                    border: 1px solid #dce2f2;
+                    background-color: #fafafa;
 
-                  .Title {
-                    color: black;
-                    @include font(700, 14px, 1.5);
-                  }
+                    .Title {
+                      color: black;
+                      @include font(700, 14px, 1.5);
+                    }
 
-                  .Date {
-                    color: #787878;
-                    @include font(400, 12px, 1.5);
-                  }
+                    .Date {
+                      color: #787878;
+                      @include font(400, 12px, 1.5);
+                    }
 
-                  &:nth-child(odd) {
-                    margin-left: 0;
-                  }
+                    &:nth-child(odd) {
+                      margin-left: 0;
+                    }
 
-                  &:nth-child(even) {
-                    margin-right: 0;
+                    &:nth-child(even) {
+                      margin-right: 0;
+                    }
                   }
                 }
               }
             }
-          }
 
-          &[hidden] {
-            display: none;
-            padding: 0;
-            border: 0;
+            &[hidden] {
+              display: none;
+              padding: 0;
+              border: 0;
+            }
           }
         }
+      }
+    }
+
+    .ButtonBox {
+      display: flex;
+      justify-content: center;
+      .list {
+        width: 120px;
+        height: 44px;
+        border: 1px solid #257cfd;
+        border-radius: 5px;
+        margin-top: 30px;
       }
     }
   }
