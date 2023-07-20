@@ -8,13 +8,9 @@ import {
   Box,
   Button,
   Container,
-  FormControlLabel,
   InputLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  TextField
+  Select
 } from '@mui/material'
 import dayjs from 'dayjs'
 import moment from 'moment'
@@ -33,9 +29,15 @@ interface Doctor {
   name: string
 }
 
+interface Surgery {
+  [key: string]: string
+  code: string
+  name: string
+}
+
 const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 
-const SearchBar = () => {
+const SurgerySearch = () => {
   // TODO: 데이터베이스 데이터 연동
   const departments: Array<Department> = [
     {
@@ -60,6 +62,17 @@ const SearchBar = () => {
     {
       code: 'IF',
       name: '홍길동'
+    }
+  ]
+
+  const surgery: Array<Surgery> = [
+    {
+      code: 'AA',
+      name: '수면마취'
+    },
+    {
+      code: 'IF',
+      name: '부분마취'
     }
   ]
 
@@ -89,7 +102,18 @@ const SearchBar = () => {
               </MenuItem>
             ))}
           </Select>
-          <InputLabel>진료일 조회</InputLabel>
+          <InputLabel>수술구분</InputLabel>
+          <Select value="-">
+            <MenuItem disabled value="-">
+              <em>구분 선택</em>
+            </MenuItem>
+            {surgery.map((surgery, s) => (
+              <MenuItem key={s} value={surgery.code}>
+                {surgery.name}
+              </MenuItem>
+            ))}
+          </Select>
+          <InputLabel disabled={true}>진료일 조회</InputLabel>
           <LocalizationProvider
             adapterLocale="ko"
             dateAdapter={AdapterDayjs}
@@ -101,14 +125,6 @@ const SearchBar = () => {
               format="YYYY-MM-DD"
             />
           </LocalizationProvider>
-        </Box>
-        <Box className="Field2">
-          <RadioGroup className="RadioGroup" defaultValue="pat">
-            <FormControlLabel value="sta" control={<Radio />} label="담당" />
-            <FormControlLabel value="all" control={<Radio />} label="전체" />
-            <FormControlLabel value="pat" control={<Radio />} label="환자명" />
-          </RadioGroup>
-          <TextField className="Keyword" variant="outlined" />
         </Box>
       </Box>
       <Box className="Buttons">
@@ -123,4 +139,4 @@ const SearchBar = () => {
   )
 }
 
-export default SearchBar
+export default SurgerySearch

@@ -37,7 +37,9 @@ const HomePage = () => {
       <COMP.Header {...propsHeader} />
       <Container className="PageWrapper">
         <Container className="Contents">
-          <COMP.SearchBar />
+          {tab === 0 && <COMP.AdmissionSearch />}
+          {tab === 1 && <COMP.OutPatientSearch />}
+          {tab === 2 && <COMP.SurgerySearch />}
           <Container className="TabContainer">
             <Box>
               <Tabs value={tab} onChange={handleChange}>
