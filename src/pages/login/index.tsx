@@ -11,40 +11,39 @@ import axios from 'axios'
 
 import components from '@/components'
 import IMGS from '../../assets/images'
-import Link from 'next/link'
 
 const LoginPage = () => {
-  const [values, setValues] = useState({
-    empNo: '',
-    password: ''
-  })
+  const [empNo, setEmpNo] = useState('')
+  const [pw, setPw] = useState('')
   const className = 'Pages LoginPage'
 
-  const handleChangeEmpNo = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({
-      ...values,
-      empNo: event.target.value
-    })
+  const handleChangeEmpNo = (e: any) => {
+    const empNoValue = e.target.value
+    setEmpNo(empNoValue)
+  }
+
+  const handleChangePw = (e: any) => {
+    const pwValue = e.target.value
+    setPw(pwValue)
   }
 
   const handleLogin = () => {
     console.log({
-      EMPL_NO: values.empNo,
-      PASS_WORD: values.password
+      EMPL_NO: empNo,
+      PASS_WORD: pw
     })
 
-    if (!values.empNo.length) {
+    if (!empNo.length) {
       alert('사번을 입력해주세요')
       document.getElementsByTagName('input')[0].focus()
     }
 
     axios
       .post('/api/login', {
-        EMPL_NO: values.empNo,
-        PASS_WORD: values.password
+        EMPL_NO: empNo,
+        PASS_WORD: pw
       })
       .then((response) => {
-        ;<Link href="/" />
         console.log(response.data)
       })
       .catch(() => {
@@ -65,7 +64,8 @@ const LoginPage = () => {
           <Box>
             <T>사번</T>
             <TextField
-              defaultValue={values.empNo}
+              defaultValue={empNo}
+              value={empNo}
               onChange={handleChangeEmpNo}
             />
           </Box>
@@ -81,8 +81,9 @@ const LoginPage = () => {
             <T>비밀번호</T>
             <TextField
               type="password"
-              defaultValue={values.password}
-              onChange={handleChangeEmpNo}
+              defaultValue={pw}
+              value={pw}
+              onChange={handleChangePw}
             />
           </Box>
         </Box>
