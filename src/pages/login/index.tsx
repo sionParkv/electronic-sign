@@ -34,8 +34,31 @@ const LoginPage = () => {
     })
 
     if (!empNo.length) {
-      alert('사번을 입력해주세요')
-      document.getElementsByTagName('input')[0].focus()
+      return components.openConfirmDialog({
+        contents: '사번을 입력해주세요',
+        ok: {
+          label: '닫기',
+          action: () => {
+            setTimeout(() => {
+              document.getElementsByTagName('input')[0].focus()
+            }, 50)
+          }
+        },
+        title: '입력 오류'
+      })
+    } else if (!pw.length) {
+      return components.openConfirmDialog({
+        contents: '비밀번호를 입력해주세요',
+        ok: {
+          label: '닫기',
+          action: () => {
+            setTimeout(() => {
+              document.getElementsByTagName('input')[3].focus()
+            }, 50)
+          }
+        },
+        title: '입력 오류'
+      })
     }
 
     axios
@@ -46,14 +69,13 @@ const LoginPage = () => {
       .then((response) => {
         console.log(response.data)
       })
-      .catch(() => {
-        alert('오류가 발생하였습니다.')
+      .catch((error) => {
+        alert(error.message)
       })
   }
 
   return (
     <Container className={className}>
-      <components.Alert />
       <Box className="Logo">
         <Image src={IMGS.Logo} alt="Logo" />
       </Box>
@@ -63,11 +85,7 @@ const LoginPage = () => {
         <Box className="LoginText">
           <Box>
             <T>사번</T>
-            <TextField
-              defaultValue={empNo}
-              value={empNo}
-              onChange={handleChangeEmpNo}
-            />
+            <TextField defaultValue={empNo} onChange={handleChangeEmpNo} />
           </Box>
           <Box>
             <T>이름</T>
@@ -82,13 +100,18 @@ const LoginPage = () => {
             <TextField
               type="password"
               defaultValue={pw}
-              value={pw}
               onChange={handleChangePw}
             />
           </Box>
         </Box>
         <Box className="LoginBtn">
-          <Button onClick={handleLogin}>로그인</Button>
+          <Button
+            onClick={() => {
+              handleLogin()
+            }}
+          >
+            로그인
+          </Button>
         </Box>
       </Box>
       <components.Footer />
