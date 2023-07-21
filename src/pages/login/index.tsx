@@ -11,11 +11,13 @@ import axios from 'axios'
 
 import components from '@/components'
 import IMGS from '../../assets/images'
+import { useRouter } from 'next/router'
 
 const LoginPage = () => {
   const [empNo, setEmpNo] = useState('')
   const [pw, setPw] = useState('')
   const className = 'Pages LoginPage'
+  const router = useRouter()
 
   const handleChangeEmpNo = (e: any) => {
     const empNoValue = e.target.value
@@ -68,6 +70,7 @@ const LoginPage = () => {
       })
       .then((response) => {
         console.log(response.data)
+        router.push('/')
       })
       .catch((error) => {
         alert(error.message)
