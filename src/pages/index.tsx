@@ -1,7 +1,7 @@
 import { Box, Container, Tab, Tabs } from '@mui/material'
 import React, { useState } from 'react'
 
-import COMP from '../components'
+import components from '@/components'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -34,12 +34,12 @@ const HomePage = () => {
 
   return (
     <Container className={className}>
-      <COMP.Header {...propsHeader} />
+      <components.Header {...propsHeader} />
       <Container className="PageWrapper">
         <Container className="Contents">
-          {tab === 0 && <COMP.AdmissionSearch />}
-          {tab === 1 && <COMP.OutPatientSearch />}
-          {tab === 2 && <COMP.SurgerySearch />}
+          {tab === 0 && <components.AdmissionSearch />}
+          {tab === 1 && <components.OutPatientSearch />}
+          {tab === 2 && <components.SurgerySearch />}
           <Container className="TabContainer">
             <Box>
               <Tabs value={tab} onChange={handleChange}>
@@ -49,18 +49,18 @@ const HomePage = () => {
               </Tabs>
             </Box>
             <PatientListTabPanel value={tab} index={0}>
-              <COMP.PatientList />
+              <components.PatientList />
             </PatientListTabPanel>
             <PatientListTabPanel value={tab} index={1}>
-              <COMP.PatientList />
+              <components.PatientList />
             </PatientListTabPanel>
             <PatientListTabPanel value={tab} index={2}>
-              <COMP.PatientList />
+              <components.PatientList />
             </PatientListTabPanel>
           </Container>
         </Container>
       </Container>
-      <COMP.Footer />
+      <components.Footer />
     </Container>
   )
 }

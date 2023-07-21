@@ -18,7 +18,7 @@ var config = {
   }
 }
 
-const deptSearch = (req: NextApiRequest, res: NextApiResponse) => {
+const hospital = (req: NextApiRequest, res: NextApiResponse) => {
   mssql.connect(config, async (error) => {
     if (error) {
       console.log('DB connection err')
@@ -28,9 +28,9 @@ const deptSearch = (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     await new mssql.Request()
-      .execute('UP_H2ORD_R$001')
+      .execute('UP_HZSMPL_R$001')
       .then((result) => {
-        console.log('>>>>>>', result.recordset)
+        console.log(result.recordset)
         res.json({
           code: 'OK',
           data: result.recordset
@@ -48,4 +48,4 @@ const deptSearch = (req: NextApiRequest, res: NextApiResponse) => {
   })
 }
 
-export default deptSearch
+export default hospital

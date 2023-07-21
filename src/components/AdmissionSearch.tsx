@@ -18,50 +18,51 @@ import {
 } from '@mui/material'
 import dayjs from 'dayjs'
 import moment from 'moment'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import 'dayjs/locale/ko'
+import axios from 'axios'
 
 interface Department {
   [key: string]: string
-  code: string
-  name: string
+  DEPT_CD: string
+  DEPT_NM: string
 }
 
-interface Doctor {
+interface Hospital {
   [key: string]: string
-  code: string
-  name: string
+  SMPL_CD: string
+  SMPL_NM: string
 }
 
 const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 
 const AdmissionSearch = () => {
-  // TODO: 데이터베이스 데이터 연동
-  const departments: Array<Department> = [
-    {
-      code: 'AA',
-      name: '마취통증의학과'
-    },
-    {
-      code: 'IF',
-      name: '산부인과'
-    },
-    {
-      code: 'US',
-      name: '영상의학과'
-    }
-  ]
-  // TODO: 데이터베이스 데이터 연동
-  const doctors: Array<Doctor> = [
-    {
-      code: 'AA',
-      name: '나의사'
-    },
-    {
-      code: 'IF',
-      name: '홍길동'
-    }
-  ]
+  const [departments, setDepartments] = useState([])
+  const [wards, setWards] = useState([])
+
+  const loadItems = async () => {
+    await axios
+      .post('/api/deptSearch')
+      .then((response) => {
+        setDepartments(response?.data?.data || [])
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    await axios
+      .post('/api/hospital')
+      .then((respose) => {
+        setWards(respose?.data?.data || [])
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  useEffect(() => {
+    loadItems()
+  }, [])
 
   return (
     <Container className="SearchBar">
@@ -72,20 +73,20 @@ const AdmissionSearch = () => {
             <MenuItem disabled value="-">
               <em>진료과 선택</em>
             </MenuItem>
-            {departments.map((department, d) => (
-              <MenuItem key={d} value={department.code}>
-                {department.name}
+            {departments.map((department: Department, d) => (
+              <MenuItem key={d} value={department.DEPT_CD}>
+                {department.DEPT_NM}
               </MenuItem>
             ))}
           </Select>
-          <InputLabel>진료의</InputLabel>
+          <InputLabel>병동</InputLabel>
           <Select value="-">
             <MenuItem disabled value="-">
-              <em>진료의 선택</em>
+              <em>병동 선택</em>
             </MenuItem>
-            {doctors.map((doctor, d) => (
-              <MenuItem key={d} value={doctor.code}>
-                {doctor.name}
+            {wards.map((ward: Hospital, h) => (
+              <MenuItem key={h} value={ward.SMPL_CD}>
+                {ward.SMPL_NM}
               </MenuItem>
             ))}
           </Select>
