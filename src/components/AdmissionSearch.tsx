@@ -39,6 +39,9 @@ const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 const AdmissionSearch = () => {
   const [departments, setDepartments] = useState([])
   const [wards, setWards] = useState([])
+  const [selected1, setSelected1] = useState('')
+  const [selected2, setSelected2] = useState('')
+  let patNm = ''
 
   const loadItems = async () => {
     await axios
@@ -60,6 +63,32 @@ const AdmissionSearch = () => {
       })
   }
 
+  const handleSelect1 = (e: any) => {
+    setSelected1(e.target?.value)
+  }
+  const handleSelect2 = (e: any) => {
+    setSelected2(e.target?.value)
+  }
+
+  const admmisionSearch = async () => {
+    await axios
+      .post('/api/admission', {
+        DEPT_CD: departments,
+        WARD_CD: wards,
+        PTNT_NM: ''
+      })
+      .then((resposne) => {
+        console.log(resposne.data.data)
+        localStorage.setItem(
+          resposne.data.data.DEPT_CD,
+          resposne.data.data.DEPT_NM
+        )
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
   useEffect(() => {
     loadItems()
   }, [])
@@ -69,7 +98,7 @@ const AdmissionSearch = () => {
       <Box className="Fields">
         <Box className="Field1">
           <InputLabel>진료과</InputLabel>
-          <Select value="-">
+          <Select value={selected1} onChange={handleSelect1}>
             <MenuItem disabled value="-">
               <em>진료과 선택</em>
             </MenuItem>
@@ -80,7 +109,7 @@ const AdmissionSearch = () => {
             ))}
           </Select>
           <InputLabel>병동</InputLabel>
-          <Select value="-">
+          <Select value={selected2} onChange={handleSelect2}>
             <MenuItem disabled value="-">
               <em>병동 선택</em>
             </MenuItem>
@@ -106,18 +135,21 @@ const AdmissionSearch = () => {
         </Box>
         <Box className="Field2">
           <RadioGroup className="RadioGroup" defaultValue="pat">
-            <FormControlLabel value="sta" control={<Radio />} label="담당" />
             <FormControlLabel value="all" control={<Radio />} label="전체" />
             <FormControlLabel value="pat" control={<Radio />} label="환자명" />
           </RadioGroup>
-          <TextField className="Keyword" variant="outlined" />
+          <TextField className="Keyword" variant="outlined" value={patNm} />
         </Box>
       </Box>
       <Box className="Buttons">
         <Button variant="outlined" startIcon={<RestartAltIcon />}>
           초기화
         </Button>
-        <Button variant="contained" startIcon={<SearchIcon />}>
+        <Button
+          variant="contained"
+          startIcon={<SearchIcon />}
+          onClick={admmisionSearch}
+        >
           조회
         </Button>
       </Box>

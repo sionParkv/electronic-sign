@@ -19,10 +19,9 @@ var config = {
 }
 
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id, pw } = req.body
-  console.log(req.body)
+  const { EMPL_NO, PASS_WORD } = req.body
 
-  if (isNaN(id)) {
+  if (isNaN(Number(EMPL_NO))) {
     return res.json({
       code: 'LIE-001',
       message: '사원번호가 잘못 되었습니다.',
@@ -30,7 +29,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
     })
   }
 
-  if (!pw?.length) {
+  if (!PASS_WORD?.length) {
     res.json({
       code: 'LIE-002',
       message: '비밀번호가 전달되지 않았습니다.',
@@ -48,8 +47,8 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     await new mssql.Request()
-      .input('EMPL_NO', id)
-      .input('PASSWORD', pw)
+      .input('EMPL_NO', EMPL_NO)
+      .input('PASSWORD', PASS_WORD)
       .execute('UP_S1MOBILE_EMPL_INFO_R')
       .then((result) => {
         if (!result?.recordset?.length) {

@@ -169,6 +169,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  max-width: none;
   height: 100vh;
   padding: 0;
   margin: 0;
@@ -182,6 +183,10 @@ body {
   .PageWrapper {
     height: 100%;
     padding: 0;
+  }
+
+  .MuiSelect-select {
+    width: 120px;
   }
 }
 

@@ -19,6 +19,7 @@ var config = {
 }
 
 const admission = (req: NextApiRequest, res: NextApiResponse) => {
+  // const { departments, wards } = req.body
   mssql.connect(config, async (error) => {
     if (error) {
       console.log('DB connection err')
@@ -27,11 +28,9 @@ const admission = (req: NextApiRequest, res: NextApiResponse) => {
       })
     }
 
-    console.log('44444444444')
-
     await new mssql.Request()
-      .input('WARD_CD', 'IM')
-      .input('DEPT_CD', 'DD')
+      .input('WARD_CD', 'ALL')
+      .input('DEPT_CD', 'ALL')
       .input('PTNT_NM', '')
       .input('BOOKMARK_YN', 'Y')
       .execute('UP_S1MOBILE_ADM_LIST_R')
@@ -39,7 +38,7 @@ const admission = (req: NextApiRequest, res: NextApiResponse) => {
         console.log(result)
         res.json({
           code: 'OK',
-          result
+          data: result.recordsets
         })
       })
       .catch((error) => {
