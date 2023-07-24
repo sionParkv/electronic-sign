@@ -19,9 +19,10 @@ var config = {
 }
 
 const hospital = (req: NextApiRequest, res: NextApiResponse) => {
+  const tag = 'hospital'
   mssql.connect(config, async (error) => {
     if (error) {
-      console.log('DB connection err')
+      console.error(`${tag} DB connection err`)
       res.json({
         error
       })
@@ -30,14 +31,14 @@ const hospital = (req: NextApiRequest, res: NextApiResponse) => {
     await new mssql.Request()
       .execute('UP_HZSMPL_R$001')
       .then((result) => {
-        console.log(result.recordset)
+        console.debug(`${tag} UP_HZSMPL_R$001 result: `, result?.recordset)
         res.json({
           code: 'OK',
           data: result.recordset
         })
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
         res.json({
           err: error.toString()
         })
