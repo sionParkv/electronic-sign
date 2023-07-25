@@ -1,0 +1,290 @@
+.HomePage {
+  .SearchBar {
+    padding: 18px 0 16px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+
+    .Fields {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      .MuiBox-root {
+        display: flex;
+        padding-bottom: 12px;
+      }
+
+      .Field1 {
+        padding-left: 20px;
+
+        label {
+          display: inline-block;
+          height: 20px;
+          margin: 0;
+          padding: 6px 8px 0 10px;
+          color: #2e5bdb;
+          vertical-align: middle;
+          @include font(700, 12px, 1.2);
+        }
+
+        .MuiInputBase-root {
+          .MuiSelect-select {
+            box-sizing: border-box;
+            height: 26px;
+            padding: 5px 30px 5px 6px;
+            color: black;
+            vertical-align: middle;
+            @include font(500, 14px, 1.2);
+          }
+
+          svg {
+            right: 4px;
+            font-size: 22px;
+          }
+
+          fieldset {
+            padding: 0 0 0 8px;
+            border: 1px solid #dddddd;
+            border-radius: 2px;
+          }
+        }
+
+        .DatePicker {
+          input {
+            box-sizing: border-box;
+            width: 90px;
+            height: 26px;
+            padding: 5px 6px;
+            color: black;
+            vertical-align: middle;
+            @include font(500, 14px, 1.2);
+          }
+        }
+      }
+
+      .Field2 {
+        padding-right: 20px;
+        padding-left: 20px;
+
+        .RadioGroup {
+          flex-direction: row;
+          flex-wrap: nowrap;
+
+          label {
+            margin: 0;
+            padding: 0 10px 0 0;
+
+            .MuiRadio-root {
+              padding: 0;
+
+              svg {
+                width: 18px;
+                height: 18px;
+              }
+            }
+
+            .MuiTypography-root {
+              padding: 0 0 0 5px;
+              color: black;
+              @include font(500, 14px, 1.2);
+            }
+          }
+        }
+
+        .Keyword {
+          input {
+            box-sizing: border-box;
+            width: 120px;
+            height: 26px;
+            padding: 5px 6px;
+            padding: 5px 6px;
+            outline: none;
+            color: black;
+            vertical-align: middle;
+            @include font(500, 14px, 1.2);
+          }
+
+          fieldset {
+            border-radius: 2px;
+          }
+
+          .Mui-focused {
+            fieldset {
+              border-width: 1px !important;
+            }
+          }
+        }
+      }
+    }
+
+    .Buttons {
+      text-align: center;
+
+      button {
+        width: 120px;
+        margin: 0 2.5px;
+        padding: 10px 31px 10px 24px;
+        border-color: #257cfd;
+        border-radius: 5px;
+        color: #257cfd;
+        text-align: center;
+        @include font(500, 14, 1);
+
+        .MuiButton-startIcon {
+          margin-right: 6.2px;
+        }
+
+        &:nth-child(2) {
+          border: 1px solid #2e5bdb;
+          color: white;
+          background-color: #2e5bdb;
+        }
+      }
+    }
+  }
+
+  .TabContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px 0 0;
+
+    .MuiTabs-flexContainer {
+      justify-content: space-between;
+      align-items: flex-end;
+
+      button {
+        width: calc(100% / 3);
+        height: 45px;
+        min-height: auto;
+        padding: 0;
+        border: 1px solid #d5d5d5;
+        border-radius: 10px 10px 0 0;
+        color: #555555;
+        background-color: white;
+        @include font(400, 16px, 1.5);
+
+        &.Mui-selected {
+          height: 55px;
+          color: white;
+          background: rgb(34, 71, 177);
+          background: linear-gradient(
+            90deg,
+            rgba(34, 71, 177, 1) 0%,
+            rgba(46, 91, 219, 1) 100%
+          );
+          background: -moz-linear-gradient(
+            90deg,
+            rgba(34, 71, 177, 1) 0%,
+            rgba(46, 91, 219, 1) 100%
+          );
+          background: -webkit-linear-gradient(
+            90deg,
+            rgba(34, 71, 177, 1) 0%,
+            rgba(46, 91, 219, 1) 100%
+          );
+        }
+      }
+    }
+
+    .MuiTabs-indicator {
+      display: none;
+    }
+
+    .TabPanel {
+      height: 100%;
+      padding: 25px 20px 30px;
+      border: 1px solid #dddddd;
+      border-top: 0;
+      border-radius: 0 0 10px 10px;
+      background-color: white;
+
+      .Panel {
+        position: relative;
+        height: 100%;
+      }
+
+      &[hidden] {
+        display: none;
+        padding: 0;
+        border: 0;
+      }
+    }
+  }
+
+  .PatientListContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+
+    .MuiBox-root {
+      display: flex;
+      justify-content: space-between;
+
+      h1 {
+        color: black;
+        @include font(700, 16px, 1.5);
+      }
+
+      p {
+        color: #333333;
+        @include font(400, 14px, 1.5);
+
+        em {
+          color: #2e5bdb;
+          @include font(400, 14px, 1.5);
+        }
+      }
+    }
+
+    .PatientListTable {
+      position: absolute;
+      top: 24px;
+      width: 100%;
+      height: calc(100% - 42px);
+      padding-top: 8px;
+      overflow: hidden;
+
+      .MuiTableContainer-root {
+        position: relative;
+        height: auto;
+        max-height: 100%;
+
+        thead {
+          tr {
+            th {
+              padding: 10px 0 8px 0;
+              border: 1px solid #dddddd;
+              border-width: 1px 0;
+              color: black;
+              text-align: center;
+              background-color: #f5f5f5;
+              @include font(700, 14px, 1.5);
+            }
+          }
+        }
+
+        tbody {
+          tr {
+            td {
+              padding: 8px 0;
+              color: #333333;
+              text-align: center;
+              background-color: white;
+              @include font(400, 14px, 1.5);
+            }
+
+            &:hover {
+              td {
+                color: #2e5bdb;
+                background-color: #f8faff;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

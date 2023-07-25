@@ -1,0 +1,176 @@
+.PatientPage {
+  justify-content: normal;
+
+  .MuiContainer-root {
+    padding: 20px 50px 5px;
+
+    .PatientInfo {
+      padding: 0 20px 27px;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      background-color: white;
+      box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+
+      .PatientTitle {
+        display: flex;
+        padding: 18px 0 12px;
+        margin-left: -2px;
+
+        img {
+          padding-right: 4px;
+        }
+
+        p {
+          color: #2e5bdb;
+          font-weight: bold;
+          font-size: 16px;
+        }
+      }
+
+      .MuiTable-root {
+        width: 100%;
+
+        .MuiTableBody-root {
+          th {
+            background-color: #f1f5ff;
+            text-align: center;
+          }
+
+          .MuiTableCell-root {
+            padding: 12px 14px;
+            border: 1px solid #dddddd;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+
+  .DocumentContainer {
+    display: flex;
+    flex-direction: column;
+    height: 531px;
+    padding: 22px 4px 30px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+
+    .Division {
+      display: flex;
+
+      .DocumentBox {
+        width: 50%;
+        padding: 0 16px;
+
+        .DocumentTitle {
+          display: flex;
+          align-items: center;
+          padding-bottom: 12px;
+
+          img {
+            padding-right: 3px;
+          }
+
+          p {
+            font-weight: bold;
+            font-size: 16px;
+          }
+        }
+
+        .TabContainer {
+          .MuiTabs-root {
+            min-height: auto;
+
+            .MuiTabs-flexContainer {
+              button {
+                width: 50%;
+                min-height: auto;
+                padding: 12px 0;
+                border: 1px solid #cccccc;
+                border-radius: 5px 5px 0 0;
+                color: #999999;
+
+                &.Mui-selected {
+                  border: 1px solid #257cfd;
+                  color: #257cfd;
+                }
+              }
+            }
+
+            .MuiTabs-indicator {
+              display: none;
+            }
+          }
+
+          .TabPanel {
+            padding: 0;
+            overflow-y: scroll;
+            height: 326px;
+
+            .Panel {
+              position: relative;
+              height: 100%;
+
+              .DocumentListContainer {
+                padding: 0;
+
+                .DocumentList {
+                  display: flex;
+                  flex-direction: row;
+                  padding: 8px 0;
+                  flex-wrap: wrap;
+
+                  li {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    width: calc(50% - 4px);
+                    padding: 11px 13px;
+                    margin: 4px 4px;
+                    border: 1px solid #dce2f2;
+                    background-color: #fafafa;
+
+                    .Title {
+                      color: black;
+                      @include font(700, 14px, 1.5);
+                    }
+
+                    .Date {
+                      color: #787878;
+                      @include font(400, 12px, 1.5);
+                    }
+
+                    &:nth-child(odd) {
+                      margin-left: 0;
+                    }
+
+                    &:nth-child(even) {
+                      margin-right: 0;
+                    }
+                  }
+                }
+              }
+            }
+
+            &[hidden] {
+              display: none;
+              padding: 0;
+              border: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .ButtonBox {
+      display: flex;
+      justify-content: center;
+      .list {
+        width: 120px;
+        height: 44px;
+        border: 1px solid #257cfd;
+        border-radius: 5px;
+        margin-top: 30px;
+      }
+    }
+  }
+}
