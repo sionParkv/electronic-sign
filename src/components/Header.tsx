@@ -13,16 +13,24 @@ import React, { useState } from 'react'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
 import IMGS from '../assets/images'
+import { deleteCookie } from 'cookies-next'
+import { useRouter } from 'next/router'
 
 const Header = (props: { userInfo: string }) => {
   const { userInfo } = props
   const [open, setOpen] = useState(false)
+  const router = useRouter()
 
   const data = [
     { name: '모바일 전자 동의서' },
     { name: 'Inbox' },
     { name: 'Outbox' }
   ]
+
+  const logout = () => {
+    deleteCookie('testCookie')
+    router.push('/login')
+  }
 
   const getList = () => (
     <div onClick={() => setOpen(false)} className="DrawerMenu">
@@ -43,7 +51,9 @@ const Header = (props: { userInfo: string }) => {
           <Image src={IMGS.Logo} alt="Logo" />
         </Button>
         <T>{userInfo} 님</T>
-        <Button className="Logout">로그아웃</Button>
+        <Button className="Logout" onClick={logout}>
+          로그아웃
+        </Button>
         <Button className="Menu" onClick={() => setOpen(true)}>
           <MenuIcon />
         </Button>

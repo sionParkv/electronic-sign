@@ -18,74 +18,101 @@ import {
 } from '@mui/material'
 import dayjs from 'dayjs'
 import moment from 'moment'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import 'dayjs/locale/ko'
+import axios from 'axios'
 
 interface Department {
   [key: string]: string
-  code: string
-  name: string
+  DEPT_CD: string
+  DEPT_NM: string
 }
 
 interface Doctor {
   [key: string]: string
-  code: string
-  name: string
+  DOC_CD: string
+  DOC_NM: string
 }
 
 const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 
 const OutPatientSearch = () => {
-  // TODO: 데이터베이스 데이터 연동
-  const departments: Array<Department> = [
-    {
-      code: 'AA',
-      name: '마취통증의학과'
-    },
-    {
-      code: 'IF',
-      name: '산부인과'
-    },
-    {
-      code: 'US',
-      name: '영상의학과'
-    }
-  ]
-  // TODO: 데이터베이스 데이터 연동
-  const doctors: Array<Doctor> = [
-    {
-      code: 'AA',
-      name: '나의사'
-    },
-    {
-      code: 'IF',
-      name: '홍길동'
-    }
-  ]
+  const [departments, setDepartments] = useState([])
+  const [doctor, setDoctor] = useState([])
+  const [selected1, setSelected1] = useState('')
+  const [selected2, setSelected2] = useState('')
+  let patNm = ''
+
+  const loadItems = async () => {
+    await axios
+      .get('/api/deptSearch')
+      .then((response) => {
+        setDepartments(response?.data?.data || [])
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    await axios
+      .post('/api/doctorSearch')
+      .then((respose) => {
+        setDoctor(respose?.data?.data || [])
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  const patSearch = async () => {
+    await axios
+      .post('/api/outPatient', {
+        DEPT_CD: departments,
+        WARD_CD: doctor,
+        PTNT_NM: ''
+      })
+      .then((resposne) => {
+        console.log(resposne.data.data)
+        localStorage.setItem('patientList', JSON.stringify(resposne.data.data))
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  useEffect(() => {
+    loadItems()
+  }, [])
+
+  const handleSelect1 = (e: any) => {
+    setSelected1(e.target?.value)
+  }
+  const handleSelect2 = (e: any) => {
+    setSelected2(e.target?.value)
+  }
 
   return (
     <Container className="SearchBar">
       <Box className="Fields">
         <Box className="Field1">
           <InputLabel>진료과</InputLabel>
-          <Select value="-">
+          <Select value={selected1} onChange={handleSelect1}>
             <MenuItem disabled value="-">
               <em>진료과 선택</em>
             </MenuItem>
-            {departments.map((department, d) => (
-              <MenuItem key={d} value={department.code}>
-                {department.name}
+            {departments.map((department: Department, d) => (
+              <MenuItem key={d} value={department.DEPT_CD}>
+                {department.DEPT_NM}
               </MenuItem>
             ))}
           </Select>
           <InputLabel>진료의</InputLabel>
-          <Select value="-">
+          <Select value={selected2} onChange={handleSelect2}>
             <MenuItem disabled value="-">
               <em>진료의 선택</em>
             </MenuItem>
-            {doctors.map((doctor, d) => (
-              <MenuItem key={d} value={doctor.code}>
-                {doctor.name}
+            {doctor.map((doctor: Doctor, d) => (
+              <MenuItem key={d} value={doctor.DOC_CD}>
+                {doctor.DOC_NM}
               </MenuItem>
             ))}
           </Select>
@@ -106,12 +133,6 @@ const OutPatientSearch = () => {
           <RadioGroup className="RadioGroup" defaultValue="pat">
             <FormControlLabel
               disabled
-              value="sta"
-              control={<Radio />}
-              label="담당"
-            />
-            <FormControlLabel
-              disabled
               value="all"
               control={<Radio />}
               label="전체"
@@ -123,14 +144,22 @@ const OutPatientSearch = () => {
               label="환자명"
             />
           </RadioGroup>
-          <TextField className="Keyword" variant="outlined" />
+          <TextField
+            className="Keyword"
+            variant="outlined"
+            defaultValue={patNm}
+          />
         </Box>
       </Box>
       <Box className="Buttons">
         <Button variant="outlined" startIcon={<RestartAltIcon />}>
           초기화
         </Button>
-        <Button variant="contained" startIcon={<SearchIcon />}>
+        <Button
+          variant="contained"
+          startIcon={<SearchIcon />}
+          onClick={patSearch}
+        >
           조회
         </Button>
       </Box>
