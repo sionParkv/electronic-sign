@@ -1,53 +1,45 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import mssql from 'mssql'
 
-var config = {
-  user: 'mobile_base',
-  password: 'mobile_!jj1m',
-  server: '210.107.85.113',
-  database: 'MEDIPLUS_MEDIYIN',
-  steram: true,
-  pool: {
-    max: 10,
-    min: 0,
-    idleTimeoutMillis: 30000
-  },
-  options: {
-    encrypt: true,
-    trustServerCertificate: true
-  }
-}
+import { MsSql } from '@/db/MsSql'
+import { logger } from '@/utils/Winston'
 
-const deptSearch = (req: NextApiRequest, res: NextApiResponse) => {
-  mssql.connect(config, async (error) => {
-    if (error) {
-      console.log('DB connection err')
-      res.json({
-        error
-      })
-    }
+const doctorSearch = (req: NextApiRequest, res: NextApiResponse) => {
+  logger.debug('[doctorSearch] 의사 목록 조회 리퀘스트 %o', req.body)
+  const { DEPT_CD } = req.body
+  let query = `exec [UP_H2ORD_R$025] '${DEPT_CD}'`
 
-    await new mssql.Request()
-      .input('DEPT_CD', 'IM')
-      .execute('UP_H2ORD_R$025')
-      .then((result) => {
-        console.log(result)
+  MsSql.executeQuery(query)
+    .then((result: any) => {
+      if (result?.length > 0) {
+        logger.debug(
+          '[doctorSearch] 의사 목록 조회에 성공 하였습니다. %o',
+          result
+        )
         res.json({
           code: 'OK',
-          data: result.recordset
+          meesage: '의사 환자 목록 조회에 성공 하였습니다.',
+          data: result
         })
-      })
-      .catch((error) => {
-        console.log(error)
+      } else {
+        logger.debug('[doctorSearch] 의사 목록이 없습니다.')
         res.json({
-          code: 'LIE-001',
-          err: error.toString()
+          code: 'OK',
+          meesage: '의사 환자 목록이 없습니다.'
         })
+      }
+    })
+    .catch((error) => {
+      error &&
+        error.message &&
+        logger.error(
+          `[doctorSearch] 의사 목록 조회 중 오류가 발생 하였습니다. : ${error.messgae}`
+        )
+      res.json({
+        code: 'FAIL',
+        meesage: '의사 목록 조회 중 오류가 발생 하였습니다.',
+        error: error.message
       })
-      .finally(() => {
-        //TODO
-      })
-  })
+    })
 }
 
-export default deptSearch
+export default doctorSearch

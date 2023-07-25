@@ -1,52 +1,45 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import mssql from 'mssql'
 
-var config = {
-  user: 'mobile_base',
-  password: 'mobile_!jj1m',
-  server: '210.107.85.113',
-  database: 'MEDIPLUS_MEDIYIN',
-  steram: true,
-  pool: {
-    max: 10,
-    min: 0,
-    idleTimeoutMillis: 30000
-  },
-  options: {
-    encrypt: true,
-    trustServerCertificate: true
-  }
-}
+import { MsSql } from '@/db/MsSql'
+import { logger } from '@/utils/Winston'
 
 const givenList = (req: NextApiRequest, res: NextApiResponse) => {
-  mssql.connect(config, async (error) => {
-    if (error) {
-      console.log('DB connection err')
-      res.json({
-        error
-      })
-    }
+  logger.debug('[givenList] 작성된 동의서 목록 조회 리퀘스트 %o', req.body)
+  const { PTNT_NO } = req.body
+  let query = `exec [UP_S1MOBILE_PTNT_LIST_R] '${PTNT_NO}'`
 
-    await new mssql.Request()
-      .input('PTNT_NO', 1234)
-      .execute('UP_S1MOBILE_PTNT_LIST_R')
-      .then((result) => {
-        console.log(result)
+  MsSql.executeQuery(query)
+    .then((result: any) => {
+      if (result?.length > 0) {
+        logger.debug(
+          '[givenList] 임시저장 동의서 목록 조회에 성공 하였습니다. %o',
+          result
+        )
         res.json({
           code: 'OK',
-          result
+          meesage: '작성된 동의서 목록 조회에 성공 하였습니다.',
+          data: result
         })
-      })
-      .catch((error) => {
-        console.log(error)
+      } else {
+        logger.debug('[givenList] 작성된 동의서 목록이 없습니다.')
         res.json({
-          err: error.toString()
+          code: 'OK',
+          meesage: '작성된 동의서 목록이 없습니다.'
         })
+      }
+    })
+    .catch((error) => {
+      error &&
+        error.message &&
+        logger.error(
+          `[givenList] 작성된 동의서 목록 조회 중 오류가 발생 하였습니다. : ${error.messgae}`
+        )
+      res.json({
+        code: 'FAIL',
+        meesage: '작성된 동의서 목록 조회 중 오류가 발생 하였습니다.',
+        error: error.message
       })
-      .finally(() => {
-        //TODO
-      })
-  })
+    })
 }
 
 export default givenList
