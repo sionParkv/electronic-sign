@@ -1,51 +1,43 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import mssql from 'mssql'
 
-var config = {
-  user: 'mobile_base',
-  password: 'mobile_!jj1m',
-  server: '210.107.85.113',
-  database: 'MEDIPLUS_MEDIYIN',
-  steram: true,
-  pool: {
-    max: 10,
-    min: 0,
-    idleTimeoutMillis: 30000
-  },
-  options: {
-    encrypt: true,
-    trustServerCertificate: true
-  }
-}
+import { MsSql } from '@/db/MsSql'
+import { logger } from '@/utils/Winston'
 
 const deptSearch = (req: NextApiRequest, res: NextApiResponse) => {
-  mssql.connect(config, async (error) => {
-    if (error) {
-      console.log('DB connection err')
-      res.json({
-        error
-      })
-    }
-
-    await new mssql.Request()
-      .execute('UP_H2ORD_R$001')
-      .then((result) => {
-        console.log('>>>>>>', result.recordset)
+  logger.debug('[deptSearch] 진료과 목록 조회 리퀘스트')
+  let query = `exec [UP_H2ORD_R$001]`
+  MsSql.executeQuery(query)
+    .then((result: any) => {
+      if (result?.length) {
+        logger.debug(
+          '[deptSearch] 진료과 목록 조회에 성공 하였습니다. %o',
+          result
+        )
         res.json({
           code: 'OK',
-          data: result.recordset
+          meesage: '진료과 목록 조회에 성공 하였습니다.',
+          data: result
         })
-      })
-      .catch((error) => {
-        console.log(error)
+      } else {
+        logger.debug('[deptSearch] 진료과 목록이 없습니다. %o', result)
         res.json({
-          err: error.toString()
+          code: 'FAIL',
+          meesage: '진료과 목록이 없습니다.'
         })
+      }
+    })
+    .catch((error) => {
+      error &&
+        error.message &&
+        logger.error(
+          `[deptSearch] 진료과 목록 조회중 오류가 발생 하였습니다. : ${error.message}`
+        )
+      res.json({
+        code: 'FAIL',
+        meesage: '진료과 목록 조회 중 오류가 발생 하였습니다.',
+        error: error.message
       })
-      .finally(() => {
-        //TODO
-      })
-  })
+    })
 }
 
 export default deptSearch

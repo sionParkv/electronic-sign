@@ -45,7 +45,7 @@ const AdmissionSearch = () => {
 
   const loadItems = async () => {
     await axios
-      .post('/api/deptSearch')
+      .get('/api/deptSearch')
       .then((response) => {
         setDepartments(response?.data?.data || [])
       })
@@ -54,7 +54,7 @@ const AdmissionSearch = () => {
       })
 
     await axios
-      .post('/api/hospital')
+      .get('/api/hospital')
       .then((respose) => {
         setWards(respose?.data?.data || [])
       })

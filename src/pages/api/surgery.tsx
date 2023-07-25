@@ -1,56 +1,45 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import mssql from 'mssql'
 
-var config = {
-  user: 'mobile_base',
-  password: 'mobile_!jj1m',
-  server: '210.107.85.113',
-  database: 'MEDIPLUS_MEDIYIN',
-  steram: true,
-  pool: {
-    max: 10,
-    min: 0,
-    idleTimeoutMillis: 30000
-  },
-  options: {
-    encrypt: true,
-    trustServerCertificate: true
-  }
-}
+import { MsSql } from '@/db/MsSql'
+import { logger } from '@/utils/Winston'
 
-const deptSearch = (req: NextApiRequest, res: NextApiResponse) => {
-  mssql.connect(config, async (error) => {
-    if (error) {
-      console.log('DB connection err')
-      res.json({
-        error
-      })
-    }
+const surgery = (req: NextApiRequest, res: NextApiResponse) => {
+  logger.debug('[surgery] 수술 환자 목록 조회 리퀘스트 %o', req.body)
+  const { OP_YMD, OP_DEPT_CD, AN_TYPE_GB, OP_GB, PTNT_NM } = req.body
+  let query = `exec [UP_S1MOBILE_OP_LIST_R] '${OP_YMD}', '${OP_DEPT_CD}', '${AN_TYPE_GB}', '${OP_GB}', '${PTNT_NM}'`
 
-    await new mssql.Request()
-      .input('OP_YMD', '20230707')
-      .input('OP_DEPT_CD', '')
-      .input('AN_TYPE_GB', '11')
-      .input('OP_GB', '')
-      .input('PTNT_NM', '')
-      .execute('UP_S1MOBILE_OP_LIST_R')
-      .then((result) => {
-        console.log(result)
+  MsSql.executeQuery(query)
+    .then((result: any) => {
+      if (result?.length > 0) {
+        logger.debug(
+          '[surgery] 수술 환자목록 조회에 성공 하였습니다. %o',
+          result
+        )
         res.json({
           code: 'OK',
-          result
+          meesage: '수술 환자 목록 조회에 성공 하였습니다.',
+          data: result
         })
-      })
-      .catch((error) => {
-        console.log(error)
+      } else {
+        logger.debug('[surgery] 수술 환자목록이 없습니다.')
         res.json({
-          err: error.toString()
+          code: 'OK',
+          meesage: '수술 환자 목록이 없습니다.'
         })
+      }
+    })
+    .catch((error) => {
+      error &&
+        error.message &&
+        logger.error(
+          `[surgery] 수술 환자 목록 조회 중 오류가 발생 하였습니다. : ${error.messgae}`
+        )
+      res.json({
+        code: 'FAIL',
+        meesage: '수술 환자 목록 조회 중 오류가 발생 하였습니다.',
+        error: error.message
       })
-      .finally(() => {
-        //TODO
-      })
-  })
+    })
 }
 
-export default deptSearch
+export default surgery
