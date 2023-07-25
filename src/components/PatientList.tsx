@@ -1,6 +1,7 @@
 import {
   Box,
   Container,
+  NoSsr,
   Typography as T,
   Table,
   TableBody,
@@ -36,7 +37,31 @@ const PatientList = () => {
     '진료일',
     '진단명'
   ]
-  // TODO: 데이터베이스 데이터 연동
+  let list: Array<Patient> = []
+  let patList: Array<Patient> = []
+  if (typeof window !== 'undefined') {
+    // Perform localStorage action
+    const patientList = localStorage.getItem('patientList')
+    patList = JSON.parse(patientList as string)!
+    // console.log(patList)
+  }
+
+  list = patList?.map((pat) => {
+    const sexAge = pat.SEX_AGE.split('/')
+    return {
+      name: pat.PTNT_NM,
+      birth: pat.BIRTH_YMD,
+      age: sexAge[1],
+      sex: sexAge[0],
+      number: pat.RECEPT_NO,
+      doctor: pat.DOCT_EMPL_NM,
+      department: pat.DEPT_NM,
+      date: pat.ADM_YMD,
+      diagnosis: pat.DIAG_NM
+    }
+  })
+  console.log(list)
+  //const loadedPat = localStorage.getItem('patinetList')
   const patients: Array<Patient> = [
     {
       name: '홍길동',
@@ -115,31 +140,36 @@ const PatientList = () => {
           총 <T component="em">{total}</T>명
         </T>
       </Box>
-      <Box className="PatientListTable">
-        <TableContainer>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                {colHeaders.map((header, h) => (
-                  <TableCell key={h}>{header}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {patients.map((patient, p) => {
-                const columns = Object.keys(patient)
-                return (
-                  <TableRow key={p}>
-                    {columns.map((column, c) => (
-                      <TableCell key={c}>{patient[column as string]}</TableCell>
-                    ))}
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+      <NoSsr>
+        <Box className="PatientListTable">
+          <TableContainer>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  {colHeaders.map((header, h) => (
+                    <TableCell key={h}>{header}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {list &&
+                  list.map((patient, p) => {
+                    const columns = Object.keys(patient)
+                    return (
+                      <TableRow key={p}>
+                        {columns.map((column, c) => (
+                          <TableCell key={c}>
+                            {patient[column as string]}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    )
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </NoSsr>
     </Container>
   )
 }

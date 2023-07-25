@@ -70,7 +70,7 @@ const AdmissionSearch = () => {
     setSelected2(e.target?.value)
   }
 
-  const admmisionSearch = async () => {
+  const patSearch = async () => {
     await axios
       .post('/api/admission', {
         DEPT_CD: departments,
@@ -79,10 +79,7 @@ const AdmissionSearch = () => {
       })
       .then((resposne) => {
         console.log(resposne.data.data)
-        localStorage.setItem(
-          resposne.data.data.DEPT_CD,
-          resposne.data.data.DEPT_NM
-        )
+        localStorage.setItem('patientList', JSON.stringify(resposne.data.data))
       })
       .catch((error) => {
         console.log(error)
@@ -138,7 +135,11 @@ const AdmissionSearch = () => {
             <FormControlLabel value="all" control={<Radio />} label="전체" />
             <FormControlLabel value="pat" control={<Radio />} label="환자명" />
           </RadioGroup>
-          <TextField className="Keyword" variant="outlined" value={patNm} />
+          <TextField
+            className="Keyword"
+            variant="outlined"
+            defaultValue={patNm}
+          />
         </Box>
       </Box>
       <Box className="Buttons">
@@ -148,7 +149,7 @@ const AdmissionSearch = () => {
         <Button
           variant="contained"
           startIcon={<SearchIcon />}
-          onClick={admmisionSearch}
+          onClick={patSearch}
         >
           조회
         </Button>
