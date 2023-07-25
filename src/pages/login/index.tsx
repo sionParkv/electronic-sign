@@ -15,6 +15,8 @@ import { useRouter } from 'next/router'
 
 const LoginPage = () => {
   const [empNo, setEmpNo] = useState('')
+  const [empNm, setEmpNm] = useState('')
+  const [dept, setDept] = useState('')
   const [pw, setPw] = useState('')
   const className = 'Pages LoginPage'
   const router = useRouter()
@@ -27,6 +29,16 @@ const LoginPage = () => {
   const handleChangePw = (e: any) => {
     const pwValue = e.target.value
     setPw(pwValue)
+  }
+
+  const handleChangeEmpNm = (e: any) => {
+    const empNmValue = e.target.value
+    setEmpNm(empNmValue)
+  }
+
+  const handleChangeDept = (e: any) => {
+    const pwValue = e.target.value
+    setDept(pwValue)
   }
 
   const handleLogin = () => {
@@ -61,11 +73,39 @@ const LoginPage = () => {
         },
         title: '입력 오류'
       })
+    } else if (!empNm.length) {
+      return components.openConfirmDialog({
+        contents: '이름을 입력해주세요',
+        ok: {
+          label: '닫기',
+          action: () => {
+            setTimeout(() => {
+              document.getElementsByTagName('input')[1].focus()
+            }, 50)
+          }
+        },
+        title: '입력 오류'
+      })
+    } else if (!dept.length) {
+      return components.openConfirmDialog({
+        contents: '부서를 입력해주세요',
+        ok: {
+          label: '닫기',
+          action: () => {
+            setTimeout(() => {
+              document.getElementsByTagName('input')[2].focus()
+            }, 50)
+          }
+        },
+        title: '입력 오류'
+      })
     }
 
     axios
       .post('/api/login', {
         EMPL_NO: empNo,
+        EMPL_NM: empNm,
+        DEPT: dept,
         PASS_WORD: pw
       })
       .then((response) => {
@@ -92,11 +132,11 @@ const LoginPage = () => {
           </Box>
           <Box>
             <T>이름</T>
-            <TextField />
+            <TextField defaultValue={empNm} onChange={handleChangeEmpNm} />
           </Box>
           <Box>
             <T>부서</T>
-            <TextField />
+            <TextField defaultValue={dept} onChange={handleChangeDept} />
           </Box>
           <Box>
             <T>비밀번호</T>
