@@ -1,7 +1,10 @@
 import { Box, Container, Tab, Tabs } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { getCookie, hasCookie } from 'cookies-next'
 
 import components from '@/components'
+import { AES256 } from '@/utils/AES256'
+import { useRouter } from 'next/router'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -20,16 +23,34 @@ const PatientListTabPanel = (props: TabPanelProps) => {
 }
 
 const HomePage = () => {
+  const router = useRouter()
+
   const [tab, setTab] = useState<number>(0)
   const className = 'Pages HomePage'
 
   const handleChange = (event: React.SyntheticEvent, newTab: number) => {
     setTab(newTab)
   }
+  let temp = getCookie('testCookie')
+  let temp2
+  let tempArray
+  if (hasCookie('testCookie')) {
+    temp2 = AES256.AES_decrypt(temp, 'Qsj23missdaxX2BjyskV6bs#adada6ds')
+    console.log(temp2)
+    tempArray = JSON.parse(temp2)
+  }
+
+  useEffect(() => {
+    if (!hasCookie('testCookie')) {
+      router.push('/login')
+    }
+  }, [])
 
   const propsHeader = {
     // TODO: 로그인 사용자 정보
-    userInfo: '홍길동 CY DC00001'
+    userInfo: tempArray
+      ? `${tempArray[0].EMPL_NM} ${tempArray[0].DEPT_CD} ${tempArray[0].EMPL_NO}`
+      : ''
   }
 
   return (

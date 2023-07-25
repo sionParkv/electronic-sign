@@ -1,5 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import mssql from 'mssql'
+import { setCookie } from 'cookies-next'
+
+import { AES256 } from '@/utils/AES256'
 
 var config = {
   user: 'mobile_base',
@@ -57,19 +60,25 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
             message: '일치하는 직원정보가 없습니다.',
             data: result.recordset
           })
-        } else if (EMPL_NM == result.recordset[0].EMPL_NM) {
+        } else if (EMPL_NM !== result.recordset[0].EMPL_NM) {
           res.json({
             code: 'LIE-005',
             message: '이름이 불일치 합니다.',
             data: result.recordset
           })
-        } else if (DEPT == result.recordset[0].DEPT_GB) {
+        } else if (DEPT !== result.recordset[0].DEPT_GB) {
           res.json({
             code: 'LIE-006',
             message: '부서구분이 불일치 합니다.',
             data: result.recordset
           })
         } else {
+          let temp = AES256.AES_encrypt(
+            JSON.stringify(result.recordset),
+            'Qsj23missdaxX2BjyskV6bs#adada6ds'
+          )
+          const expiryDate = new Date(Number(new Date()) + 315360000000)
+          setCookie('testCookie', temp, { req, res, expires: expiryDate })
           res.json({
             code: 'OK',
             message: '로그인되었습니다.',

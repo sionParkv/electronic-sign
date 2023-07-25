@@ -12,6 +12,7 @@ import axios from 'axios'
 import components from '@/components'
 import IMGS from '../../assets/images'
 import { useRouter } from 'next/router'
+import { hasCookie } from 'cookies-next'
 
 const LoginPage = () => {
   const [empNo, setEmpNo] = useState('')
@@ -20,6 +21,10 @@ const LoginPage = () => {
   const [pw, setPw] = useState('')
   const className = 'Pages LoginPage'
   const router = useRouter()
+
+  if (hasCookie('testCookie')) {
+    router.push('/')
+  }
 
   const handleChangeEmpNo = (e: any) => {
     const empNoValue = e.target.value
@@ -109,7 +114,7 @@ const LoginPage = () => {
         PASS_WORD: pw
       })
       .then((response) => {
-        console.log(response.data)
+        console.log('response.data:: ', response.data)
         router.push('/')
       })
       .catch((error) => {
