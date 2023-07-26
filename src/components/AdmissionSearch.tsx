@@ -49,7 +49,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const [wards, setWards] = useState([])
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
-  let patNm = ''
+  const [patNm, setPatNm] = useState('')
+
   console.log(state)
   const loadItems = async () => {
     await axios
@@ -88,16 +89,21 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         PTNT_NM: ''
       })
       .then((response) => {
-        console.log(response.data.data)
-        localStorage.setItem(
-          'patientList',
-          `{"admission":${JSON.stringify(response.data.data)}}`
-        )
-        handleStateChange(response.data.data)
+        if (response.data.data) {
+          localStorage.setItem(
+            'patientList',
+            `{"admission":${JSON.stringify(response.data.data)}}`
+          )
+          handleStateChange(response.data.data)
+          return
+        }
       })
       .catch((error) => {
         console.log(error)
       })
+  }
+  const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPatNm(event.target.value)
   }
 
   useEffect(() => {
@@ -152,7 +158,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
           <TextField
             className="Keyword"
             variant="outlined"
-            defaultValue={patNm}
+            value={patNm}
+            onChange={handlePatNmChange}
           />
         </Box>
       </Box>

@@ -48,7 +48,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const [doctor, setDoctor] = useState([])
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
-  let patNm = ''
+  const [patNm, setPatNm] = useState('')
+
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -76,16 +77,19 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     await axios
       .post('/api/outPatient', {
         CLINIC_YMD: '20220603',
-        DEPT_CD: 'ALL',
-        DOCT_EMPL_NO: 'ALL',
+        DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
+        DOCT_EMPL_NO: selected2 === '-' ? 'ALL' : selected2,
         PTNT_NM: ''
       })
       .then((response) => {
-        localStorage.setItem(
-          'patientList',
-          `{"outPatient":${JSON.stringify(response.data.data)}}`
-        )
-        handleStateChange(response.data.data)
+        if (response.data.data) {
+          localStorage.setItem(
+            'patientList',
+            `{"outPatient":${JSON.stringify(response.data.data)}}`
+          )
+          handleStateChange(response.data.data)
+          return
+        }
       })
       .catch((error) => {
         console.log(error)
@@ -98,11 +102,25 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
 
   const handleSelect1 = (e: any) => {
     setSelected1(e.target?.value)
+    axios
+      .post('/api/doctorSearch', {
+        DEPT_CD: e.target?.value
+      })
+      .then((respose) => {
+        setDoctor(respose?.data?.data || [])
+        console.log(respose?.data?.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
   const handleSelect2 = (e: any) => {
     setSelected2(e.target?.value)
   }
 
+  const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPatNm(event.target.value)
+  }
   return (
     <Container className="SearchBar">
       <Box className="Fields">
@@ -123,11 +141,14 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
             <MenuItem disabled value="-">
               <em>진료의 선택</em>
             </MenuItem>
-            {doctor.map((doctor: Doctor, d) => (
-              <MenuItem key={d} value={doctor.DOC_CD}>
-                {doctor.DOC_NM}
-              </MenuItem>
-            ))}
+            {doctor.map((doctor: Doctor, d) => {
+              console.log(doctor)
+              return (
+                <MenuItem key={d} value={doctor.DOCT_EMPL_NO}>
+                  {doctor.DOCT_EMPL_NM}
+                </MenuItem>
+              )
+            })}
           </Select>
           <InputLabel disabled={true}>진료일 조회</InputLabel>
           <LocalizationProvider
@@ -160,7 +181,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           <TextField
             className="Keyword"
             variant="outlined"
-            defaultValue={patNm}
+            value={patNm}
+            onChange={handlePatNmChange}
           />
         </Box>
       </Box>
