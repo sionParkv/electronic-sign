@@ -9,9 +9,11 @@ import {
   Tabs
 } from '@mui/material'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import images from '@/assets/images'
+import axios from 'axios'
+import { useRouter } from 'next/router'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -38,6 +40,7 @@ const DocumentListContainer = (props: { children: React.ReactNode }) => {
 const Document = () => {
   const [tabL, setTabL] = useState<number>(0)
   const [tabR, setTabR] = useState<number>(0)
+  const router = useRouter()
 
   const handleChangeL = (event: React.SyntheticEvent, newTab: number) => {
     setTabL(newTab)
@@ -46,6 +49,52 @@ const Document = () => {
   const handleChangeR = (event: React.SyntheticEvent, newTab: number) => {
     setTabR(newTab)
   }
+
+  const loadItems = async () => {
+    await axios
+      .post('/api/tempList', {})
+      .then((response) => {
+        console.log(response?.data?.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    await axios
+      .post('/api/givenList', {})
+      .then((response) => {
+        console.log(response?.data?.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    await axios
+      .get('/api/List')
+      .then((response) => {
+        console.log(response?.data?.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    await axios
+      .post('/api/favoriteList', {})
+      .then((response) => {
+        console.log(response?.data?.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  const backPage = () => {
+    router.push('/')
+  }
+
+  useEffect(() => {
+    loadItems()
+  }, [])
 
   return (
     <Container className="DocumentContainer">
@@ -75,70 +124,6 @@ const Document = () => {
             <DocumentListTabPanel value={tabL} index={1}>
               <DocumentListContainer>
                 <List className="DocumentList">
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
                   <ListItem>
                     <T className="Title">완료된 공통 수술시술검사 동의서</T>
                     <T className="Date">2023.06.14 12:56</T>
@@ -184,7 +169,9 @@ const Document = () => {
         </Box>
       </Box>
       <Box className="ButtonBox">
-        <Button className="list">목록</Button>
+        <Button className="list" onClick={backPage}>
+          목록
+        </Button>
       </Box>
     </Container>
   )

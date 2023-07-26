@@ -39,8 +39,8 @@ const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 const OutPatientSearch = () => {
   const [departments, setDepartments] = useState([])
   const [doctor, setDoctor] = useState([])
-  const [selected1, setSelected1] = useState('')
-  const [selected2, setSelected2] = useState('')
+  const [selected1, setSelected1] = useState('-')
+  const [selected2, setSelected2] = useState('-')
   let patNm = ''
 
   const loadItems = async () => {
@@ -52,11 +52,14 @@ const OutPatientSearch = () => {
       .catch((error) => {
         console.log(error)
       })
-
+    console.log(setDepartments)
     await axios
-      .post('/api/doctorSearch')
+      .post('/api/doctorSearch', {
+        DEPT_CD: departments
+      })
       .then((respose) => {
         setDoctor(respose?.data?.data || [])
+        localStorage.setItem('patientList', JSON.stringify(respose.data.data))
       })
       .catch((error) => {
         console.log(error)

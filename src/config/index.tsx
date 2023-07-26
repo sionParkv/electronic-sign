@@ -56,6 +56,11 @@ const DB = {
     }
   }
 }
+const KEYS = {
+  production: '/app/logs/relay/prod',
+  development: `${process.cwd()}/logs`,
+  test: `${process.cwd()}/logs`
+}
 
 const cfgServer = {
   env: ENV,

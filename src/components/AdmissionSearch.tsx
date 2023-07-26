@@ -39,8 +39,8 @@ const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 const AdmissionSearch = () => {
   const [departments, setDepartments] = useState([])
   const [wards, setWards] = useState([])
-  const [selected1, setSelected1] = useState('')
-  const [selected2, setSelected2] = useState('')
+  const [selected1, setSelected1] = useState('-')
+  const [selected2, setSelected2] = useState('-')
   let patNm = ''
 
   const loadItems = async () => {

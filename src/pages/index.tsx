@@ -26,6 +26,7 @@ const HomePage = () => {
   const router = useRouter()
 
   const [tab, setTab] = useState<number>(0)
+  const [userInfo, setUserInfo] = useState<string>('')
   const className = 'Pages HomePage'
 
   const handleChange = (event: React.SyntheticEvent, newTab: number) => {
@@ -33,24 +34,27 @@ const HomePage = () => {
   }
   let temp = getCookie('testCookie')
   let temp2
-  let tempArray
+  let tempArray: any = []
   if (hasCookie('testCookie')) {
     temp2 = AES256.AES_decrypt(temp, 'Qsj23missdaxX2BjyskV6bs#adada6ds')
-    console.log(temp2)
     tempArray = JSON.parse(temp2)
+    console.log(tempArray)
   }
 
   useEffect(() => {
     if (!hasCookie('testCookie')) {
       router.push('/login')
     }
+    tempArray
+      ? setUserInfo(
+          `${tempArray[0].EMPL_NM} ${tempArray[0].DEPT_CD} ${tempArray[0].EMPL_NO} 님`
+        )
+      : ''
   }, [])
 
   const propsHeader = {
     // TODO: 로그인 사용자 정보
-    userInfo: tempArray
-      ? `${tempArray[0].EMPL_NM} ${tempArray[0].DEPT_CD} ${tempArray[0].EMPL_NO}`
-      : ''
+    userInfo: userInfo
   }
 
   return (
