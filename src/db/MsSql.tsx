@@ -15,7 +15,6 @@ const executeQuery = (query: string) =>
         await new mssql.Request()
           .query(query)
           .then((result) => {
-            logger.debug('프로시저 호출 성공 %o', result.recordset)
             resolve(result.recordset)
           })
           .catch((error) => {

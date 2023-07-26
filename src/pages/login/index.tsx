@@ -22,7 +22,7 @@ const LoginPage = () => {
   const className = 'Pages LoginPage'
   const router = useRouter()
 
-  if (hasCookie('testCookie')) {
+  if (hasCookie('loginCookie')) {
     router.push('/')
   }
 

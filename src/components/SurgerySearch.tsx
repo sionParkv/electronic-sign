@@ -36,9 +36,17 @@ interface Anesthesia {
   ANE_NM: string
 }
 
+interface SurgerySearchProps {
+  state: any
+  handleStateChange: (newList: any) => void
+}
+
 const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 
-const SurgerySearch = () => {
+const SurgerySearch: React.FC<SurgerySearchProps> = ({
+  state,
+  handleStateChange
+}) => {
   const [departments, setDepartments] = useState([])
   const [surgery, setSurgery] = useState([])
   const [anesth, setAnesth] = useState([])
@@ -60,6 +68,7 @@ const SurgerySearch = () => {
     await axios
       .get('/api/surgerySearch')
       .then((respose) => {
+        console.log(respose.data.data)
         setSurgery(respose?.data?.data || [])
       })
       .catch((error) => {
@@ -85,19 +94,25 @@ const SurgerySearch = () => {
   const handleSelect3 = (e: any) => {
     setSelected3(e.target?.value)
   }
-
+  console.log('selected::1 ', selected1)
+  console.log('selected:: 2', selected2)
+  console.log('selected:: 3', selected3)
   const patSearch = async () => {
     await axios
       .post('/api/surgery', {
-        OP_YMD: '20221022',
-        OP_DEPT_CD: departments,
-        WARD_CD: surgery,
-        AN_TYPE_GB: anesth,
-        PTNT_NM: patNm
+        OP_YMD: '20221011',
+        OP_DEPT_CD: selected1,
+        AN_TYPE_GB: selected2,
+        OP_GB: selected3,
+        PTNT_NM: ''
       })
-      .then((resposne) => {
-        console.log(resposne.data.data)
-        localStorage.setItem('patientList', JSON.stringify(resposne.data.data))
+      .then((response) => {
+        console.log('response:: ', response.data.data)
+        localStorage.setItem(
+          'patientList',
+          `{"surgery":${JSON.stringify(response.data.data)}}`
+        )
+        handleStateChange(response.data.data)
       })
       .catch((error) => {
         console.log(error)
@@ -139,11 +154,15 @@ const SurgerySearch = () => {
             <MenuItem disabled value="-">
               <em>구분 선택</em>
             </MenuItem>
-            {surgery.map((surgery: Surgery, s) => (
-              <MenuItem key={s} value={surgery.SUG_CD}>
-                {surgery.SUG_NM}
-              </MenuItem>
-            ))}
+            {surgery.map((surgery: Surgery, s) => {
+              console.log(surgery)
+
+              return (
+                <MenuItem key={s} value={surgery.SUG_CD}>
+                  {surgery.SUG_NM}
+                </MenuItem>
+              )
+            })}
           </Select>
           <InputLabel disabled={true}>진료일 조회</InputLabel>
           <LocalizationProvider

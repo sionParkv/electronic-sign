@@ -72,22 +72,27 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   }
 
   const handleSelect1 = (e: any) => {
+    console.log('departments:: ', e.target.value)
     setSelected1(e.target?.value)
   }
   const handleSelect2 = (e: any) => {
+    console.log('wards:: ', e.target.value)
     setSelected2(e.target?.value)
   }
 
   const patSearch = async () => {
     await axios
       .post('/api/admission', {
-        DEPT_CD: departments,
-        WARD_CD: wards,
+        DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
+        WARD_CD: selected2 === '-' ? 'ALL' : selected2,
         PTNT_NM: ''
       })
       .then((response) => {
         console.log(response.data.data)
-        localStorage.setItem('patientList', JSON.stringify(response.data.data))
+        localStorage.setItem(
+          'patientList',
+          `{"admission":${JSON.stringify(response.data.data)}}`
+        )
         handleStateChange(response.data.data)
       })
       .catch((error) => {

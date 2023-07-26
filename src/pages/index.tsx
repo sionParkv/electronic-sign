@@ -15,7 +15,6 @@ interface TabPanelProps {
 
 const PatientListTabPanel = (props: TabPanelProps) => {
   const { children, index, value } = props
-
   return (
     <Container className="TabPanel" hidden={value != index}>
       {value === index && <Box className="Panel">{children}</Box>}
@@ -39,23 +38,24 @@ const HomePage = () => {
   const handleChange = (event: React.SyntheticEvent, newTab: number) => {
     setTab(newTab)
   }
-  let temp = getCookie('testCookie')
-  let temp2
-  let tempArray: any = []
-  if (hasCookie('testCookie')) {
-    temp2 = AES256.AES_decrypt(temp, 'Qsj23missdaxX2BjyskV6bs#adada6ds')
-    tempArray = JSON.parse(temp2)
+  let cookie = getCookie('loginCookie')
+  let tempCookie
+  let cookieArray: any = []
+  if (hasCookie('loginCookie')) {
+    tempCookie = AES256.AES_decrypt(cookie)
+    cookieArray = JSON.parse(tempCookie)
   }
 
   useEffect(() => {
-    if (!hasCookie('testCookie')) {
+    if (!hasCookie('loginCookie')) {
       router.push('/login')
+    } else {
+      cookieArray
+        ? setUserInfo(
+            `${cookieArray[0].EMPL_NM} ${cookieArray[0].DEPT_CD} ${cookieArray[0].EMPL_NO} 님`
+          )
+        : ''
     }
-    tempArray
-      ? setUserInfo(
-          `${tempArray[0].EMPL_NM} ${tempArray[0].DEPT_CD} ${tempArray[0].EMPL_NO} 님`
-        )
-      : ''
   }, [])
 
   const propsHeader = {
@@ -74,8 +74,18 @@ const HomePage = () => {
               handleStateChange={handleStateChange}
             />
           )}
-          {tab === 1 && <components.OutPatientSearch />}
-          {tab === 2 && <components.SurgerySearch />}
+          {tab === 1 && (
+            <components.OutPatientSearch
+              state={state}
+              handleStateChange={handleStateChange}
+            />
+          )}
+          {tab === 2 && (
+            <components.SurgerySearch
+              state={state}
+              handleStateChange={handleStateChange}
+            />
+          )}
           <Container className="TabContainer">
             <Box>
               <Tabs value={tab} onChange={handleChange}>
@@ -85,13 +95,13 @@ const HomePage = () => {
               </Tabs>
             </Box>
             <PatientListTabPanel value={tab} index={0}>
-              <components.PatientList />
+              <components.PatientList tabValue={tab} />
             </PatientListTabPanel>
             <PatientListTabPanel value={tab} index={1}>
-              <components.PatientList />
+              <components.PatientList tabValue={tab} />
             </PatientListTabPanel>
             <PatientListTabPanel value={tab} index={2}>
-              <components.PatientList />
+              <components.PatientList tabValue={tab} />
             </PatientListTabPanel>
           </Container>
         </Container>

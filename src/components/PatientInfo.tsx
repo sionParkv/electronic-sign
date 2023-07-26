@@ -10,8 +10,40 @@ import {
 import Image from 'next/image'
 
 import IMGS from '../assets/images'
+import { useEffect, useState } from 'react'
+
+interface Patient {
+  [key: string]: any
+  name: string
+  date: string
+  number: number
+  diagnosis: string
+  doctor: string
+}
 
 const PatientInfo = () => {
+  const [list, setList] = useState<Patient[]>([])
+  let patInfoList: any = ''
+
+  console.log('patientInfo::', list)
+
+  useEffect(() => {
+    if (localStorage.getItem('patientInfo') !== 'undefined') {
+      tempMethod()
+    }
+  }, [])
+
+  const tempMethod = () => {
+    if (
+      typeof window !== 'undefined' &&
+      localStorage.getItem('patientInfo') !== 'undifined'
+    ) {
+      patInfoList = JSON.parse(localStorage.getItem('patientInfo')!)
+      setList(patInfoList)
+      // patInfo = patInfoList as String)!
+    }
+  }
+
   return (
     <Container className="PatientInfo">
       <Box className="PatientTitle">
@@ -22,21 +54,21 @@ const PatientInfo = () => {
         <TableBody>
           <TableRow>
             <TableCell component="th">환자명</TableCell>
-            <TableCell>홍*동</TableCell>
+            <TableCell>{list.name}</TableCell>
             <TableCell component="th">진료일</TableCell>
-            <TableCell>20170102 / 16A / 1601</TableCell>
+            <TableCell>{list.date}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell component="th">등록번호</TableCell>
-            <TableCell>12345678</TableCell>
+            <TableCell>{list.number}</TableCell>
             <TableCell component="th">진단명</TableCell>
-            <TableCell>병적 골 NOS, 대퇴골</TableCell>
+            <TableCell>{list.diagnosis}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell component="th">입원/외래</TableCell>
             <TableCell>입원</TableCell>
             <TableCell component="th">진료의</TableCell>
-            <TableCell>홍*동</TableCell>
+            <TableCell>{list.doctor}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

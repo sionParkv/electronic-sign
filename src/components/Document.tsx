@@ -14,11 +14,22 @@ import React, { useEffect, useState } from 'react'
 import images from '@/assets/images'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { getCookie, hasCookie } from 'cookies-next'
+import { AES256 } from '@/utils/AES256'
 
 interface TabPanelProps {
   children: React.ReactNode
   index: number
   value: number
+}
+
+interface Patient {
+  [key: string]: any
+  name: string
+  date: string
+  number: number
+  diagnosis: string
+  doctor: string
 }
 
 const DocumentListTabPanel = (props: TabPanelProps) => {
@@ -38,8 +49,15 @@ const DocumentListContainer = (props: { children: React.ReactNode }) => {
 }
 
 const Document = () => {
+  let patInfoList: any = ''
   const [tabL, setTabL] = useState<number>(0)
   const [tabR, setTabR] = useState<number>(0)
+
+  const [pat, setPat] = useState<Patient[]>([])
+  const [tempList, setTempList] = useState([])
+  const [givenList, setGivenList] = useState([])
+  const [list, setList] = useState([])
+  const [favoritelist, setFavoriteList] = useState([])
   const router = useRouter()
 
   const handleChangeL = (event: React.SyntheticEvent, newTab: number) => {
@@ -49,21 +67,51 @@ const Document = () => {
   const handleChangeR = (event: React.SyntheticEvent, newTab: number) => {
     setTabR(newTab)
   }
+  let tempObject: any = []
+  if (hasCookie('loginCookie')) {
+    let temp = getCookie('loginCookie')
+    let temp2 = AES256.AES_decrypt(temp)
+    tempObject = JSON.parse(temp2)
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem('patientInfo') !== 'undefined') {
+      tempMethod()
+    }
+  }, [])
+
+  const tempMethod = () => {
+    if (
+      typeof window !== 'undefined' &&
+      localStorage.getItem('patientInfo') !== 'undifined'
+    ) {
+      patInfoList = JSON.parse(localStorage.getItem('patientInfo')!)
+      setPat(patInfoList)
+      // patInfo = patInfoList as String)!
+    }
+  }
+  console.log(tempList)
 
   const loadItems = async () => {
     await axios
-      .post('/api/tempList', {})
+      .post('/api/tempList', {
+        PTNT_NO: pat.number
+      })
       .then((response) => {
-        console.log(response?.data?.data)
+        setTempList(response.data.data)
+        console.log(response.data.data)
       })
       .catch((error) => {
         console.log(error)
       })
 
     await axios
-      .post('/api/givenList', {})
+      .post('/api/givenList', {
+        PTNT_NO: pat.number
+      })
       .then((response) => {
-        console.log(response?.data?.data)
+        setGivenList(response.data.data)
+        console.log(response.data.data)
       })
       .catch((error) => {
         console.log(error)
@@ -72,16 +120,18 @@ const Document = () => {
     await axios
       .get('/api/List')
       .then((response) => {
-        console.log(response?.data?.data)
+        setList(response?.data?.data)
       })
       .catch((error) => {
         console.log(error)
       })
 
     await axios
-      .post('/api/favoriteList', {})
+      .post('/api/favoriteList', {
+        EMPL_NO: tempObject[0].EMPL_NO
+      })
       .then((response) => {
-        console.log(response?.data?.data)
+        setFavoriteList(response?.data?.data)
       })
       .catch((error) => {
         console.log(error)
@@ -114,20 +164,34 @@ const Document = () => {
             <DocumentListTabPanel value={tabL} index={0}>
               <DocumentListContainer>
                 <List className="DocumentList">
-                  <ListItem>
-                    <T className="Title">표준 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
+                  {tempList ? (
+                    tempList.map((index: any, i) => (
+                      <ListItem key={i}>
+                        <T className="Title">{index.FORM_NM}</T>
+                      </ListItem>
+                    ))
+                  ) : (
+                    <ListItem>
+                      <T className="Title"> 임시저장 서식이 없습니다.</T>
+                    </ListItem>
+                  )}
                 </List>
               </DocumentListContainer>
             </DocumentListTabPanel>
             <DocumentListTabPanel value={tabL} index={1}>
               <DocumentListContainer>
                 <List className="DocumentList">
-                  <ListItem>
-                    <T className="Title">완료된 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
+                  {givenList ? (
+                    givenList.map((index: any, i) => (
+                      <ListItem key={i}>
+                        <T className="Title">{index.FORM_NM}</T>
+                      </ListItem>
+                    ))
+                  ) : (
+                    <ListItem>
+                      <T className="Title"> 작성완료 서식이 없습니다.</T>
+                    </ListItem>
+                  )}
                 </List>
               </DocumentListContainer>
             </DocumentListTabPanel>
@@ -148,20 +212,24 @@ const Document = () => {
             <DocumentListTabPanel value={tabR} index={0}>
               <DocumentListContainer>
                 <List className="DocumentList">
-                  <ListItem>
-                    <T className="Title">즐겨찾기 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
+                  {favoritelist &&
+                    favoritelist.map((index: any, i) => (
+                      <ListItem key={i}>
+                        <T className="Title">{index.FORM_NM}</T>
+                      </ListItem>
+                    ))}
                 </List>
               </DocumentListContainer>
             </DocumentListTabPanel>
             <DocumentListTabPanel value={tabR} index={1}>
               <DocumentListContainer>
                 <List className="DocumentList">
-                  <ListItem>
-                    <T className="Title">일반 공통 수술시술검사 동의서</T>
-                    <T className="Date">2023.06.14 12:56</T>
-                  </ListItem>
+                  {list &&
+                    list.map((index: any, i) => (
+                      <ListItem key={i}>
+                        <T className="Title">{index.FORM_NM}</T>
+                      </ListItem>
+                    ))}
                 </List>
               </DocumentListContainer>
             </DocumentListTabPanel>
