@@ -28,7 +28,7 @@ const Header = (props: { userInfo: string }) => {
   ]
 
   const logout = () => {
-    deleteCookie('testCookie')
+    deleteCookie('loginCookie')
     router.push('/login')
   }
 

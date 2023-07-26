@@ -57,14 +57,15 @@ const DB = {
   }
 }
 const KEYS = {
-  production: '/app/logs/relay/prod',
-  development: `${process.cwd()}/logs`,
-  test: `${process.cwd()}/logs`
+  production: 'eifl3738EIDD0927lsne7103KENK0817',
+  development: 'eifl3738EIDD0927lsne7103KENK0817',
+  test: 'eifl3738EIDD0927lsne7103KENK0817'
 }
 
 const cfgServer = {
   env: ENV,
   path: PATH[ENV],
-  db: DB[ENV]
+  db: DB[ENV],
+  key: KEYS[ENV]
 }
 export { cfgServer }

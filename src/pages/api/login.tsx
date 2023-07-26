@@ -35,12 +35,9 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
         })
       } else {
         logger.debug('[login] 로그인에 성공 하였습니다.')
-        let temp = AES256.AES_encrypt(
-          JSON.stringify(result),
-          'Qsj23missdaxX2BjyskV6bs#adada6ds'
-        )
+        let incoding = AES256.AES_encrypt(JSON.stringify(result))
         const expiryDate = new Date(Number(new Date()) + 315360000000)
-        setCookie('testCookie', temp, { req, res, expires: expiryDate })
+        setCookie('loginCookie', incoding, { req, res, expires: expiryDate })
         res.json({
           code: 'OK',
           message: '로그인되었습니다.',

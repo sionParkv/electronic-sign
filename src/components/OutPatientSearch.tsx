@@ -33,16 +33,22 @@ interface Doctor {
   DOC_CD: string
   DOC_NM: string
 }
+interface OutPatientSearchProps {
+  state: any
+  handleStateChange: (newList: any) => void
+}
 
 const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 
-const OutPatientSearch = () => {
+const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
+  state,
+  handleStateChange
+}) => {
   const [departments, setDepartments] = useState([])
   const [doctor, setDoctor] = useState([])
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
   let patNm = ''
-
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -52,10 +58,10 @@ const OutPatientSearch = () => {
       .catch((error) => {
         console.log(error)
       })
-    console.log(setDepartments)
+
     await axios
       .post('/api/doctorSearch', {
-        DEPT_CD: departments
+        DEPT_CD: selected1
       })
       .then((respose) => {
         setDoctor(respose?.data?.data || [])
@@ -69,13 +75,17 @@ const OutPatientSearch = () => {
   const patSearch = async () => {
     await axios
       .post('/api/outPatient', {
-        DEPT_CD: departments,
-        WARD_CD: doctor,
+        CLINIC_YMD: '20220603',
+        DEPT_CD: 'ALL',
+        DOCT_EMPL_NO: 'ALL',
         PTNT_NM: ''
       })
-      .then((resposne) => {
-        console.log(resposne.data.data)
-        localStorage.setItem('patientList', JSON.stringify(resposne.data.data))
+      .then((response) => {
+        localStorage.setItem(
+          'patientList',
+          `{"outPatient":${JSON.stringify(response.data.data)}}`
+        )
+        handleStateChange(response.data.data)
       })
       .catch((error) => {
         console.log(error)

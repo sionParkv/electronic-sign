@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow
 } from '@mui/material'
+import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
 interface Patient {
@@ -26,7 +27,11 @@ interface Patient {
   diagnosis: string
 }
 
-const PatientList = () => {
+interface PatientListProps {
+  tabValue: number
+}
+
+const PatientList = (props: PatientListProps) => {
   const colHeaders = [
     '환자명',
     '생년월일',
@@ -38,12 +43,15 @@ const PatientList = () => {
     '진료일',
     '진단명'
   ]
-  let patList: Array<Patient> = []
+  const router = useRouter()
+  // let patList: Array<Patient> = []
+  let patList: any = {}
   let patientList: any = ''
   const [list, setList] = useState<Patient[]>([])
   const state = useStateValue()
   const stateList: any[] = state?.list || []
-  console.log('stateList:: ', stateList)
+  const tabValue = props.tabValue
+
   useEffect(() => {
     if (localStorage.getItem('patientList') !== 'undefined') {
       tempMethod()
@@ -51,7 +59,7 @@ const PatientList = () => {
       let mapList: any[] = []
       if (stateList) {
         mapList = stateList?.map((pat) => {
-          const sexAge = pat.SEX_AGE.split('/')
+          const sexAge = pat.SEX_AGE.toString().split('/')
           return {
             name: pat.PTNT_NM,
             birth: pat.BIRTH_YMD,
@@ -69,35 +77,68 @@ const PatientList = () => {
     }
     //const loadedPat = localStorage.getItem('patinetList')
   }, [state])
+
   const tempMethod = () => {
     if (
       typeof window !== 'undefined' &&
       localStorage.getItem('patientList') !== 'undefined'
     ) {
       patientList = localStorage.getItem('patientList')
-      // Perform localStorage action
       patList = JSON.parse(patientList as string)!
-
-      // console.log(patList)
-    } else {
-      //정보없을때 처리
     }
+
     let mapList = []
-    mapList = patList?.map((pat) => {
-      const sexAge = pat.SEX_AGE.split('/')
-      return {
-        name: pat.PTNT_NM,
-        birth: pat.BIRTH_YMD,
-        age: sexAge[1],
-        sex: sexAge[0],
-        number: pat.RECEPT_NO,
-        doctor: pat.DOCT_EMPL_NM,
-        department: pat.DEPT_NM,
-        date: pat.ADM_YMD,
-        diagnosis: pat.DIAG_NM
-      }
-    })
+    if (tabValue === 0) {
+      mapList = patList?.admission?.map((pat: any) => {
+        const sexAge = pat.SEX_AGE.split('/')
+        return {
+          name: pat.PTNT_NM,
+          birth: pat.BIRTH_YMD,
+          age: sexAge[1],
+          sex: sexAge[0],
+          number: pat.RECEPT_NO,
+          doctor: pat.DOCT_EMPL_NM,
+          department: pat.DEPT_NM,
+          date: pat.ADM_YMD,
+          diagnosis: pat.DIAG_NM
+        }
+      })
+    } else if (tabValue === 1) {
+      mapList = patList?.outPatient?.map((pat: any) => {
+        const sexAge = pat.SEX_AGE.split('/')
+        return {
+          name: pat.PTNT_NM,
+          number: pat.RECEPT_NO,
+          birth: pat.BIRTH_YMD,
+          age: sexAge[1],
+          sex: sexAge[0],
+          doctor: pat.DOCT_EMPL_NM,
+          department: pat.DEPT_NM,
+          date: pat.CLINIC_YMD,
+          diagnosis: pat.DIAG_NM
+        }
+      })
+    } else if (tabValue === 2) {
+      mapList = patList?.surgery?.map((pat: any) => {
+        const sexAge = pat.SEX_AGE.split('/')
+        return {
+          name: pat.PTNT_NM,
+          number: pat.RECEPT_NO,
+          birth: pat.BIRTH_YMD,
+          age: sexAge[1],
+          sex: sexAge[0],
+          doctor: pat.DOCT_EMPL_NM,
+          department: pat.DEPT_NM,
+          date: pat.CLINIC_YMD,
+          diagnosis: pat.DIAG_NM
+        }
+      })
+    }
     setList(mapList)
+  }
+  const rowClick = (index: any) => () => {
+    localStorage.setItem('patientInfo', JSON.stringify(list[index]))
+    router.push('/patient')
   }
 
   const total = list?.length
@@ -127,8 +168,8 @@ const PatientList = () => {
                     const columns = Object.keys(patient)
                     return (
                       <TableRow key={p}>
-                        {columns.map((column, c) => (
-                          <TableCell key={c}>
+                        {columns.map((column, index) => (
+                          <TableCell key={index} onClick={rowClick(p)}>
                             {patient[column as string]}
                           </TableCell>
                         ))}

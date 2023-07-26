@@ -5,8 +5,8 @@ import { MsSql } from '@/db/MsSql'
 
 const outPatinet = (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[outPatinet] 외래 환자 목록 조회 리퀘스트 %o', req.body)
-  const { clinic_ymd, dept_cd, doct_empl_no, ptnt_nm } = req.body
-  let query = `UP_S1MOBILE_OPD_LIST_R '${clinic_ymd}', '${dept_cd}', '${doct_empl_no}', '${ptnt_nm}'`
+  const { CLINIC_YMD, DEPT_CD, DOCT_EMPL_NO, PTNT_NM } = req.body
+  let query = `UP_S1MOBILE_OPD_LIST_R '${CLINIC_YMD}', '${DEPT_CD}', '${DOCT_EMPL_NO}', '${PTNT_NM}'`
 
   MsSql.executeQuery(query)
     .then((result: any) => {
