@@ -5,6 +5,7 @@ import { getCookie, hasCookie } from 'cookies-next'
 import components from '@/components'
 import { AES256 } from '@/utils/AES256'
 import { useRouter } from 'next/router'
+import { useStateValue, useDispatch } from '@/context/stateContext'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -24,11 +25,17 @@ const PatientListTabPanel = (props: TabPanelProps) => {
 
 const HomePage = () => {
   const router = useRouter()
-
+  const state = useStateValue()
+  const dispatch = useDispatch()
   const [tab, setTab] = useState<number>(0)
   const [userInfo, setUserInfo] = useState<string>('')
   const className = 'Pages HomePage'
 
+  const handleStateChange = (newList: any) => {
+    if (dispatch) {
+      dispatch({ type: 'PATIENT_LIST', list: newList })
+    }
+  }
   const handleChange = (event: React.SyntheticEvent, newTab: number) => {
     setTab(newTab)
   }
@@ -38,7 +45,6 @@ const HomePage = () => {
   if (hasCookie('testCookie')) {
     temp2 = AES256.AES_decrypt(temp, 'Qsj23missdaxX2BjyskV6bs#adada6ds')
     tempArray = JSON.parse(temp2)
-    console.log(tempArray)
   }
 
   useEffect(() => {
@@ -62,7 +68,12 @@ const HomePage = () => {
       <components.Header {...propsHeader} />
       <Container className="PageWrapper">
         <Container className="Contents">
-          {tab === 0 && <components.AdmissionSearch />}
+          {tab === 0 && (
+            <components.AdmissionSearch
+              state={state}
+              handleStateChange={handleStateChange}
+            />
+          )}
           {tab === 1 && <components.OutPatientSearch />}
           {tab === 2 && <components.SurgerySearch />}
           <Container className="TabContainer">

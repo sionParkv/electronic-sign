@@ -34,15 +34,23 @@ interface Hospital {
   SMPL_NM: string
 }
 
+interface AdmissionSearchProps {
+  state: any
+  handleStateChange: (newList: any) => void
+}
+
 const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
 
-const AdmissionSearch = () => {
+const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
+  state,
+  handleStateChange
+}) => {
   const [departments, setDepartments] = useState([])
   const [wards, setWards] = useState([])
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
   let patNm = ''
-
+  console.log(state)
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -77,9 +85,10 @@ const AdmissionSearch = () => {
         WARD_CD: wards,
         PTNT_NM: ''
       })
-      .then((resposne) => {
-        console.log(resposne.data.data)
-        localStorage.setItem('patientList', JSON.stringify(resposne.data.data))
+      .then((response) => {
+        console.log(response.data.data)
+        localStorage.setItem('patientList', JSON.stringify(response.data.data))
+        handleStateChange(response.data.data)
       })
       .catch((error) => {
         console.log(error)
