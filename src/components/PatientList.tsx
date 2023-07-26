@@ -1,3 +1,4 @@
+import { useStateValue } from '@/context/stateContext'
 import {
   Box,
   Container,
@@ -40,12 +41,34 @@ const PatientList = () => {
   let patList: Array<Patient> = []
   let patientList: any = ''
   const [list, setList] = useState<Patient[]>([])
-
+  const state = useStateValue()
+  const stateList: any[] = state?.list || []
+  console.log('stateList:: ', stateList)
   useEffect(() => {
-    tempMethod()
-    console.log(list, '2222')
+    if (localStorage.getItem('patientList') !== 'undefined') {
+      tempMethod()
+    } else {
+      let mapList: any[] = []
+      if (stateList) {
+        mapList = stateList?.map((pat) => {
+          const sexAge = pat.SEX_AGE.split('/')
+          return {
+            name: pat.PTNT_NM,
+            birth: pat.BIRTH_YMD,
+            age: sexAge[1],
+            sex: sexAge[0],
+            number: pat.RECEPT_NO,
+            doctor: pat.DOCT_EMPL_NM,
+            department: pat.DEPT_NM,
+            date: pat.ADM_YMD,
+            diagnosis: pat.DIAG_NM
+          }
+        })
+      }
+      setList(mapList)
+    }
     //const loadedPat = localStorage.getItem('patinetList')
-  }, [])
+  }, [state])
   const tempMethod = () => {
     if (
       typeof window !== 'undefined' &&
@@ -59,8 +82,8 @@ const PatientList = () => {
     } else {
       //정보없을때 처리
     }
-    let temp = []
-    temp = patList?.map((pat) => {
+    let mapList = []
+    mapList = patList?.map((pat) => {
       const sexAge = pat.SEX_AGE.split('/')
       return {
         name: pat.PTNT_NM,
@@ -74,11 +97,10 @@ const PatientList = () => {
         diagnosis: pat.DIAG_NM
       }
     })
-    setList(temp)
+    setList(mapList)
   }
-  console.log(list, '44444')
 
-  const total = list.length
+  const total = list?.length
 
   return (
     <Container className="PatientListContainer">
@@ -100,7 +122,7 @@ const PatientList = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {list &&
+                {list ? (
                   list.map((patient, p) => {
                     const columns = Object.keys(patient)
                     return (
@@ -112,7 +134,15 @@ const PatientList = () => {
                         ))}
                       </TableRow>
                     )
-                  })}
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={9}>
+                      조회된 데이터가 없습니다. 검색값 선택 후 조회버튼을
+                      눌러주세요.
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </TableContainer>
