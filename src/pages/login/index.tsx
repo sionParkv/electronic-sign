@@ -115,7 +115,22 @@ const LoginPage = () => {
       })
       .then((response) => {
         console.log('response.data:: ', response.data)
-        router.push('/')
+        if (response.data.code === 'OK') {
+          router.push('/')
+        } else {
+          components.openConfirmDialog({
+            contents: response.data.message,
+            ok: {
+              label: '닫기',
+              action: () => {
+                setTimeout(() => {
+                  document.getElementsByTagName('input')[3].focus()
+                }, 50)
+              }
+            },
+            title: '입력 오류'
+          })
+        }
       })
       .catch((error) => {
         alert(error.message)

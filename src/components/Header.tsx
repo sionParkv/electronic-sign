@@ -50,7 +50,7 @@ const Header = (props: { userInfo: string }) => {
         <Button className="Logo">
           <Image src={IMGS.Logo} alt="Logo" />
         </Button>
-        <T>{userInfo} 님</T>
+        <T>{userInfo}</T>
         <Button className="Logout" onClick={logout}>
           로그아웃
         </Button>

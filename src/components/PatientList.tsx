@@ -10,7 +10,7 @@ import {
   TableHead,
   TableRow
 } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface Patient {
   [key: string]: string
@@ -37,100 +37,48 @@ const PatientList = () => {
     '진료일',
     '진단명'
   ]
-  let list: Array<Patient> = []
   let patList: Array<Patient> = []
-  if (typeof window !== 'undefined') {
-    // Perform localStorage action
-    const patientList = localStorage.getItem('patientList')
-    patList = JSON.parse(patientList as string)!
-    // console.log(patList)
-  }
+  let patientList: any = ''
+  const [list, setList] = useState<Patient[]>([])
 
-  list = patList?.map((pat) => {
-    const sexAge = pat.SEX_AGE.split('/')
-    return {
-      name: pat.PTNT_NM,
-      birth: pat.BIRTH_YMD,
-      age: sexAge[1],
-      sex: sexAge[0],
-      number: pat.RECEPT_NO,
-      doctor: pat.DOCT_EMPL_NM,
-      department: pat.DEPT_NM,
-      date: pat.ADM_YMD,
-      diagnosis: pat.DIAG_NM
+  useEffect(() => {
+    tempMethod()
+    console.log(list, '2222')
+    //const loadedPat = localStorage.getItem('patinetList')
+  }, [])
+  const tempMethod = () => {
+    if (
+      typeof window !== 'undefined' &&
+      localStorage.getItem('patientList') !== 'undefined'
+    ) {
+      patientList = localStorage.getItem('patientList')
+      // Perform localStorage action
+      patList = JSON.parse(patientList as string)!
+
+      // console.log(patList)
+    } else {
+      //정보없을때 처리
     }
-  })
-  console.log(list)
-  //const loadedPat = localStorage.getItem('patinetList')
-  const patients: Array<Patient> = [
-    {
-      name: '홍길동',
-      birth: '19950505',
-      age: '28',
-      sex: 'F',
-      number: '12345678',
-      doctor: '홍의사',
-      department: '마취통증의학과',
-      date: '20230712/16A/1601',
-      diagnosis: '병적 골, NOS, 대퇴골'
-    },
-    {
-      name: '홍길동',
-      birth: '19950505',
-      age: '28',
-      sex: 'F',
-      number: '12345678',
-      doctor: '홍의사',
-      department: '마취통증의학과',
-      date: '20230712/16A/1601',
-      diagnosis: '병적 골, NOS, 대퇴골'
-    },
-    {
-      name: '홍길동',
-      birth: '19950505',
-      age: '28',
-      sex: 'F',
-      number: '12345678',
-      doctor: '홍의사',
-      department: '마취통증의학과',
-      date: '20230712/16A/1601',
-      diagnosis: '병적 골, NOS, 대퇴골'
-    },
-    {
-      name: '정미소',
-      birth: '20000405',
-      age: '23',
-      sex: 'M',
-      number: '18771678',
-      doctor: '권의사',
-      department: '성형외과',
-      date: '20230228/16A/1601',
-      diagnosis: '안면함몰, NOS, 대퇴골'
-    },
-    {
-      name: '김연자',
-      birth: '19750505',
-      age: '47',
-      sex: 'F',
-      number: '12092778',
-      doctor: '박의사',
-      department: '정형외과',
-      date: '20230301/16A/1601',
-      diagnosis: '사지분리, NOS, 대퇴골'
-    },
-    {
-      name: '전강쇠',
-      birth: '19880505',
-      age: '37',
-      sex: 'M',
-      number: '12296878',
-      doctor: '정의사',
-      department: '정신의학과',
-      date: '20230712/16A/1601',
-      diagnosis: '정신병, NOS, 대퇴골'
-    }
-  ]
-  const total = patients.length
+    let temp = []
+    temp = patList?.map((pat) => {
+      const sexAge = pat.SEX_AGE.split('/')
+      return {
+        name: pat.PTNT_NM,
+        birth: pat.BIRTH_YMD,
+        age: sexAge[1],
+        sex: sexAge[0],
+        number: pat.RECEPT_NO,
+        doctor: pat.DOCT_EMPL_NM,
+        department: pat.DEPT_NM,
+        date: pat.ADM_YMD,
+        diagnosis: pat.DIAG_NM
+      }
+    })
+    setList(temp)
+  }
+  console.log(list, '44444')
+
+  const total = list.length
 
   return (
     <Container className="PatientListContainer">
