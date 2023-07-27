@@ -1,9 +1,6 @@
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { koKR } from '@mui/x-date-pickers/locales'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import {
   Box,
   Button,
@@ -16,7 +13,6 @@ import {
   Select,
   TextField
 } from '@mui/material'
-import dayjs from 'dayjs'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import 'dayjs/locale/ko'
@@ -35,12 +31,29 @@ interface Doctor {
 }
 interface OutPatientSearchProps {
   state: any
-  //TODO Search컴포넌트3개에 handleStateChange 인자가 필요한데 인자를 담아도 never used가 뜹니다ㅜ
   // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: any) => void
 }
 
-const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
+const DatePicker = (props: {
+  defaultValue: string
+  onChange: React.ChangeEventHandler
+}) => {
+  return (
+    <div className="DatePicker">
+      <input
+        defaultValue={props.defaultValue}
+        onChange={props.onChange}
+        onKeyDown={(event) => {
+          event.preventDefault()
+        }}
+        pattern="\d{4}-\d{2}-\d{2}"
+        type="date"
+      />
+      <CalendarMonthIcon />
+    </div>
+  )
+}
 
 const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   state,
@@ -51,7 +64,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
   const [selectedDate, setSelectedDate] = useState(
-    dayjs(moment().format('YYYY-MM-DD'))
+    moment().format('YYYY-MM-DD')
   )
   const [patNm, setPatNm] = useState('')
 
@@ -134,10 +147,9 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     setSelected2('-')
   }
 
-  const handleDatePicker = (date: any) => {
-    setSelectedDate(date)
+  const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(event.target.value)
   }
-
   const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatNm(event.target.value)
   }
@@ -171,18 +183,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
             })}
           </Select>
           <InputLabel disabled={true}>진료일 조회</InputLabel>
-          <LocalizationProvider
-            adapterLocale="ko"
-            dateAdapter={AdapterDayjs}
-            localeText={koLocale}
-          >
-            <DatePicker
-              className="DatePicker"
-              format="YYYY-MM-DD"
-              value={selectedDate}
-              onChange={handleDatePicker}
-            />
-          </LocalizationProvider>
+          <DatePicker defaultValue={selectedDate} onChange={handleDatePicker} />
         </Box>
         <Box className="Field2">
           <RadioGroup className="RadioGroup" defaultValue="pat">
