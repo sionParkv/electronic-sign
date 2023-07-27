@@ -36,6 +36,7 @@ const HomePage = () => {
     }
   }
   const handleChange = (event: React.SyntheticEvent, newTab: number) => {
+    localStorage.setItem('newTab', newTab.toString())
     setTab(newTab)
   }
   let cookie = getCookie('loginCookie')
@@ -55,6 +56,8 @@ const HomePage = () => {
             `${cookieArray[0].EMPL_NM} ${cookieArray[0].DEPT_CD} ${cookieArray[0].EMPL_NO} 님`
           )
         : ''
+      const getItem = parseInt(localStorage.getItem('newTab')!)
+      setTab(getItem ? getItem : 0)
     }
   }, [])
 

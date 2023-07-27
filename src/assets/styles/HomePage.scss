@@ -54,7 +54,7 @@
         .DatePicker {
           input {
             box-sizing: border-box;
-            width: 90px;
+            width: 95px;
             height: 26px;
             padding: 5px 6px;
             color: black;
@@ -66,7 +66,7 @@
 
       .Field2 {
         padding-right: 20px;
-        padding-left: 20px;
+        padding-left: 5px;
 
         .RadioGroup {
           flex-direction: row;
@@ -93,12 +93,31 @@
           }
         }
 
+        .DatePicker {
+          input {
+            box-sizing: border-box;
+            width: 95px;
+            height: 26px;
+            padding: 5px 6px;
+            color: black;
+            vertical-align: middle;
+            @include font(500, 14px, 1.2);
+          }
+        }
+
+        label {
+          padding: 6px 8px;
+          color: #2e5bdb;
+          // vertical-align: middle;
+          @include font(700, 12px, 1.2);
+        }
+
         .Keyword {
+          padding-left: 10px;
           input {
             box-sizing: border-box;
             width: 120px;
             height: 26px;
-            padding: 5px 6px;
             padding: 5px 6px;
             outline: none;
             color: black;

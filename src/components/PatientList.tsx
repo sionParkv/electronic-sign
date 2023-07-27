@@ -81,7 +81,8 @@ const PatientList = (props: PatientListProps) => {
   const tempMethod = () => {
     if (
       typeof window !== 'undefined' &&
-      localStorage.getItem('patientList') !== 'undefined'
+      localStorage.getItem('patientList') !== 'undefined' &&
+      localStorage.getItem('patientList')!.length > 0
     ) {
       patientList = localStorage.getItem('patientList')
       patList = JSON.parse(patientList as string)!
@@ -141,7 +142,6 @@ const PatientList = (props: PatientListProps) => {
   }
 
   const total = list?.length
-
   return (
     <Container className="PatientListContainer">
       <Box>
@@ -162,7 +162,7 @@ const PatientList = (props: PatientListProps) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {list ? (
+                {list?.length > 0 ? (
                   list.map((patient, p) => {
                     const columns = Object.keys(patient)
                     return (

@@ -35,6 +35,8 @@ interface Doctor {
 }
 interface OutPatientSearchProps {
   state: any
+  //TODO Search컴포넌트3개에 handleStateChange 인자가 필요한데 인자를 담아도 never used가 뜹니다ㅜ
+  // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: any) => void
 }
 
@@ -48,6 +50,9 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const [doctor, setDoctor] = useState([])
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs(moment().format('YYYY-MM-DD'))
+  )
   const [patNm, setPatNm] = useState('')
 
   const loadItems = async () => {
@@ -79,7 +84,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         CLINIC_YMD: '20220603',
         DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
         DOCT_EMPL_NO: selected2 === '-' ? 'ALL' : selected2,
-        PTNT_NM: ''
+        PTNT_NM: patNm
       })
       .then((response) => {
         if (response.data.data) {
@@ -89,6 +94,12 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           )
           handleStateChange(response.data.data)
           return
+        } else {
+          localStorage.setItem(
+            'patientList',
+            `{"outPatient":${JSON.stringify([])}}`
+          )
+          handleStateChange([])
         }
       })
       .catch((error) => {
@@ -98,7 +109,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
 
   useEffect(() => {
     loadItems()
-  }, [])
+  }, [state])
 
   const handleSelect1 = (e: any) => {
     setSelected1(e.target?.value)
@@ -116,6 +127,15 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   }
   const handleSelect2 = (e: any) => {
     setSelected2(e.target?.value)
+  }
+
+  const handleReset = () => {
+    setSelected1('-')
+    setSelected2('-')
+  }
+
+  const handleDatePicker = (date: any) => {
+    setSelectedDate(date)
   }
 
   const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,8 +178,9 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           >
             <DatePicker
               className="DatePicker"
-              defaultValue={dayjs(moment().format('YYYY-MM-DD'))}
               format="YYYY-MM-DD"
+              value={selectedDate}
+              onChange={handleDatePicker}
             />
           </LocalizationProvider>
         </Box>
@@ -187,7 +208,11 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         </Box>
       </Box>
       <Box className="Buttons">
-        <Button variant="outlined" startIcon={<RestartAltIcon />}>
+        <Button
+          variant="outlined"
+          startIcon={<RestartAltIcon />}
+          onClick={handleReset}
+        >
           초기화
         </Button>
         <Button

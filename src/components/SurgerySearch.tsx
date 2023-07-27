@@ -39,6 +39,8 @@ interface Anesthesia {
 
 interface SurgerySearchProps {
   state: any
+  //TODO Search컴포넌트3개에 handleStateChange 인자가 필요한데 인자를 담아도 never used가 뜹니다ㅜ
+  // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: any) => void
 }
 
@@ -51,6 +53,10 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const [departments, setDepartments] = useState([])
   const [surgery, setSurgery] = useState([])
   const [anesth, setAnesth] = useState([])
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs(moment().format('YYYY-MM-DD'))
+  )
+
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
   const [selected3, setSelected3] = useState('-')
@@ -78,7 +84,6 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
     await axios
       .get('/api/anesthSearch')
       .then((respose) => {
-        console.log(respose.data.data)
         setAnesth(respose?.data?.data || [])
       })
       .catch((error) => {
@@ -95,17 +100,15 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const handleSelect3 = (e: any) => {
     setSelected3(e.target?.value)
   }
-  console.log('selected::1 ', selected1)
-  console.log('selected:: 2', selected2)
-  console.log('selected:: 3', selected3)
   const patSearch = async () => {
     await axios
       .post('/api/surgery', {
         OP_YMD: '20221011',
+        // OP_YMD: selectedDate,
         OP_DEPT_CD: selected1 === '-' ? '' : selected1,
         AN_TYPE_GB: selected2 === '-' ? '' : selected2,
         OP_GB: selected3 === '-' ? '' : selected3,
-        PTNT_NM: ''
+        PTNT_NM: patNm
       })
       .then((response) => {
         if (response.data.data) {
@@ -115,6 +118,12 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
           )
           handleStateChange(response.data.data)
           return
+        } else {
+          localStorage.setItem(
+            'patientList',
+            `{"surgery":${JSON.stringify([])}}`
+          )
+          handleStateChange([])
         }
       })
       .catch((error) => {
@@ -124,9 +133,19 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatNm(event.target.value)
   }
+
+  const handleDatePicker = (date: any) => {
+    setSelectedDate(date)
+  }
+  const handleReset = () => {
+    setSelected1('-')
+    setSelected2('-')
+    setSelected3('-')
+  }
+
   useEffect(() => {
     loadItems()
-  }, [])
+  }, [state])
 
   return (
     <Container className="SearchBar">
@@ -165,6 +184,8 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
               </MenuItem>
             ))}
           </Select>
+        </Box>
+        <Box className="Field2">
           <InputLabel disabled={true}>진료일 조회</InputLabel>
           <LocalizationProvider
             adapterLocale="ko"
@@ -173,12 +194,11 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
           >
             <DatePicker
               className="DatePicker"
-              defaultValue={dayjs(moment().format('YYYY-MM-DD'))}
+              value={selectedDate}
               format="YYYY-MM-DD"
+              onChange={handleDatePicker}
             />
           </LocalizationProvider>
-        </Box>
-        <Box className="Field2">
           <TextField
             className="Keyword"
             placeholder="환자명"
@@ -189,7 +209,11 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
         </Box>
       </Box>
       <Box className="Buttons">
-        <Button variant="outlined" startIcon={<RestartAltIcon />}>
+        <Button
+          variant="outlined"
+          startIcon={<RestartAltIcon />}
+          onClick={handleReset}
+        >
           초기화
         </Button>
         <Button

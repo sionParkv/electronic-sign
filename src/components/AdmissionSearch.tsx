@@ -36,6 +36,8 @@ interface Hospital {
 
 interface AdmissionSearchProps {
   state: any
+  //TODO Search컴포넌트3개에 handleStateChange 인자가 필요한데 인자를 담아도 never used가 뜹니다ㅜ
+  // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: any) => void
 }
 
@@ -51,7 +53,6 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const [selected2, setSelected2] = useState('-')
   const [patNm, setPatNm] = useState('')
 
-  console.log(state)
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -86,7 +87,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
       .post('/api/admission', {
         DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
         WARD_CD: selected2 === '-' ? 'ALL' : selected2,
-        PTNT_NM: ''
+        PTNT_NM: patNm
       })
       .then((response) => {
         if (response.data.data) {
@@ -95,7 +96,12 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
             `{"admission":${JSON.stringify(response.data.data)}}`
           )
           handleStateChange(response.data.data)
-          return
+        } else {
+          localStorage.setItem(
+            'patientList',
+            `{"admission":${JSON.stringify([])}}`
+          )
+          handleStateChange([])
         }
       })
       .catch((error) => {
@@ -106,9 +112,14 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
     setPatNm(event.target.value)
   }
 
+  const handleReset = () => {
+    setSelected1('-')
+    setSelected2('-')
+  }
+
   useEffect(() => {
     loadItems()
-  }, [])
+  }, [state])
 
   return (
     <Container className="SearchBar">
@@ -164,7 +175,11 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         </Box>
       </Box>
       <Box className="Buttons">
-        <Button variant="outlined" startIcon={<RestartAltIcon />}>
+        <Button
+          variant="outlined"
+          startIcon={<RestartAltIcon />}
+          onClick={handleReset}
+        >
           초기화
         </Button>
         <Button
