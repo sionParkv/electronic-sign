@@ -81,7 +81,8 @@ const PatientList = (props: PatientListProps) => {
   const tempMethod = () => {
     if (
       typeof window !== 'undefined' &&
-      localStorage.getItem('patientList') !== 'undefined'
+      localStorage.getItem('patientList') !== 'undefined' &&
+      localStorage.getItem('patientList')!.length > 0
     ) {
       patientList = localStorage.getItem('patientList')
       patList = JSON.parse(patientList as string)!
@@ -90,7 +91,7 @@ const PatientList = (props: PatientListProps) => {
     let mapList = []
     if (tabValue === 0) {
       mapList = patList?.admission?.map((pat: any) => {
-        const sexAge = pat.SEX_AGE.split('/')
+        const sexAge = pat?.SEX_AGE.split('/')
         return {
           name: pat.PTNT_NM,
           birth: pat.BIRTH_YMD,
@@ -105,7 +106,7 @@ const PatientList = (props: PatientListProps) => {
       })
     } else if (tabValue === 1) {
       mapList = patList?.outPatient?.map((pat: any) => {
-        const sexAge = pat.SEX_AGE.split('/')
+        const sexAge = pat?.SEX_AGE.split('/')
         return {
           name: pat.PTNT_NM,
           number: pat.RECEPT_NO,
@@ -120,16 +121,15 @@ const PatientList = (props: PatientListProps) => {
       })
     } else if (tabValue === 2) {
       mapList = patList?.surgery?.map((pat: any) => {
-        const sexAge = pat.SEX_AGE.split('/')
         return {
           name: pat.PTNT_NM,
+          birth: pat.BIRTHDAY_YMD,
+          age: pat.AGE,
+          sex: pat.SEX,
           number: pat.RECEPT_NO,
-          birth: pat.BIRTH_YMD,
-          age: sexAge[1],
-          sex: sexAge[0],
-          doctor: pat.DOCT_EMPL_NM,
-          department: pat.DEPT_NM,
-          date: pat.CLINIC_YMD,
+          doctor: pat.OP_DOCT_NM,
+          department: pat.OP_DEPT_NM,
+          date: pat.OP_YMD,
           diagnosis: pat.DIAG_NM
         }
       })
@@ -142,7 +142,6 @@ const PatientList = (props: PatientListProps) => {
   }
 
   const total = list?.length
-
   return (
     <Container className="PatientListContainer">
       <Box>
@@ -163,7 +162,7 @@ const PatientList = (props: PatientListProps) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {list ? (
+                {list?.length > 0 ? (
                   list.map((patient, p) => {
                     const columns = Object.keys(patient)
                     return (

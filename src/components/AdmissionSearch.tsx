@@ -36,6 +36,8 @@ interface Hospital {
 
 interface AdmissionSearchProps {
   state: any
+  //TODO Search컴포넌트3개에 handleStateChange 인자가 필요한데 인자를 담아도 never used가 뜹니다ㅜ
+  // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: any) => void
 }
 
@@ -49,8 +51,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const [wards, setWards] = useState([])
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
-  let patNm = ''
-  console.log(state)
+  const [patNm, setPatNm] = useState('')
+
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -85,24 +87,39 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
       .post('/api/admission', {
         DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
         WARD_CD: selected2 === '-' ? 'ALL' : selected2,
-        PTNT_NM: ''
+        PTNT_NM: patNm
       })
       .then((response) => {
-        console.log(response.data.data)
-        localStorage.setItem(
-          'patientList',
-          `{"admission":${JSON.stringify(response.data.data)}}`
-        )
-        handleStateChange(response.data.data)
+        if (response.data.data) {
+          localStorage.setItem(
+            'patientList',
+            `{"admission":${JSON.stringify(response.data.data)}}`
+          )
+          handleStateChange(response.data.data)
+        } else {
+          localStorage.setItem(
+            'patientList',
+            `{"admission":${JSON.stringify([])}}`
+          )
+          handleStateChange([])
+        }
       })
       .catch((error) => {
         console.log(error)
       })
   }
+  const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPatNm(event.target.value)
+  }
+
+  const handleReset = () => {
+    setSelected1('-')
+    setSelected2('-')
+  }
 
   useEffect(() => {
     loadItems()
-  }, [])
+  }, [state])
 
   return (
     <Container className="SearchBar">
@@ -152,12 +169,17 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
           <TextField
             className="Keyword"
             variant="outlined"
-            defaultValue={patNm}
+            value={patNm}
+            onChange={handlePatNmChange}
           />
         </Box>
       </Box>
       <Box className="Buttons">
-        <Button variant="outlined" startIcon={<RestartAltIcon />}>
+        <Button
+          variant="outlined"
+          startIcon={<RestartAltIcon />}
+          onClick={handleReset}
+        >
           초기화
         </Button>
         <Button

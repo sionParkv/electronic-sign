@@ -35,6 +35,8 @@ interface Doctor {
 }
 interface OutPatientSearchProps {
   state: any
+  //TODO Search컴포넌트3개에 handleStateChange 인자가 필요한데 인자를 담아도 never used가 뜹니다ㅜ
+  // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: any) => void
 }
 
@@ -48,7 +50,11 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const [doctor, setDoctor] = useState([])
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
-  let patNm = ''
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs(moment().format('YYYY-MM-DD'))
+  )
+  const [patNm, setPatNm] = useState('')
+
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -76,16 +82,25 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     await axios
       .post('/api/outPatient', {
         CLINIC_YMD: '20220603',
-        DEPT_CD: 'ALL',
-        DOCT_EMPL_NO: 'ALL',
-        PTNT_NM: ''
+        DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
+        DOCT_EMPL_NO: selected2 === '-' ? 'ALL' : selected2,
+        PTNT_NM: patNm
       })
       .then((response) => {
-        localStorage.setItem(
-          'patientList',
-          `{"outPatient":${JSON.stringify(response.data.data)}}`
-        )
-        handleStateChange(response.data.data)
+        if (response.data.data) {
+          localStorage.setItem(
+            'patientList',
+            `{"outPatient":${JSON.stringify(response.data.data)}}`
+          )
+          handleStateChange(response.data.data)
+          return
+        } else {
+          localStorage.setItem(
+            'patientList',
+            `{"outPatient":${JSON.stringify([])}}`
+          )
+          handleStateChange([])
+        }
       })
       .catch((error) => {
         console.log(error)
@@ -94,15 +109,38 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
 
   useEffect(() => {
     loadItems()
-  }, [])
+  }, [state])
 
   const handleSelect1 = (e: any) => {
     setSelected1(e.target?.value)
+    axios
+      .post('/api/doctorSearch', {
+        DEPT_CD: e.target?.value
+      })
+      .then((respose) => {
+        setDoctor(respose?.data?.data || [])
+        console.log(respose?.data?.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
   const handleSelect2 = (e: any) => {
     setSelected2(e.target?.value)
   }
 
+  const handleReset = () => {
+    setSelected1('-')
+    setSelected2('-')
+  }
+
+  const handleDatePicker = (date: any) => {
+    setSelectedDate(date)
+  }
+
+  const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPatNm(event.target.value)
+  }
   return (
     <Container className="SearchBar">
       <Box className="Fields">
@@ -123,11 +161,14 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
             <MenuItem disabled value="-">
               <em>진료의 선택</em>
             </MenuItem>
-            {doctor.map((doctor: Doctor, d) => (
-              <MenuItem key={d} value={doctor.DOC_CD}>
-                {doctor.DOC_NM}
-              </MenuItem>
-            ))}
+            {doctor.map((doctor: Doctor, d) => {
+              console.log(doctor)
+              return (
+                <MenuItem key={d} value={doctor.DOCT_EMPL_NO}>
+                  {doctor.DOCT_EMPL_NM}
+                </MenuItem>
+              )
+            })}
           </Select>
           <InputLabel disabled={true}>진료일 조회</InputLabel>
           <LocalizationProvider
@@ -137,8 +178,9 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           >
             <DatePicker
               className="DatePicker"
-              defaultValue={dayjs(moment().format('YYYY-MM-DD'))}
               format="YYYY-MM-DD"
+              value={selectedDate}
+              onChange={handleDatePicker}
             />
           </LocalizationProvider>
         </Box>
@@ -160,12 +202,17 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           <TextField
             className="Keyword"
             variant="outlined"
-            defaultValue={patNm}
+            value={patNm}
+            onChange={handlePatNmChange}
           />
         </Box>
       </Box>
       <Box className="Buttons">
-        <Button variant="outlined" startIcon={<RestartAltIcon />}>
+        <Button
+          variant="outlined"
+          startIcon={<RestartAltIcon />}
+          onClick={handleReset}
+        >
           초기화
         </Button>
         <Button

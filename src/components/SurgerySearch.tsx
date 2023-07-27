@@ -10,7 +10,8 @@ import {
   Container,
   InputLabel,
   MenuItem,
-  Select
+  Select,
+  TextField
 } from '@mui/material'
 import dayjs from 'dayjs'
 import moment from 'moment'
@@ -38,6 +39,8 @@ interface Anesthesia {
 
 interface SurgerySearchProps {
   state: any
+  //TODO Search컴포넌트3개에 handleStateChange 인자가 필요한데 인자를 담아도 never used가 뜹니다ㅜ
+  // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: any) => void
 }
 
@@ -50,10 +53,14 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const [departments, setDepartments] = useState([])
   const [surgery, setSurgery] = useState([])
   const [anesth, setAnesth] = useState([])
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs(moment().format('YYYY-MM-DD'))
+  )
+
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
   const [selected3, setSelected3] = useState('-')
-  let patNm = ''
+  const [patNm, setPatNm] = useState('')
 
   const loadItems = async () => {
     await axios
@@ -68,7 +75,6 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
     await axios
       .get('/api/surgerySearch')
       .then((respose) => {
-        console.log(respose.data.data)
         setSurgery(respose?.data?.data || [])
       })
       .catch((error) => {
@@ -94,34 +100,52 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const handleSelect3 = (e: any) => {
     setSelected3(e.target?.value)
   }
-  console.log('selected::1 ', selected1)
-  console.log('selected:: 2', selected2)
-  console.log('selected:: 3', selected3)
   const patSearch = async () => {
     await axios
       .post('/api/surgery', {
         OP_YMD: '20221011',
-        OP_DEPT_CD: selected1,
-        AN_TYPE_GB: selected2,
-        OP_GB: selected3,
-        PTNT_NM: ''
+        // OP_YMD: selectedDate,
+        OP_DEPT_CD: selected1 === '-' ? '' : selected1,
+        AN_TYPE_GB: selected2 === '-' ? '' : selected2,
+        OP_GB: selected3 === '-' ? '' : selected3,
+        PTNT_NM: patNm
       })
       .then((response) => {
-        console.log('response:: ', response.data.data)
-        localStorage.setItem(
-          'patientList',
-          `{"surgery":${JSON.stringify(response.data.data)}}`
-        )
-        handleStateChange(response.data.data)
+        if (response.data.data) {
+          localStorage.setItem(
+            'patientList',
+            `{"surgery":${JSON.stringify(response.data.data)}}`
+          )
+          handleStateChange(response.data.data)
+          return
+        } else {
+          localStorage.setItem(
+            'patientList',
+            `{"surgery":${JSON.stringify([])}}`
+          )
+          handleStateChange([])
+        }
       })
       .catch((error) => {
         console.log(error)
       })
   }
+  const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPatNm(event.target.value)
+  }
+
+  const handleDatePicker = (date: any) => {
+    setSelectedDate(date)
+  }
+  const handleReset = () => {
+    setSelected1('-')
+    setSelected2('-')
+    setSelected3('-')
+  }
 
   useEffect(() => {
     loadItems()
-  }, [])
+  }, [state])
 
   return (
     <Container className="SearchBar">
@@ -144,8 +168,8 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
               <em>마취구분 선택</em>
             </MenuItem>
             {anesth.map((anesthesia: Anesthesia, a) => (
-              <MenuItem key={a} value={anesthesia.ANE_CD}>
-                {anesthesia.ANE_NM}
+              <MenuItem key={a} value={anesthesia.SMPL_CD}>
+                {anesthesia.SMPL_NM}
               </MenuItem>
             ))}
           </Select>
@@ -154,16 +178,14 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
             <MenuItem disabled value="-">
               <em>구분 선택</em>
             </MenuItem>
-            {surgery.map((surgery: Surgery, s) => {
-              console.log(surgery)
-
-              return (
-                <MenuItem key={s} value={surgery.SUG_CD}>
-                  {surgery.SUG_NM}
-                </MenuItem>
-              )
-            })}
+            {surgery.map((surgery: Surgery, s) => (
+              <MenuItem key={s} value={surgery.SMPL_CD}>
+                {surgery.SMPL_NM}
+              </MenuItem>
+            ))}
           </Select>
+        </Box>
+        <Box className="Field2">
           <InputLabel disabled={true}>진료일 조회</InputLabel>
           <LocalizationProvider
             adapterLocale="ko"
@@ -172,14 +194,26 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
           >
             <DatePicker
               className="DatePicker"
-              defaultValue={dayjs(moment().format('YYYY-MM-DD'))}
+              value={selectedDate}
               format="YYYY-MM-DD"
+              onChange={handleDatePicker}
             />
           </LocalizationProvider>
+          <TextField
+            className="Keyword"
+            placeholder="환자명"
+            variant="outlined"
+            value={patNm}
+            onChange={handlePatNmChange}
+          />
         </Box>
       </Box>
       <Box className="Buttons">
-        <Button variant="outlined" startIcon={<RestartAltIcon />}>
+        <Button
+          variant="outlined"
+          startIcon={<RestartAltIcon />}
+          onClick={handleReset}
+        >
           초기화
         </Button>
         <Button
