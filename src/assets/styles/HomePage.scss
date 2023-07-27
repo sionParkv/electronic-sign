@@ -7,8 +7,8 @@
 
     .Fields {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
+      flex-wrap: wrap;
 
       .MuiBox-root {
         display: flex;
@@ -21,8 +21,8 @@
         label {
           display: inline-block;
           height: 20px;
-          margin: 0;
           padding: 6px 8px 0 10px;
+          margin: 0;
           color: #2e5bdb;
           vertical-align: middle;
           @include font(700, 12px, 1.2);
@@ -31,10 +31,10 @@
         .MuiInputBase-root {
           .MuiSelect-select {
             min-width: 100px;
-            box-sizing: border-box;
             height: 26px;
             padding: 5px 30px 5px 6px;
             color: black;
+            box-sizing: border-box;
             vertical-align: middle;
             @include font(500, 14px, 1.2);
           }
@@ -43,23 +43,29 @@
             right: 4px;
             font-size: 22px;
           }
-
-          fieldset {
-            padding: 0 0 0 8px;
-            border: 1px solid #dddddd;
-            border-radius: 2px;
-          }
         }
 
         .DatePicker {
+          position: relative;
+
           input {
-            box-sizing: border-box;
-            width: 95px;
+            @include font(500, 14px, 1.2);
+            width: 130px;
+            min-width: auto;
             height: 26px;
             padding: 5px 6px;
             color: black;
+            box-sizing: border-box;
             vertical-align: middle;
-            @include font(500, 14px, 1.2);
+          }
+
+          svg {
+            position: absolute;
+            top: 3px;
+            right: 4px;
+            color: #666666;
+            font-size: 1.25em;
+            pointer-events: none;
           }
         }
       }
@@ -73,8 +79,8 @@
           flex-wrap: nowrap;
 
           label {
-            margin: 0;
             padding: 0 10px 0 0;
+            margin: 0;
 
             .MuiRadio-root {
               padding: 0;
@@ -94,14 +100,26 @@
         }
 
         .DatePicker {
+          position: relative;
+
           input {
-            box-sizing: border-box;
-            width: 95px;
+            @include font(500, 14px, 1.2);
+            width: 130px;
+            min-width: auto;
             height: 26px;
             padding: 5px 6px;
             color: black;
+            box-sizing: border-box;
             vertical-align: middle;
-            @include font(500, 14px, 1.2);
+          }
+
+          svg {
+            position: absolute;
+            top: 3px;
+            right: 4px;
+            color: #666666;
+            font-size: 1.25em;
+            pointer-events: none;
           }
         }
 
@@ -115,12 +133,12 @@
         .Keyword {
           padding-left: 10px;
           input {
-            box-sizing: border-box;
             width: 120px;
             height: 26px;
             padding: 5px 6px;
-            outline: none;
             color: black;
+            box-sizing: border-box;
+            outline: none;
             vertical-align: middle;
             @include font(500, 14px, 1.2);
           }
@@ -136,6 +154,34 @@
           }
         }
       }
+
+      fieldset {
+        padding: 0 0 0 8px;
+        border: 1px solid #dddddd;
+        border-radius: 2px;
+      }
+
+      .DatePicker {
+        position: relative;
+
+        input {
+          min-width: 120px;
+          height: 26px;
+          padding: 5px 6px;
+          border: 1px solid #dddddd;
+          border-radius: 2px;
+          color: black;
+          box-sizing: border-box;
+          vertical-align: middle;
+          @include font(500, 14px, 1.2);
+        }
+
+        svg {
+          position: absolute;
+          right: 0;
+          background-color: white;
+        }
+      }
     }
 
     .Buttons {
@@ -143,12 +189,12 @@
 
       button {
         width: 120px;
-        margin: 0 2.5px;
         padding: 10px 31px 10px 24px;
-        border-color: #257cfd;
+        margin: 0 2.5px;
         border-radius: 5px;
         color: #257cfd;
         text-align: center;
+        border-color: #257cfd;
         @include font(500, 14, 1);
 
         .MuiButton-startIcon {
@@ -157,8 +203,8 @@
 
         &:nth-child(2) {
           border: 1px solid #2e5bdb;
-          color: white;
           background-color: #2e5bdb;
+          color: white;
         }
       }
     }
@@ -181,13 +227,12 @@
         padding: 0;
         border: 1px solid #d5d5d5;
         border-radius: 10px 10px 0 0;
-        color: #555555;
         background-color: white;
+        color: #555555;
         @include font(400, 16px, 1.5);
 
         &.Mui-selected {
           height: 55px;
-          color: white;
           background: rgb(34, 71, 177);
           background: linear-gradient(
             90deg,
@@ -204,6 +249,7 @@
             rgba(34, 71, 177, 1) 0%,
             rgba(46, 91, 219, 1) 100%
           );
+          color: white;
         }
       }
     }
@@ -216,9 +262,9 @@
       height: 100%;
       padding: 25px 20px 30px;
       border: 1px solid #dddddd;
-      border-top: 0;
       border-radius: 0 0 10px 10px;
       background-color: white;
+      border-top: 0;
 
       .Panel {
         position: relative;
@@ -277,10 +323,10 @@
             th {
               padding: 10px 0 8px 0;
               border: 1px solid #dddddd;
-              border-width: 1px 0;
+              background-color: #f5f5f5;
               color: black;
               text-align: center;
-              background-color: #f5f5f5;
+              border-width: 1px 0;
               @include font(700, 14px, 1.5);
               &:last-child {
                 width: 30%;
@@ -293,16 +339,16 @@
           tr {
             td {
               padding: 8px 0;
+              background-color: white;
               color: #333333;
               text-align: center;
-              background-color: white;
               @include font(400, 14px, 1.5);
             }
 
             &:hover {
               td {
-                color: #2e5bdb;
                 background-color: #f8faff;
+                color: #2e5bdb;
               }
             }
           }

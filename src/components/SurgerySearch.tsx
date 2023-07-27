@@ -1,9 +1,6 @@
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { koKR } from '@mui/x-date-pickers/locales'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import {
   Box,
   Button,
@@ -13,11 +10,9 @@ import {
   Select,
   TextField
 } from '@mui/material'
-import dayjs from 'dayjs'
+import axios from 'axios'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
-import 'dayjs/locale/ko'
-import axios from 'axios'
 
 interface Department {
   [key: string]: string
@@ -39,12 +34,29 @@ interface Anesthesia {
 
 interface SurgerySearchProps {
   state: any
-  //TODO Search컴포넌트3개에 handleStateChange 인자가 필요한데 인자를 담아도 never used가 뜹니다ㅜ
   // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: any) => void
 }
 
-const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
+const DatePicker = (props: {
+  defaultValue: string
+  onChange: React.ChangeEventHandler
+}) => {
+  return (
+    <div className="DatePicker">
+      <input
+        defaultValue={props.defaultValue}
+        onChange={props.onChange}
+        onKeyDown={(event) => {
+          event.preventDefault()
+        }}
+        pattern="\d{4}-\d{2}-\d{2}"
+        type="date"
+      />
+      <CalendarMonthIcon />
+    </div>
+  )
+}
 
 const SurgerySearch: React.FC<SurgerySearchProps> = ({
   state,
@@ -54,7 +66,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const [surgery, setSurgery] = useState([])
   const [anesth, setAnesth] = useState([])
   const [selectedDate, setSelectedDate] = useState(
-    dayjs(moment().format('YYYY-MM-DD'))
+    moment().format('YYYY-MM-DD')
   )
 
   const [selected1, setSelected1] = useState('-')
@@ -134,9 +146,10 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
     setPatNm(event.target.value)
   }
 
-  const handleDatePicker = (date: any) => {
-    setSelectedDate(date)
+  const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(event.target.value)
   }
+
   const handleReset = () => {
     setSelected1('-')
     setSelected2('-')
@@ -187,18 +200,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
         </Box>
         <Box className="Field2">
           <InputLabel disabled={true}>진료일 조회</InputLabel>
-          <LocalizationProvider
-            adapterLocale="ko"
-            dateAdapter={AdapterDayjs}
-            localeText={koLocale}
-          >
-            <DatePicker
-              className="DatePicker"
-              value={selectedDate}
-              format="YYYY-MM-DD"
-              onChange={handleDatePicker}
-            />
-          </LocalizationProvider>
+          <DatePicker defaultValue={selectedDate} onChange={handleDatePicker} />
           <TextField
             className="Keyword"
             placeholder="환자명"

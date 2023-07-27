@@ -95,7 +95,7 @@ const Document = () => {
   const loadItems = async () => {
     await axios
       .post('/api/tempList', {
-        PTNT_NO: pat.number
+        PTNT_NO: 2521216
       })
       .then((response) => {
         setTempList(response.data.data)
@@ -107,7 +107,7 @@ const Document = () => {
 
     await axios
       .post('/api/givenList', {
-        PTNT_NO: pat.number
+        PTNT_NO: 2521216
       })
       .then((response) => {
         setGivenList(response.data.data)
@@ -144,7 +144,7 @@ const Document = () => {
 
   useEffect(() => {
     loadItems()
-  }, [])
+  }, [pat])
 
   return (
     <Container className="DocumentContainer">

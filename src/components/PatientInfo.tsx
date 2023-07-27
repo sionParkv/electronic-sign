@@ -22,10 +22,7 @@ interface Patient {
 }
 
 const PatientInfo = () => {
-  const [list, setList] = useState<Patient[]>([])
-  let patInfoList: any = ''
-
-  console.log('patientInfo::', list)
+  const [patInfo, setList] = useState<Patient>()
 
   useEffect(() => {
     if (localStorage.getItem('patientInfo') !== 'undefined') {
@@ -38,8 +35,7 @@ const PatientInfo = () => {
       typeof window !== 'undefined' &&
       localStorage.getItem('patientInfo') !== 'undifined'
     ) {
-      patInfoList = JSON.parse(localStorage.getItem('patientInfo')!)
-      setList(patInfoList)
+      setList(JSON.parse(localStorage.getItem('patientInfo')!))
       // patInfo = patInfoList as String)!
     }
   }
@@ -54,21 +50,21 @@ const PatientInfo = () => {
         <TableBody>
           <TableRow>
             <TableCell component="th">환자명</TableCell>
-            <TableCell>{list.name}</TableCell>
+            <TableCell>{patInfo && patInfo.name}</TableCell>
             <TableCell component="th">진료일</TableCell>
-            <TableCell>{list.date}</TableCell>
+            <TableCell>{patInfo && patInfo.date}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell component="th">등록번호</TableCell>
-            <TableCell>{list.number}</TableCell>
+            <TableCell>{patInfo && patInfo.number}</TableCell>
             <TableCell component="th">진단명</TableCell>
-            <TableCell>{list.diagnosis}</TableCell>
+            <TableCell>{patInfo && patInfo.diagnosis}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell component="th">입원/외래</TableCell>
             <TableCell>입원</TableCell>
             <TableCell component="th">진료의</TableCell>
-            <TableCell>{list.doctor}</TableCell>
+            <TableCell>{patInfo && patInfo.doctor}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

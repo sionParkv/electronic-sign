@@ -81,11 +81,12 @@ const PatientList = (props: PatientListProps) => {
   const tempMethod = () => {
     if (
       typeof window !== 'undefined' &&
-      localStorage.getItem('patientList') !== 'undefined' &&
-      localStorage.getItem('patientList')!.length > 0
+      localStorage.getItem('patientList') !== 'undefined'
     ) {
       patientList = localStorage.getItem('patientList')
-      patList = JSON.parse(patientList as string)!
+      if (patientList.length > 0) {
+        patList = JSON.parse(patientList as string)!
+      }
     }
 
     let mapList = []
