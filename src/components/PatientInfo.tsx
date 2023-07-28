@@ -61,8 +61,8 @@ const PatientInfo = () => {
             <TableCell>{patInfo && patInfo.diagnosis}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell component="th">입원/외래</TableCell>
-            <TableCell>입원</TableCell>
+            <TableCell component="th">구분</TableCell>
+            <TableCell>{patInfo && patInfo.division}</TableCell>
             <TableCell component="th">진료의</TableCell>
             <TableCell>{patInfo && patInfo.doctor}</TableCell>
           </TableRow>

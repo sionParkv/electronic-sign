@@ -91,7 +91,7 @@ const HomePage = () => {
           )}
           <Container className="TabContainer">
             <Box>
-              <Tabs value={tab} onChange={handleChange}>
+              <Tabs value={tab} onChange={handleChange} variant="fullWidth">
                 <Tab label="입원" />
                 <Tab label="외래" />
                 <Tab label="수술" />
