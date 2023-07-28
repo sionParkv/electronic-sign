@@ -1,9 +1,6 @@
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { koKR } from '@mui/x-date-pickers/locales'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import {
   Box,
   Button,
@@ -16,7 +13,6 @@ import {
   Select,
   TextField
 } from '@mui/material'
-import dayjs from 'dayjs'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import 'dayjs/locale/ko'
@@ -41,7 +37,26 @@ interface AdmissionSearchProps {
   handleStateChange: (newList: any) => void
 }
 
-const koLocale = koKR.components.MuiLocalizationProvider.defaultProps.localeText
+const DatePicker = (props: {
+  defaultValue: string
+  onChange: React.ChangeEventHandler
+}) => {
+  return (
+    <div className="DatePicker">
+      <input
+        defaultValue={props.defaultValue}
+        onChange={props.onChange}
+        onKeyDown={(event) => {
+          event.preventDefault()
+        }}
+        disabled
+        pattern="\d{4}-\d{2}-\d{2}"
+        type="date"
+      />
+      <CalendarMonthIcon />
+    </div>
+  )
+}
 
 const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   state,
@@ -52,6 +67,9 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
   const [patNm, setPatNm] = useState('')
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format('YYYY-MM-DD')
+  )
 
   const loadItems = async () => {
     await axios
@@ -112,9 +130,14 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
     setPatNm(event.target.value)
   }
 
+  const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(event.target.value)
+  }
+
   const handleReset = () => {
     setSelected1('-')
     setSelected2('-')
+    setPatNm('')
   }
 
   useEffect(() => {
@@ -148,18 +171,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
             ))}
           </Select>
           <InputLabel disabled={true}>진료일 조회</InputLabel>
-          <LocalizationProvider
-            adapterLocale="ko"
-            dateAdapter={AdapterDayjs}
-            localeText={koLocale}
-          >
-            <DatePicker
-              className="DatePicker"
-              disabled
-              defaultValue={dayjs(moment().format('YYYY-MM-DD'))}
-              format="YYYY-MM-DD"
-            />
-          </LocalizationProvider>
+          <DatePicker defaultValue={selectedDate} onChange={handleDatePicker} />
         </Box>
         <Box className="Field2">
           <RadioGroup className="RadioGroup" defaultValue="pat">

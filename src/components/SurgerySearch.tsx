@@ -154,6 +154,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
     setSelected1('-')
     setSelected2('-')
     setSelected3('-')
+    setPatNm('')
   }
 
   useEffect(() => {
