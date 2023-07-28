@@ -25,6 +25,7 @@ interface Patient {
   department: string
   date: string
   diagnosis: string
+  division: string
 }
 
 interface PatientListProps {
@@ -102,7 +103,8 @@ const PatientList = (props: PatientListProps) => {
           doctor: pat.DOCT_EMPL_NM,
           department: pat.DEPT_NM,
           date: pat.ADM_YMD,
-          diagnosis: pat.DIAG_NM
+          diagnosis: pat.DIAG_NM,
+          division: '입원'
         }
       })
     } else if (tabValue === 1) {
@@ -117,7 +119,8 @@ const PatientList = (props: PatientListProps) => {
           doctor: pat.DOCT_EMPL_NM,
           department: pat.DEPT_NM,
           date: pat.CLINIC_YMD,
-          diagnosis: pat.DIAG_NM
+          diagnosis: pat.DIAG_NM,
+          division: '외래'
         }
       })
     } else if (tabValue === 2) {
@@ -131,7 +134,8 @@ const PatientList = (props: PatientListProps) => {
           doctor: pat.OP_DOCT_NM,
           department: pat.OP_DEPT_NM,
           date: pat.OP_YMD,
-          diagnosis: pat.DIAG_NM
+          diagnosis: pat.DIAG_NM,
+          division: '수술'
         }
       })
     }
@@ -165,7 +169,7 @@ const PatientList = (props: PatientListProps) => {
               <TableBody>
                 {list?.length > 0 ? (
                   list.map((patient, p) => {
-                    const columns = Object.keys(patient)
+                    const columns = Object.keys(patient).slice(0, -1)
                     return (
                       <TableRow key={p}>
                         {columns.map((column, index) => (

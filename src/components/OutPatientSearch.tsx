@@ -95,6 +95,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     await axios
       .post('/api/outPatient', {
         CLINIC_YMD: '20220603',
+        // CLINIC_YMD : selectedDate,
         DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
         DOCT_EMPL_NO: selected2 === '-' ? 'ALL' : selected2,
         PTNT_NM: patNm
@@ -145,6 +146,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const handleReset = () => {
     setSelected1('-')
     setSelected2('-')
+    setPatNm('')
   }
 
   const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {

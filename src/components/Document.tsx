@@ -23,6 +23,11 @@ interface TabPanelProps {
   value: number
 }
 
+// const java = new JavaCaller({
+//   jar: '/Users/parksion/project/eonelab/eone-sign/ClipReport5.0-Common.jar'
+// })
+// const { status, stdout, stderr } = await java.run()
+
 interface Patient {
   [key: string]: any
   name: string
@@ -215,7 +220,16 @@ const Document = () => {
                   {favoritelist &&
                     favoritelist.map((index: any, i) => (
                       <ListItem key={i}>
-                        <T className="Title">{index.FORM_NM}</T>
+                        <T
+                          className="Title"
+                          onClick={() => {
+                            window.open(
+                              'http://210.107.85.110:8080/ClipReport5/eform1.jsp'
+                            )
+                          }}
+                        >
+                          {index.FORM_NM}
+                        </T>
                       </ListItem>
                     ))}
                 </List>
