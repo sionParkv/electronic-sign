@@ -35,10 +35,17 @@ const HomePage = () => {
       dispatch({ type: 'PATIENT_LIST', list: newList })
     }
   }
-  const handleChange = (event: React.SyntheticEvent, newTab: number) => {
+
+  const handleTabChange = (event: React.SyntheticEvent, newTab: number) => {
     localStorage.setItem('newTab', newTab.toString())
+
     setTab(newTab)
+
+    if (dispatch) {
+      dispatch({ type: 'PATIENT_LIST', list: [] })
+    }
   }
+
   let cookie = getCookie('loginCookie')
   let tempCookie
   let cookieArray: any = []
@@ -91,7 +98,7 @@ const HomePage = () => {
           )}
           <Container className="TabContainer">
             <Box>
-              <Tabs value={tab} onChange={handleChange} variant="fullWidth">
+              <Tabs value={tab} onChange={handleTabChange} variant="fullWidth">
                 <Tab label="입원" />
                 <Tab label="외래" />
                 <Tab label="수술" />
