@@ -85,7 +85,7 @@ const PatientList = (props: PatientListProps) => {
       localStorage.getItem('patientList') !== 'undefined'
     ) {
       patientList = localStorage.getItem('patientList')
-      if (patientList.length > 0) {
+      if (patientList?.length > 0) {
         patList = JSON.parse(patientList as string)!
       }
     }
