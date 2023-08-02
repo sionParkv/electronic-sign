@@ -16,17 +16,13 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { getCookie, hasCookie } from 'cookies-next'
 import { AES256 } from '@/utils/AES256'
+import components from '.'
 
 interface TabPanelProps {
   children: React.ReactNode
   index: number
   value: number
 }
-
-// const java = new JavaCaller({
-//   jar: '/Users/parksion/project/eonelab/eone-sign/ClipReport5.0-Common.jar'
-// })
-// const { status, stdout, stderr } = await java.run()
 
 interface Patient {
   [key: string]: any
@@ -64,6 +60,18 @@ const Document = () => {
   const [list, setList] = useState([])
   const [favoritelist, setFavoriteList] = useState([])
   const router = useRouter()
+
+  const [popupOpen, setPopupOpen] = useState(false)
+  const [popupUrl, setPopupUrl] = useState('')
+
+  const handlePopupOpen = (url: any) => {
+    setPopupUrl(url)
+    setPopupOpen(true)
+  }
+
+  const handlePopupClose = () => {
+    setPopupOpen(false)
+  }
 
   const handleChangeL = (event: React.SyntheticEvent, newTab: number) => {
     setTabL(newTab)
@@ -223,9 +231,8 @@ const Document = () => {
                         <T
                           className="Title"
                           onClick={() => {
-                            window.open(
-                              'http://210.107.85.110:8080/ClipReport5/eform1.jsp'
-                            )
+                            location.href =
+                              'http://210.107.85.110:8080/ClipReport5/eform2.jsp'
                           }}
                         >
                           {index.FORM_NM}
@@ -241,9 +248,23 @@ const Document = () => {
                   {list &&
                     list.map((index: any, i) => (
                       <ListItem key={i}>
-                        <T className="Title">{index.FORM_NM}</T>
+                        <T
+                          className="Title"
+                          onClick={() => {
+                            handlePopupOpen(
+                              'http://210.107.85.110:8080/ClipReport5/eform.jsp'
+                            )
+                          }}
+                        >
+                          {index.FORM_NM}
+                        </T>
                       </ListItem>
                     ))}
+                  <components.Popup
+                    open={popupOpen}
+                    onClose={handlePopupClose}
+                    url={popupUrl}
+                  ></components.Popup>
                 </List>
               </DocumentListContainer>
             </DocumentListTabPanel>
