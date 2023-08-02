@@ -41,6 +41,7 @@
     "format": "prettier --check ./",
     "format:fix": "prettier --write ./",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "prod": "npm run build && pm2 --name 'SignMaster' start ./node_modules/.bin/next -- dev"
   }
 }
