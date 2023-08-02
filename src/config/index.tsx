@@ -1,7 +1,8 @@
 const ENV = process.env.NODE_ENV || 'production'
 
 const PATH = {
-  production: '/app/logs/relay/prod',
+  // production: '/app/logs/relay/prod',
+  production: `${process.cwd()}/logs`,
   development: `${process.cwd()}/logs`,
   test: `${process.cwd()}/logs`
 }
