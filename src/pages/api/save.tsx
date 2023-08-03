@@ -9,12 +9,13 @@ const save = (req: NextApiRequest, res: NextApiResponse) => {
     RECEPT_NO,
     FORM_CD,
     FILE_NM,
+    SEQ,
     UPLOAD_NM,
     PTNT_NO,
     IO_GB,
     ENT_EMPL_NO
   } = req.body
-  let query = `exec [UP_S1MOBILE_PTNT_EFORM_C] '${RECEPT_NO}', '${FORM_CD}', '${FILE_NM}', '${UPLOAD_NM}', '${PTNT_NO}', '${IO_GB}', '${ENT_EMPL_NO}', 'MOBILE' `
+  let query = `exec [UP_S1MOBILE_PTNT_EFORM_C] ${RECEPT_NO}, ${FORM_CD}, '${FILE_NM}', ${SEQ}, '${UPLOAD_NM}', ${PTNT_NO}, '${IO_GB}', ${ENT_EMPL_NO}, 'MOBILE' `
   MsSql.executeQuery(query)
     .then((result: any) => {
       if (result?.length > 0) {
