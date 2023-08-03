@@ -80,6 +80,7 @@ const PatientList = (props: PatientListProps) => {
   }, [state])
 
   const tempMethod = () => {
+    let mapList = []
     if (
       typeof window !== 'undefined' &&
       localStorage.getItem('patientList') !== 'undefined'
@@ -90,7 +91,6 @@ const PatientList = (props: PatientListProps) => {
       }
     }
 
-    let mapList = []
     if (tabValue === 0) {
       mapList = patList?.admission?.map((pat: any) => {
         const sexAge = pat?.SEX_AGE.split('/')
@@ -104,7 +104,8 @@ const PatientList = (props: PatientListProps) => {
           department: pat.DEPT_NM,
           date: pat.ADM_YMD,
           diagnosis: pat.DIAG_NM,
-          division: '입원'
+          division: '입원',
+          receptNo: pat.RECEPT_NO
         }
       })
     } else if (tabValue === 1) {
@@ -120,7 +121,8 @@ const PatientList = (props: PatientListProps) => {
           department: pat.DEPT_NM,
           date: pat.CLINIC_YMD,
           diagnosis: pat.DIAG_NM,
-          division: '외래'
+          division: '외래',
+          receptNo: pat.RECEPT_NO
         }
       })
     } else if (tabValue === 2) {
@@ -135,12 +137,14 @@ const PatientList = (props: PatientListProps) => {
           department: pat.OP_DEPT_NM,
           date: pat.OP_YMD,
           diagnosis: pat.DIAG_NM,
-          division: '수술'
+          division: '수술',
+          receptNo: pat.RECEPT_NO
         }
       })
     }
     setList(mapList)
   }
+  console.log(patList)
   const rowClick = (index: any) => () => {
     localStorage.setItem('patientInfo', JSON.stringify(list[index]))
     router.push('/patient')
@@ -169,14 +173,16 @@ const PatientList = (props: PatientListProps) => {
               <TableBody>
                 {list?.length > 0 ? (
                   list.map((patient, p) => {
-                    const columns = Object.keys(patient).slice(0, -1)
+                    const columns = Object.keys(patient).slice(0, -2)
                     return (
                       <TableRow key={p}>
-                        {columns.map((column, index) => (
-                          <TableCell key={index} onClick={rowClick(p)}>
-                            {patient[column as string]}
-                          </TableCell>
-                        ))}
+                        {columns.map((column, index) => {
+                          return (
+                            <TableCell key={index} onClick={rowClick(p)}>
+                              {patient[column as string]}
+                            </TableCell>
+                          )
+                        })}
                       </TableRow>
                     )
                   })

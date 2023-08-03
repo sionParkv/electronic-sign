@@ -32,6 +32,13 @@ interface Patient {
   diagnosis: string
   doctor: string
 }
+const initialPatient: Patient = {
+  name: '',
+  date: '',
+  number: 0,
+  diagnosis: '',
+  doctor: ''
+}
 
 const DocumentListTabPanel = (props: TabPanelProps) => {
   const { children, index, value } = props
@@ -49,18 +56,19 @@ const DocumentListContainer = (props: { children: React.ReactNode }) => {
   return <Container className="DocumentListContainer">{children}</Container>
 }
 
-const Document = () => {
+const Document = (userInfo: any) => {
+  const user = userInfo.userInfo
+
   let patInfoList: any = ''
   const [tabL, setTabL] = useState<number>(0)
   const [tabR, setTabR] = useState<number>(0)
 
-  const [pat, setPat] = useState<Patient[]>([])
+  const [pat, setPat] = useState<Patient>(initialPatient)
   const [tempList, setTempList] = useState([])
   const [givenList, setGivenList] = useState([])
   const [list, setList] = useState([])
-  const [favoritelist, setFavoriteList] = useState([])
+  const [favoriteList, setFavoriteList] = useState([])
   const router = useRouter()
-
   const [popupOpen, setPopupOpen] = useState(false)
   const [popupUrl, setPopupUrl] = useState('')
 
@@ -92,27 +100,24 @@ const Document = () => {
       tempMethod()
     }
   }, [])
-
   const tempMethod = () => {
     if (
       typeof window !== 'undefined' &&
-      localStorage.getItem('patientInfo') !== 'undifined'
+      localStorage.getItem('patientInfo') !== 'undefined'
     ) {
       patInfoList = JSON.parse(localStorage.getItem('patientInfo')!)
       setPat(patInfoList)
       // patInfo = patInfoList as String)!
     }
   }
-  console.log(tempList)
 
   const loadItems = async () => {
     await axios
       .post('/api/tempList', {
-        PTNT_NO: 2521216
+        PTNT_NO: pat.number
       })
       .then((response) => {
         setTempList(response.data.data)
-        console.log(response.data.data)
       })
       .catch((error) => {
         console.log(error)
@@ -120,11 +125,10 @@ const Document = () => {
 
     await axios
       .post('/api/givenList', {
-        PTNT_NO: 2521216
+        PTNT_NO: pat.number
       })
       .then((response) => {
         setGivenList(response.data.data)
-        console.log(response.data.data)
       })
       .catch((error) => {
         console.log(error)
@@ -149,6 +153,16 @@ const Document = () => {
       .catch((error) => {
         console.log(error)
       })
+  }
+  const handleOpenEform = (index: number) => {
+    // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번
+    // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO
+    const userNo = user?.match(/\d+/g).join('')
+    const formInfo: { FORM_CD: string; FORM_NM: string } = favoriteList[index]
+    const iOrO = pat.division === '외래' ? 'O' : 'I'
+
+    const sendForm = `/ClipReport5/eform3.jsp?FILE_NAME=${formInfo.FORM_NM}&RECEPT_NO=${pat.receptNo}&FORM_CD=${formInfo.FORM_CD}&PTNT_NO=${pat.number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
+    router.push(sendForm)
   }
 
   const backPage = () => {
@@ -225,16 +239,10 @@ const Document = () => {
             <DocumentListTabPanel value={tabR} index={0}>
               <DocumentListContainer>
                 <List className="DocumentList">
-                  {favoritelist &&
-                    favoritelist.map((index: any, i) => (
+                  {favoriteList &&
+                    favoriteList.map((index: any, i) => (
                       <ListItem key={i}>
-                        <T
-                          className="Title"
-                          onClick={() => {
-                            location.href =
-                              'http://210.107.85.110:8080/ClipReport5/eform2.jsp'
-                          }}
-                        >
+                        <T className="Title" onClick={() => handleOpenEform(i)}>
                           {index.FORM_NM}
                         </T>
                       </ListItem>
@@ -251,9 +259,7 @@ const Document = () => {
                         <T
                           className="Title"
                           onClick={() => {
-                            handlePopupOpen(
-                              'http://210.107.85.110:8080/ClipReport5/eform.jsp'
-                            )
+                            handlePopupOpen('/ClipReport5/eform.jsp')
                           }}
                         >
                           {index.FORM_NM}

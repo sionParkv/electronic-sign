@@ -40,7 +40,7 @@ const PatientPage = () => {
       <COMP.Header {...propsHeader} />
       <Container>
         <COMP.PatientInfo />
-        <COMP.Document />
+        <COMP.Document userInfo={userInfo} />
       </Container>
       <COMP.Footer />
     </Container>

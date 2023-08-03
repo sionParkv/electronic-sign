@@ -84,7 +84,6 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
       })
       .then((respose) => {
         setDoctor(respose?.data?.data || [])
-        localStorage.setItem('patientList', JSON.stringify(respose.data.data))
       })
       .catch((error) => {
         console.log(error)
