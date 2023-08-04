@@ -23,6 +23,8 @@ export default function MyApp({ Component, pageProps }) {
     window.historyBack = () => {
       if (!currentURL.includes('patient')) {
         isExit = 1
+      } else {
+        history.back()
       }
       return isExit
     }
