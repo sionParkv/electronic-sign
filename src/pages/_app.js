@@ -24,9 +24,8 @@ export default function MyApp({ Component, pageProps }) {
       if (!currentURL.includes('patient')) {
         isExit = 1
       }
+      return isExit
     }
-
-    return isExit
   }
 
   return (
