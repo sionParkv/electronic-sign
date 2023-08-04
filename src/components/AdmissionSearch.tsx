@@ -32,7 +32,6 @@ interface Hospital {
 
 interface AdmissionSearchProps {
   state: any
-  //TODO Search컴포넌트3개에 handleStateChange 인자가 필요한데 인자를 담아도 never used가 뜹니다ㅜ
   // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: any) => void
 }
