@@ -343,6 +343,10 @@
               color: #333333;
               text-align: center;
               @include font(400, 14px, 1.5);
+              // 로딩바
+              span {
+                margin: 15px 0;
+              }
             }
 
             &:hover {

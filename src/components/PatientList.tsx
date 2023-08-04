@@ -1,6 +1,7 @@
 import { useStateValue } from '@/context/stateContext'
 import {
   Box,
+  CircularProgress,
   Container,
   NoSsr,
   Typography as T,
@@ -12,7 +13,7 @@ import {
   TableRow
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 
 interface Patient {
   [key: string]: string
@@ -144,12 +145,10 @@ const PatientList = (props: PatientListProps) => {
     }
     setList(mapList)
   }
-  console.log(patList)
   const rowClick = (index: any) => () => {
     localStorage.setItem('patientInfo', JSON.stringify(list[index]))
     router.push('/patient')
   }
-
   const total = list?.length
   return (
     <Container className="PatientListContainer">
@@ -171,28 +170,36 @@ const PatientList = (props: PatientListProps) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {list?.length > 0 ? (
-                  list.map((patient, p) => {
-                    const columns = Object.keys(patient).slice(0, -2)
-                    return (
-                      <TableRow key={p}>
-                        {columns.map((column, index) => {
-                          return (
-                            <TableCell key={index} onClick={rowClick(p)}>
-                              {patient[column as string]}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })
-                ) : (
+                {list === undefined ? (
+                  <TableRow>
+                    <TableCell colSpan={9}>
+                      <CircularProgress />
+                    </TableCell>
+                  </TableRow>
+                ) : list?.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={9}>
                       조회된 데이터가 없습니다. 검색값 선택 후 조회버튼을
                       눌러주세요.
                     </TableCell>
                   </TableRow>
+                ) : (
+                  <Fragment>
+                    {list?.map((patient: Patient, p: number) => {
+                      const columns = Object.keys(patient).slice(0, -2)
+                      return (
+                        <TableRow key={p}>
+                          {columns.map((column, index) => {
+                            return (
+                              <TableCell key={index} onClick={rowClick(p)}>
+                                {patient[column as string]}
+                              </TableCell>
+                            )
+                          })}
+                        </TableRow>
+                      )
+                    })}
+                  </Fragment>
                 )}
               </TableBody>
             </Table>
