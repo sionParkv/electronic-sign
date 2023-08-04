@@ -9,7 +9,7 @@ export default function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      createHistoryBack()
+      historyBack()
     }
   }, [router.asPath])
 
@@ -17,12 +17,13 @@ export default function MyApp({ Component, pageProps }) {
    * 안드로이드 디바이스의 백키를 히스토리 뒤로가기 기능으로 사용하기 위해 사용할 함수.
    *  @returns {Number} 앱을 종료할 것인지 여부(0: 종료하지 않음 | 1: 종료함).
    */
-  const createHistoryBack = () => {
+  const historyBack = () => {
     const currentURL = location.href
     let isExit = 0
-
-    if (!currentURL.includes('patient')) {
-      isExit = 1
+    window.historyBack = () => {
+      if (!currentURL.includes('patient')) {
+        isExit = 1
+      }
     }
 
     return isExit
