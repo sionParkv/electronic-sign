@@ -6,6 +6,8 @@ import components from '@/components'
 import { AES256 } from '@/utils/AES256'
 import { useRouter } from 'next/router'
 import { useStateValue, useDispatch } from '@/context/stateContext'
+import axios from 'axios'
+import moment from 'moment'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -38,12 +40,7 @@ const HomePage = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newTab: number) => {
     localStorage.setItem('newTab', newTab.toString())
-
     setTab(newTab)
-
-    if (dispatch) {
-      dispatch({ type: 'PATIENT_LIST', list: [] })
-    }
   }
 
   let cookie = getCookie('loginCookie')
@@ -65,14 +62,96 @@ const HomePage = () => {
         : ''
       const getItem = parseInt(localStorage.getItem('newTab')!)
       setTab(getItem ? getItem : 0)
+      if (getItem === 0) {
+        axios
+          .post('/api/admission', {
+            DEPT_CD: 'ALL',
+            WARD_CD: 'ALL',
+            PTNT_NM: ''
+          })
+          .then((response) => {
+            if (response.data.data) {
+              localStorage.setItem(
+                'patientList',
+                `{"admission":${JSON.stringify(response.data.data)}}`
+              )
+              handleStateChange(response.data.data)
+            } else {
+              localStorage.setItem(
+                'patientList',
+                `{"admission":${JSON.stringify([])}}`
+              )
+              handleStateChange([])
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      } else if (getItem === 1) {
+        axios
+          .post('/api/outPatient', {
+            CLINIC_YMD: '20220603',
+            // CLINIC_YMD : selectedDate,
+            DEPT_CD: 'ALL',
+            DOCT_EMPL_NO: 'ALL',
+            PTNT_NM: ''
+          })
+          .then((response) => {
+            if (response.data.data) {
+              localStorage.setItem(
+                'patientList',
+                `{"outPatient":${JSON.stringify(response.data.data)}}`
+              )
+              handleStateChange(response.data.data)
+              return
+            } else {
+              localStorage.setItem(
+                'patientList',
+                `{"outPatient":${JSON.stringify([])}}`
+              )
+              handleStateChange([])
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      } else if (getItem === 2) {
+        const today = moment()
+        axios
+          .post('/api/surgery', {
+            OP_YMD: today.format('YYYYMMDD'),
+            OP_DEPT_CD: '-',
+            AN_TYPE_GB: '-',
+            OP_GB: '-',
+            PTNT_NM: ''
+          })
+          .then((response) => {
+            if (response.data.data) {
+              localStorage.setItem(
+                'patientList',
+                `{"surgery":${JSON.stringify(response.data.data)}}`
+              )
+              handleStateChange(response.data.data)
+              return
+            } else {
+              localStorage.setItem(
+                'patientList',
+                `{"surgery":${JSON.stringify([])}}`
+              )
+              handleStateChange([])
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
     }
-  }, [])
+  }, [tab])
 
   const propsHeader = {
     // TODO: 로그인 사용자 정보
     userInfo: userInfo
   }
-
   return (
     <Container className={className}>
       <components.Header {...propsHeader} />
@@ -104,15 +183,18 @@ const HomePage = () => {
                 <Tab label="수술" />
               </Tabs>
             </Box>
-            <PatientListTabPanel value={tab} index={0}>
-              <components.PatientList tabValue={tab} />
-            </PatientListTabPanel>
-            <PatientListTabPanel value={tab} index={1}>
-              <components.PatientList tabValue={tab} />
-            </PatientListTabPanel>
-            <PatientListTabPanel value={tab} index={2}>
-              <components.PatientList tabValue={tab} />
-            </PatientListTabPanel>
+
+            <React.Fragment>
+              <PatientListTabPanel value={tab} index={0}>
+                <components.PatientList tabValue={tab} />
+              </PatientListTabPanel>
+              <PatientListTabPanel value={tab} index={1}>
+                <components.PatientList tabValue={tab} />
+              </PatientListTabPanel>
+              <PatientListTabPanel value={tab} index={2}>
+                <components.PatientList tabValue={tab} />
+              </PatientListTabPanel>
+            </React.Fragment>
           </Container>
         </Container>
       </Container>
