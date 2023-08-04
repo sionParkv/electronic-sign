@@ -1,10 +1,3 @@
-declare global {
-  // eslint-disable-next-line no-unused-vars
-  interface Window {
-    historyBack: () => void
-  }
-}
-
 import {
   Box,
   Button,
@@ -24,7 +17,6 @@ import { useRouter } from 'next/router'
 import { getCookie, hasCookie } from 'cookies-next'
 import { AES256 } from '@/utils/AES256'
 import components from '.'
-import { closeConfirmDialog } from './ConfirmDialog'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -107,7 +99,6 @@ const Document = (userInfo: any) => {
     if (localStorage.getItem('patientInfo') !== 'undefined') {
       tempMethod()
     }
-    createHistoryBack()
   }, [])
   const tempMethod = () => {
     if (
@@ -175,14 +166,7 @@ const Document = (userInfo: any) => {
 
     router.push(sendForm)
   }
-  /**
-   * 안드로이드 디바이스의 백키를 히스토리 뒤로가기 기능으로 사용하기 위해 사용할 함수.
-   */
-  const createHistoryBack = () => {
-    window.historyBack = () => {
-      closeConfirmDialog()
-    }
-  }
+
   const backPage = () => {
     router.push('/')
   }
