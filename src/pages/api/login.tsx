@@ -7,7 +7,7 @@ import { logger } from '@/utils/Winston'
 
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[login] 로그인 리퀘스트 %o', req.body)
-  const { EMPL_NO, EMPL_NM, DEPT, PASS_WORD } = req.body
+  const { EMPL_NO, PASS_WORD } = req.body
   let query = `exec [UP_S1MOBILE_EMPL_INFO_R] '${EMPL_NO}', '${PASS_WORD}'`
 
   MsSql.executeQuery(query)
@@ -19,21 +19,24 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
           message: '일치하는 직원정보가 없습니다.',
           data: result
         })
-      } else if (EMPL_NM !== result[0]?.EMPL_NM) {
-        logger.debug('[login] 이름이 불일치 합니다.')
-        res.json({
-          code: 'FAIL',
-          message: '이름이 불일치 합니다.',
-          data: result
-        })
-      } else if (DEPT !== result[0]?.DEPT_GB) {
-        logger.debug('[login] 부서구분이 불일치 합니다.')
-        res.json({
-          code: 'FAIL',
-          message: '부서구분이 불일치 합니다.',
-          data: result
-        })
-      } else {
+      }
+      // else if (EMPL_NM !== result[0]?.EMPL_NM) {
+      //   logger.debug('[login] 이름이 불일치 합니다.')
+      //   res.json({
+      //     code: 'FAIL',
+      //     message: '이름이 불일치 합니다.',
+      //     data: result
+      //   })
+      // }
+      // else if (DEPT !== result[0]?.DEPT_GB) {
+      //   logger.debug('[login] 부서구분이 불일치 합니다.')
+      //   res.json({
+      //     code: 'FAIL',
+      //     message: '부서구분이 불일치 합니다.',
+      //     data: result
+      //   })
+      // }
+      else {
         logger.debug('[login] 로그인에 성공 하였습니다.')
         let incoding = AES256.AES_encrypt(JSON.stringify(result))
         const expiryDate = new Date(Number(new Date()) + 315360000000)
