@@ -41,6 +41,7 @@ const HomePage = () => {
   const handleTabChange = (event: React.SyntheticEvent, newTab: number) => {
     localStorage.setItem('newTab', newTab.toString())
     setTab(newTab)
+    localStorage.removeItem('filters')
   }
 
   let cookie = getCookie('loginCookie')
