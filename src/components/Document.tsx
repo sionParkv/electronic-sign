@@ -16,7 +16,6 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { getCookie, hasCookie } from 'cookies-next'
 import { AES256 } from '@/utils/AES256'
-import components from '.'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -69,17 +68,6 @@ const Document = (userInfo: any) => {
   const [list, setList] = useState([])
   const [favoriteList, setFavoriteList] = useState([])
   const router = useRouter()
-  const [popupOpen, setPopupOpen] = useState(false)
-  const [popupUrl, setPopupUrl] = useState('')
-
-  const handlePopupOpen = (url: any) => {
-    setPopupUrl(url)
-    setPopupOpen(true)
-  }
-
-  const handlePopupClose = () => {
-    setPopupOpen(false)
-  }
 
   const handleChangeL = (event: React.SyntheticEvent, newTab: number) => {
     setTabL(newTab)
@@ -258,21 +246,11 @@ const Document = (userInfo: any) => {
                   {list &&
                     list.map((index: any, i) => (
                       <ListItem key={i}>
-                        <T
-                          className="Title"
-                          onClick={() => {
-                            handlePopupOpen('/ClipReport5/eform.jsp')
-                          }}
-                        >
+                        <T className="Title" onClick={() => handleOpenEform(i)}>
                           {index.FORM_NM}
                         </T>
                       </ListItem>
                     ))}
-                  <components.Popup
-                    open={popupOpen}
-                    onClose={handlePopupClose}
-                    url={popupUrl}
-                  ></components.Popup>
                 </List>
               </DocumentListContainer>
             </DocumentListTabPanel>
