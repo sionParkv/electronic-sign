@@ -88,6 +88,12 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
       .catch((error) => {
         console.log(error)
       })
+    const getStorage = JSON.parse(localStorage.getItem('filters') as string)
+    if (getStorage) {
+      setSelected1(getStorage?.selected1)
+      setSelected2(getStorage?.selected2)
+      setSelectedDate(getStorage?.selectedDate)
+    }
   }
 
   const patSearch = async () => {
@@ -115,6 +121,12 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           )
           handleStateChange([])
         }
+        const setStorage: any = {
+          selected1: selected1,
+          selected2: selected2,
+          selectedDate: selectedDate
+        }
+        localStorage.setItem('filters', JSON.stringify(setStorage))
       })
       .catch((error) => {
         console.log(error)
@@ -144,6 +156,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   }
 
   const handleReset = () => {
+    localStorage.removeItem('filters')
     setSelected1('-')
     setSelected2('-')
     setPatNm('')

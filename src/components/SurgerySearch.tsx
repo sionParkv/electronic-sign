@@ -101,6 +101,15 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
       .catch((error) => {
         console.log(error)
       })
+
+    const getStorage = JSON.parse(localStorage.getItem('filters') as string)
+    if (getStorage) {
+      setSelected1(getStorage?.selected1)
+      setSelected2(getStorage?.selected2)
+      setSelected3(getStorage?.selected3)
+      setPatNm(getStorage?.patNm)
+      setSelectedDate(getStorage?.selectedDate)
+    }
   }
 
   const handleSelect1 = (e: any) => {
@@ -137,6 +146,14 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
           )
           handleStateChange([])
         }
+        const setStorage: any = {
+          selected1: selected1,
+          selected2: selected2,
+          selected3: selected3,
+          patNm: patNm,
+          selectedDate: selectedDate
+        }
+        localStorage.setItem('filters', JSON.stringify(setStorage))
       })
       .catch((error) => {
         console.log(error)
@@ -151,6 +168,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   }
 
   const handleReset = () => {
+    localStorage.removeItem('filters')
     setSelected1('-')
     setSelected2('-')
     setSelected3('-')

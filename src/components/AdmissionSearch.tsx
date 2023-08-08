@@ -69,7 +69,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD')
   )
-
+  console.log(departments)
+  console.log(wards)
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -88,6 +89,13 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
       .catch((error) => {
         console.log(error)
       })
+    const getStorage = JSON.parse(localStorage.getItem('filters') as string)
+    if (getStorage) {
+      setSelected1(getStorage?.selected1)
+      setSelected2(getStorage?.selected2)
+      setPatNm(getStorage?.patNm)
+      setSelectedDate(getStorage?.selectedDate)
+    }
   }
 
   const handleSelect1 = (e: any) => {
@@ -120,6 +128,13 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
           )
           handleStateChange([])
         }
+        const setStorage: any = {
+          selected1: selected1,
+          selected2: selected2,
+          patNm: patNm,
+          selectedDate: selectedDate
+        }
+        localStorage.setItem('filters', JSON.stringify(setStorage))
       })
       .catch((error) => {
         console.log(error)
@@ -134,6 +149,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   }
 
   const handleReset = () => {
+    localStorage.removeItem('filters')
     setSelected1('-')
     setSelected2('-')
     setPatNm('')
