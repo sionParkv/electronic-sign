@@ -116,7 +116,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
     await axios
       .post('/api/surgery', {
         OP_YMD: '20221011',
-        // OP_YMD: selectedDate,
+        // CLINIC_YMD : selectedDate.replace(/[-.]/g, ''),
         OP_DEPT_CD: selected1 === '-' ? '' : selected1,
         AN_TYPE_GB: selected2 === '-' ? '' : selected2,
         OP_GB: selected3 === '-' ? '' : selected3,
