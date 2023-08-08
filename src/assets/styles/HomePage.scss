@@ -320,6 +320,12 @@
 
         thead {
           tr {
+            :nth-child(1) {
+              width: 100px;
+            }
+            :nth-child(9) {
+              flex-shrink: 3;
+            }
             th {
               padding: 10px 0 8px 0;
               border: 1px solid #dddddd;
