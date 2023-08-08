@@ -114,10 +114,10 @@ const PatientList = (props: PatientListProps) => {
         const sexAge = pat?.SEX_AGE.split('/')
         return {
           name: pat.PTNT_NM,
-          number: pat.RECEPT_NO,
           birth: pat.BIRTH_YMD,
           age: sexAge[1],
           sex: sexAge[0],
+          number: pat.RECEPT_NO,
           doctor: pat.DOCT_EMPL_NM,
           department: pat.DEPT_NM,
           date: pat.CLINIC_YMD,
