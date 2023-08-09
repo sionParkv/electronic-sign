@@ -323,9 +323,6 @@
             :nth-child(1) {
               width: 100px;
             }
-            :nth-child(9) {
-              flex-shrink: 3;
-            }
             th {
               padding: 10px 0 8px 0;
               border: 1px solid #dddddd;
@@ -343,6 +340,14 @@
 
         tbody {
           tr {
+            :nth-child(9) {
+              display: -webkit-box;
+              width: 400px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              -webkit-line-clamp: 2;
+            }
             td {
               padding: 8px 0;
               background-color: white;
