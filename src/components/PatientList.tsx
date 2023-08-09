@@ -192,7 +192,7 @@ const PatientList = (props: PatientListProps) => {
                           {columns.map((column, index) => {
                             return (
                               <TableCell key={index} onClick={rowClick(p)}>
-                                {patient[column as string]}
+                                <T>{patient[column as string]}</T>
                               </TableCell>
                             )
                           })}
