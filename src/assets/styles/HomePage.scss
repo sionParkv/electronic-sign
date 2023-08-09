@@ -320,9 +320,6 @@
 
         thead {
           tr {
-            :nth-child(1) {
-              width: 100px;
-            }
             th {
               padding: 10px 0 8px 0;
               border: 1px solid #dddddd;
@@ -331,33 +328,72 @@
               text-align: center;
               border-width: 1px 0;
               @include font(700, 14px, 1.5);
-              &:last-child {
-                width: 30%;
-              }
+            }
+
+            :nth-child(1) {
+              min-width: 5em;
+            }
+            :nth-child(2) {
+              min-width: 6em;
+            }
+            :nth-child(3) {
+              min-width: 3em;
+            }
+            :nth-child(4) {
+              min-width: 3em;
+            }
+            :nth-child(5) {
+              min-width: 6em;
+            }
+            :nth-child(6) {
+              min-width: 3em;
+            }
+            :nth-child(7) {
+              min-width: 8em;
+            }
+            :nth-child(8) {
+              min-width: 8em;
+            }
+            :nth-child(9) {
+              width: 100%;
             }
           }
         }
 
         tbody {
           tr {
-            :nth-child(9) {
-              display: -webkit-box;
-              width: 400px;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              -webkit-line-clamp: 2;
-            }
             td {
               padding: 8px 0;
               background-color: white;
               color: #333333;
               text-align: center;
               @include font(400, 14px, 1.5);
+
               // 로딩바
               span {
                 margin: 15px 0;
               }
+            }
+
+            :nth-child(1),
+            :nth-child(6),
+            :nth-child(7),
+            :nth-child(9) {
+              position: relative;
+
+              p {
+                position: absolute;
+                top: 0;
+                width: 100%;
+                padding: 8px 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+
+            :nth-child(9) {
+              text-align: left;
             }
 
             &:hover {
