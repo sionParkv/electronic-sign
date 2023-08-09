@@ -6,7 +6,7 @@ import { MsSql } from '@/db/MsSql'
 const admission = (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[admission] 입원 환자 목록 조회 리퀘스트 %o', req.body)
   const { DEPT_CD, WARD_CD, PTNT_NM } = req.body
-  let query = `exec [UP_S1MOBILE_ADM_LIST_R] '${WARD_CD}', '${DEPT_CD}', '${PTNT_NM}', 'Y'`
+  let query = `exec [UP_S1MOBILE_ADM_LIST_R] '${WARD_CD}', '${DEPT_CD}', '${PTNT_NM}', 'N'`
   MsSql.executeQuery(query)
     .then((result: any) => {
       if (result?.length > 0) {

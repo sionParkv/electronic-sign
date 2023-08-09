@@ -65,20 +65,21 @@ const LoginPage = () => {
         },
         title: '입력 오류'
       })
-    } else if (!pw.length) {
-      return components.openConfirmDialog({
-        contents: '비밀번호를 입력해주세요',
-        ok: {
-          label: '닫기',
-          action: () => {
-            setTimeout(() => {
-              document.getElementsByTagName('input')[3].focus()
-            }, 50)
-          }
-        },
-        title: '입력 오류'
-      })
     }
+    // else if (!pw.length) {
+    //   return components.openConfirmDialog({
+    //     contents: '비밀번호를 입력해주세요',
+    //     ok: {
+    //       label: '닫기',
+    //       action: () => {
+    //         setTimeout(() => {
+    //           document.getElementsByTagName('input')[3].focus()
+    //         }, 50)
+    //       }
+    //     },
+    //     title: '입력 오류'
+    //   })
+    // }
     // else if (!empNm.length) {
     //   return components.openConfirmDialog({
     //     contents: '이름을 입력해주세요',

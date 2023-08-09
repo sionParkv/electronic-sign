@@ -68,12 +68,12 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
     })
   }
 
-  if (!PASS_WORD?.length) {
-    res.json({
-      code: 'FAIL',
-      message: '비밀번호가 전달되지 않았습니다.'
-    })
-  }
+  // if (!PASS_WORD?.length) {
+  //   res.json({
+  //     code: 'FAIL',
+  //     message: '비밀번호가 전달되지 않았습니다.'
+  //   })
+  // }
 }
 
 export default login
