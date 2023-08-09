@@ -26,11 +26,11 @@ const PatientInfo = () => {
 
   useEffect(() => {
     if (localStorage.getItem('patientInfo') !== 'undefined') {
-      tempMethod()
+      patMethod()
     }
   }, [])
 
-  const tempMethod = () => {
+  const patMethod = () => {
     if (
       typeof window !== 'undefined' &&
       localStorage.getItem('patientInfo') !== 'undifined'

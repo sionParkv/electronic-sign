@@ -56,7 +56,7 @@ const PatientList = (props: PatientListProps) => {
 
   useEffect(() => {
     if (localStorage.getItem('patientList') !== 'undefined') {
-      tempMethod()
+      patMethod()
     } else {
       let mapList: any[] = []
       if (stateList) {
@@ -80,7 +80,7 @@ const PatientList = (props: PatientListProps) => {
     //const loadedPat = localStorage.getItem('patinetList')
   }, [state])
 
-  const tempMethod = () => {
+  const patMethod = () => {
     let mapList = []
     if (
       typeof window !== 'undefined' &&
