@@ -150,15 +150,27 @@ const LoginPage = () => {
         <Box className="LoginText">
           <Box>
             <T>사번</T>
-            <TextField defaultValue={empNo} onChange={handleChangeEmpNo} />
+            <TextField
+              defaultValue={empNo}
+              onChange={handleChangeEmpNo}
+              placeholder="필수입력"
+            />
           </Box>
-          <Box>
+          <Box className="Nmae">
             <T>이름</T>
-            <TextField defaultValue={empNm} onChange={handleChangeEmpNm} />
+            <TextField
+              defaultValue={empNm}
+              onChange={handleChangeEmpNm}
+              disabled
+            />
           </Box>
-          <Box>
+          <Box className="Dept">
             <T>부서</T>
-            <TextField defaultValue={dept} onChange={handleChangeDept} />
+            <TextField
+              defaultValue={dept}
+              onChange={handleChangeDept}
+              disabled
+            />
           </Box>
           <Box>
             <T>비밀번호</T>

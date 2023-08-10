@@ -56,7 +56,6 @@ const DatePicker = (props: {
 }
 
 const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
-  state,
   handleStateChange
 }) => {
   const [departments, setDepartments] = useState([])
@@ -135,7 +134,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
 
   useEffect(() => {
     loadItems()
-  }, [state])
+  }, [])
 
   const handleSelect1 = (e: any) => {
     setSelected1(e.target?.value)

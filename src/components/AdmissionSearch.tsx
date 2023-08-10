@@ -58,7 +58,6 @@ const DatePicker = (props: {
 }
 
 const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
-  state,
   handleStateChange
 }) => {
   const [departments, setDepartments] = useState([])
@@ -157,7 +156,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
 
   useEffect(() => {
     loadItems()
-  }, [state])
+  }, [])
 
   return (
     <Container className="SearchBar">
