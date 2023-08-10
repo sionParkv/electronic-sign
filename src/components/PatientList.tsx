@@ -77,7 +77,6 @@ const PatientList = (props: PatientListProps) => {
       }
       setList(mapList)
     }
-    //const loadedPat = localStorage.getItem('patinetList')
   }, [state])
 
   const patMethod = () => {

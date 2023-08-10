@@ -45,25 +45,32 @@ const HomePage = () => {
   }
 
   let cookie = getCookie('loginCookie')
-  let tempCookie
-  let cookieArray: any = []
+  let decodeCookie
+  let loginCookie: any = []
   if (hasCookie('loginCookie')) {
-    tempCookie = AES256.AES_decrypt(cookie)
-    cookieArray = JSON.parse(tempCookie)
+    decodeCookie = AES256.AES_decrypt(cookie)
+    loginCookie = JSON.parse(decodeCookie)
   }
 
   useEffect(() => {
     if (!hasCookie('loginCookie')) {
       router.push('/login')
     } else {
-      cookieArray
-        ? setUserInfo(
-            `${cookieArray[0].EMPL_NM} ${cookieArray[0].DEPT_CD} ${cookieArray[0].EMPL_NO} 님`
-          )
-        : ''
+      if (loginCookie.length) {
+        const { EMPL_NM, DEPT_CD, EMPL_NO } = loginCookie[0]
+        setUserInfo(`${EMPL_NM} ${DEPT_CD} ${EMPL_NO} 님`)
+      }
+
       const getItem = parseInt(localStorage.getItem('newTab')!)
       setTab(getItem ? getItem : 0)
-      if (getItem === 0) {
+
+      const patientList = localStorage.getItem('patientList') || '{}'
+      const jsonPatientList = JSON.parse(patientList)
+      const existsAdmission = jsonPatientList?.admission?.length
+      const existsOutpatient = jsonPatientList?.outpatient?.length
+      const existsSurgery = jsonPatientList?.surgery?.length
+
+      if (getItem === 0 && !existsAdmission) {
         axios
           .post('/api/admission', {
             DEPT_CD: 'ALL',
@@ -88,7 +95,7 @@ const HomePage = () => {
           .catch((error) => {
             console.log(error)
           })
-      } else if (getItem === 1) {
+      } else if (getItem === 1 && !existsOutpatient) {
         axios
           .post('/api/outPatient', {
             CLINIC_YMD: '20220603',
@@ -116,7 +123,7 @@ const HomePage = () => {
           .catch((error) => {
             console.log(error)
           })
-      } else if (getItem === 2) {
+      } else if (getItem === 2 && !existsSurgery) {
         const today = moment()
         axios
           .post('/api/surgery', {
@@ -150,7 +157,6 @@ const HomePage = () => {
   }, [tab])
 
   const propsHeader = {
-    // TODO: 로그인 사용자 정보
     userInfo: userInfo
   }
   return (
@@ -184,7 +190,6 @@ const HomePage = () => {
                 <Tab label="수술" />
               </Tabs>
             </Box>
-
             <React.Fragment>
               <PatientListTabPanel value={tab} index={0}>
                 <components.PatientList tabValue={tab} />
