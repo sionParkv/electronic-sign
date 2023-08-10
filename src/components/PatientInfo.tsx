@@ -40,6 +40,13 @@ const PatientInfo = () => {
     }
   }
 
+  const formatDate = (dateString: string) => {
+    const year = dateString.slice(0, 4)
+    const month = dateString.slice(4, 6)
+    const day = dateString.slice(6, 8)
+    return `${year}년 ${month}월 ${day}일`
+  }
+
   return (
     <Container className="PatientInfo">
       <Box className="PatientTitle">
@@ -52,7 +59,7 @@ const PatientInfo = () => {
             <TableCell component="th">환자명</TableCell>
             <TableCell>{patInfo && patInfo.name}</TableCell>
             <TableCell component="th">진료일</TableCell>
-            <TableCell>{patInfo && patInfo.date}</TableCell>
+            <TableCell>{patInfo && formatDate(patInfo.date)}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell component="th">등록번호</TableCell>
