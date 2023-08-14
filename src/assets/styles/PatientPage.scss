@@ -114,6 +114,51 @@
               .DocumentListContainer {
                 padding: 0;
 
+                .AllList {
+                  display: flex;
+                  flex-direction: row;
+                  padding: 8px 0;
+                  flex-wrap: wrap;
+
+                  :nth-child(1).Mui-expanded ~ :nth-child(4) {
+                    max-height: 0;
+                    overflow: hidden;
+                  }
+
+                  .MuiPaper-elevation {
+                    width: calc(50% - 32px);
+                    padding: 0 13px;
+                    margin: 4px 4px;
+                    border: 1px solid #dce2f2;
+                    background-color: #fafafa;
+
+                    .Title {
+                      padding: 5px 0;
+                      color: black;
+                      @include font(700, 14px, 1.5);
+                    }
+
+                    .MuiCollapse-root {
+                      max-height: 188px;
+                      overflow-y: scroll;
+
+                      p {
+                        font-size: 14px;
+                      }
+                    }
+
+                    &:nth-child(odd) {
+                      min-height: 58px;
+                      margin-left: 0;
+                    }
+
+                    &:nth-child(even) {
+                      min-height: 58px;
+                      margin-right: 0;
+                    }
+                  }
+                }
+
                 .DocumentList {
                   display: flex;
                   flex-direction: row;

@@ -1,4 +1,7 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   Container,
@@ -10,6 +13,7 @@ import {
 } from '@mui/material'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import images from '@/assets/images'
 import axios from 'axios'
@@ -31,6 +35,7 @@ interface Patient {
   diagnosis: string
   doctor: string
 }
+
 const initialPatient: Patient = {
   name: '',
   date: '',
@@ -62,6 +67,8 @@ const Document = (userInfo: any) => {
   const [tabL, setTabL] = useState<number>(0)
   const [tabR, setTabR] = useState<number>(0)
 
+  const [accordionNo, setAccordionNo] = useState<number>(-1)
+
   const [pat, setPat] = useState<Patient>(initialPatient)
   const [tempList, setTempList] = useState([])
   const [givenList, setGivenList] = useState([])
@@ -76,6 +83,16 @@ const Document = (userInfo: any) => {
   const handleChangeR = (event: React.SyntheticEvent, newTab: number) => {
     setTabR(newTab)
   }
+
+  const accordionChange =
+    (index: number) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+      if (isExpanded) {
+        setAccordionNo(index)
+      } else {
+        setAccordionNo(-1)
+      }
+    }
+
   let tempObject: any = []
   if (hasCookie('loginCookie')) {
     let temp = getCookie('loginCookie')
@@ -85,17 +102,17 @@ const Document = (userInfo: any) => {
 
   useEffect(() => {
     if (localStorage.getItem('patientInfo') !== 'undefined') {
-      tempMethod()
+      patMethod()
     }
   }, [])
-  const tempMethod = () => {
+
+  const patMethod = () => {
     if (
       typeof window !== 'undefined' &&
       localStorage.getItem('patientInfo') !== 'undefined'
     ) {
       patInfoList = JSON.parse(localStorage.getItem('patientInfo')!)
       setPat(patInfoList)
-      // patInfo = patInfoList as String)!
     }
   }
 
@@ -133,7 +150,7 @@ const Document = (userInfo: any) => {
 
     await axios
       .post('/api/favoriteList', {
-        EMPL_NO: tempObject[0].EMPL_NO
+        EMPL_NO: tempObject[0]?.EMPL_NO
       })
       .then((response) => {
         setFavoriteList(response?.data?.data)
@@ -142,6 +159,7 @@ const Document = (userInfo: any) => {
         console.log(error)
       })
   }
+
   const handleOpenEform = (index: number) => {
     // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번
     // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO
@@ -161,7 +179,7 @@ const Document = (userInfo: any) => {
 
   useEffect(() => {
     loadItems()
-  }, [pat])
+  }, [])
 
   return (
     <Container className="DocumentContainer">
@@ -242,16 +260,33 @@ const Document = (userInfo: any) => {
             </DocumentListTabPanel>
             <DocumentListTabPanel value={tabR} index={1}>
               <DocumentListContainer>
-                <List className="DocumentList">
+                <Box className="AllList">
                   {list &&
                     list.map((index: any, i) => (
-                      <ListItem key={i}>
-                        <T className="Title" onClick={() => handleOpenEform(i)}>
-                          {index.FORM_NM}
-                        </T>
-                      </ListItem>
+                      <Accordion
+                        key={i}
+                        expanded={accordionNo === index}
+                        onChange={accordionChange(index)}
+                      >
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <T className="Title">{index.CATEGORY_NAME}</T>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          {list &&
+                            list.map((index: any, i) => (
+                              <ListItem key={i}>
+                                <T
+                                  className="Content"
+                                  onClick={() => handleOpenEform(i)}
+                                >
+                                  {index.FORM_NM}
+                                </T>
+                              </ListItem>
+                            ))}
+                        </AccordionDetails>
+                      </Accordion>
                     ))}
-                </List>
+                </Box>
               </DocumentListContainer>
             </DocumentListTabPanel>
           </Box>
