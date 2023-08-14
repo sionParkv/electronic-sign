@@ -1,7 +1,7 @@
 import { Container } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
-import COMP from '../../components'
+import components from '../../components'
 import { getCookie, hasCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
 import { AES256 } from '@/utils/AES256'
@@ -12,37 +12,40 @@ const PatientPage = () => {
   const router = useRouter()
 
   const propsHeader = {
-    // TODO: 로그인 사용자 정보
     userInfo: userInfo
   }
 
   let cookie = getCookie('loginCookie')
   let tempCookie
-  let cookieArray: any = []
+  let loginCookie: any = []
   if (hasCookie('loginCookie')) {
     tempCookie = AES256.AES_decrypt(cookie)
-    cookieArray = JSON.parse(tempCookie)
+    loginCookie = JSON.parse(tempCookie)
   }
 
   useEffect(() => {
     if (!hasCookie('loginCookie')) {
       router.push('/login')
+    } else {
+      if (loginCookie.length) {
+        const { EMPL_NM, DEPT_CD, EMPL_NO } = loginCookie[0]
+        setUserInfo(`${EMPL_NM} ${DEPT_CD} ${EMPL_NO} 님`)
+      }
     }
-    cookieArray
-      ? setUserInfo(
-          `${cookieArray[0].EMPL_NM} ${cookieArray[0].DEPT_CD} ${cookieArray[0].EMPL_NO} 님`
-        )
-      : ''
   }, [])
 
   return (
     <Container className={className}>
-      <COMP.Header {...propsHeader} />
-      <Container>
-        <COMP.PatientInfo />
-        <COMP.Document userInfo={userInfo} />
-      </Container>
-      <COMP.Footer />
+      {hasCookie('loginCookie') && (
+        <React.Fragment>
+          <components.Header {...propsHeader} />
+          <Container>
+            <components.PatientInfo />
+            <components.Document userInfo={userInfo} />
+          </Container>
+          <components.Footer />
+        </React.Fragment>
+      )}
     </Container>
   )
 }
