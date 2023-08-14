@@ -20,11 +20,11 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
           data: result
         })
       }
-      // else if (EMPL_NM !== result[0]?.EMPL_NM) {
-      //   logger.debug('[login] 이름이 불일치 합니다.')
+      // else if (PASS_WORD !== result[0]?.PASS_WORD) {
+      //   logger.debug('[login] 패스워드가 불일치 합니다.')
       //   res.json({
       //     code: 'FAIL',
-      //     message: '이름이 불일치 합니다.',
+      //     message: '패스워드가 불일치 합니다.',
       //     data: result
       //   })
       // }
@@ -52,11 +52,11 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
       error &&
         error.message &&
         logger.error(
-          `[admission] 입원 환자 목록 조회 중 오류가 발생 하였습니다. : ${error.messgae}`
+          `[login] 로그인 중 오류가 발생 하였습니다. : ${error.messgae}`
         )
       res.json({
         code: 'FAIL',
-        meesage: '입원 환자 목록 조회 중 오류가 발생 하였습니다.',
+        meesage: '로그인 중 오류가 발생 하였습니다.',
         error: error.message
       })
     })

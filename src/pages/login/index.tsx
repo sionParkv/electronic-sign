@@ -16,8 +16,6 @@ import { hasCookie } from 'cookies-next'
 
 const LoginPage = () => {
   const [empNo, setEmpNo] = useState('')
-  const [empNm, setEmpNm] = useState('')
-  const [dept, setDept] = useState('')
   const [pw, setPw] = useState('')
   const className = 'Pages LoginPage'
   const router = useRouter()
@@ -36,22 +34,23 @@ const LoginPage = () => {
     setPw(pwValue)
   }
 
-  const handleChangeEmpNm = (e: any) => {
-    const empNmValue = e.target.value
-    setEmpNm(empNmValue)
-  }
-
-  const handleChangeDept = (e: any) => {
-    const pwValue = e.target.value
-    setDept(pwValue)
+  const inputValue = () => {
+    axios
+      .post('/api/login', {
+        EMPL_NO: empNo,
+        PASS_WORD: pw
+      })
+      .then((response) => {
+        if (response.data.code === 'OK') {
+          document.getElementsByTagName('input')[1].value =
+            response.data.data[0].EMPL_NM
+          document.getElementsByTagName('input')[2].value =
+            response.data.data[0].DEPT_GB
+        }
+      })
   }
 
   const handleLogin = () => {
-    console.log({
-      EMPL_NO: empNo,
-      PASS_WORD: pw
-    })
-
     if (!empNo.length) {
       return components.openConfirmDialog({
         contents: '사번을 입력해주세요',
@@ -65,59 +64,30 @@ const LoginPage = () => {
         },
         title: '입력 오류'
       })
+    } else if (!pw.length) {
+      return components.openConfirmDialog({
+        contents: '비밀번호를 입력해주세요',
+        ok: {
+          label: '닫기',
+          action: () => {
+            setTimeout(() => {
+              document.getElementsByTagName('input')[3].focus()
+            }, 50)
+          }
+        },
+        title: '입력 오류'
+      })
     }
-    // else if (!pw.length) {
-    //   return components.openConfirmDialog({
-    //     contents: '비밀번호를 입력해주세요',
-    //     ok: {
-    //       label: '닫기',
-    //       action: () => {
-    //         setTimeout(() => {
-    //           document.getElementsByTagName('input')[3].focus()
-    //         }, 50)
-    //       }
-    //     },
-    //     title: '입력 오류'
-    //   })
-    // }
-    // else if (!empNm.length) {
-    //   return components.openConfirmDialog({
-    //     contents: '이름을 입력해주세요',
-    //     ok: {
-    //       label: '닫기',
-    //       action: () => {
-    //         setTimeout(() => {
-    //           document.getElementsByTagName('input')[1].focus()
-    //         }, 50)
-    //       }
-    //     },
-    //     title: '입력 오류'
-    //   })
-    // } else if (!dept.length) {
-    //   return components.openConfirmDialog({
-    //     contents: '부서를 입력해주세요',
-    //     ok: {
-    //       label: '닫기',
-    //       action: () => {
-    //         setTimeout(() => {
-    //           document.getElementsByTagName('input')[2].focus()
-    //         }, 50)
-    //       }
-    //     },
-    //     title: '입력 오류'
-    //   })
-    // }
 
     axios
       .post('/api/login', {
         EMPL_NO: empNo,
-        EMPL_NM: empNm,
-        DEPT: dept,
         PASS_WORD: pw
       })
       .then((response) => {
-        console.log('response.data:: ', response.data)
         if (response.data.code === 'OK') {
+          console.log(response.data.data[0].EMPL_NM)
+
           router.push('/')
         } else {
           components.openConfirmDialog({
@@ -126,7 +96,7 @@ const LoginPage = () => {
               label: '닫기',
               action: () => {
                 setTimeout(() => {
-                  document.getElementsByTagName('input')[3].focus()
+                  document.getElementsByTagName('input')[0].focus()
                 }, 50)
               }
             },
@@ -154,23 +124,16 @@ const LoginPage = () => {
               defaultValue={empNo}
               onChange={handleChangeEmpNo}
               placeholder="필수입력"
+              onBlur={inputValue}
             />
           </Box>
           <Box className="Nmae">
             <T>이름</T>
-            <TextField
-              defaultValue={empNm}
-              onChange={handleChangeEmpNm}
-              disabled
-            />
+            <TextField disabled />
           </Box>
           <Box className="Dept">
             <T>부서</T>
-            <TextField
-              defaultValue={dept}
-              onChange={handleChangeDept}
-              disabled
-            />
+            <TextField disabled />
           </Box>
           <Box>
             <T>비밀번호</T>
