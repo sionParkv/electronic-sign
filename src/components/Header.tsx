@@ -21,11 +21,7 @@ const Header = (props: { userInfo: string }) => {
   const [open, setOpen] = useState(false)
   const router = useRouter()
 
-  const data = [
-    { name: '모바일 전자 동의서' },
-    { name: 'Inbox' },
-    { name: 'Outbox' }
-  ]
+  const data = [{ name: '모바일 전자 동의서' }]
 
   const logout = () => {
     deleteCookie('loginCookie')
@@ -37,17 +33,21 @@ const Header = (props: { userInfo: string }) => {
       <Button startIcon={<KeyboardArrowUpIcon />}>Close</Button>
       <Image src={IMGS.WhiteLogo} alt="Logo" />
       {data.map((item, index) => (
-        <ListItem key={index}>
+        <ListItem key={index} onClick={mainLogo}>
           <ListItemText primary={item.name} />
         </ListItem>
       ))}
     </div>
   )
 
+  const mainLogo = () => {
+    router.push('/')
+  }
+
   return (
     <AppBar className="Header">
       <Toolbar>
-        <Button className="Logo">
+        <Button className="Logo" onClick={mainLogo}>
           <Image src={IMGS.Logo} alt="Logo" />
         </Button>
         <T>{userInfo}</T>
