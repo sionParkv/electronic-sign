@@ -36,16 +36,16 @@ const PatientPage = () => {
 
   return (
     <Container className={className}>
-      {hasCookie('loginCookie') && (
-        <React.Fragment>
-          <components.Header {...propsHeader} />
-          <Container>
-            <components.PatientInfo />
-            <components.Document userInfo={userInfo} />
-          </Container>
-          <components.Footer />
-        </React.Fragment>
-      )}
+      {/* {hasCookie('loginCookie') && (
+        <React.Fragment> */}
+      <components.Header {...propsHeader} />
+      <Container>
+        <components.PatientInfo />
+        <components.Document userInfo={userInfo} />
+      </Container>
+      <components.Footer />
+      {/* </React.Fragment>
+      )} */}
     </Container>
   )
 }
