@@ -1,3 +1,7 @@
+/**
+ * 즐겨찾기 문서 조회 api.
+ */
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { MsSql } from '@/db/MsSql'

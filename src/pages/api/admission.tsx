@@ -1,3 +1,7 @@
+/**
+ * 입원 조회 api.
+ */
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { logger } from '@/utils/Winston'

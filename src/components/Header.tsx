@@ -1,3 +1,7 @@
+/**
+ * 상단 Header 컴포넌트
+ */
+
 import MenuIcon from '@mui/icons-material/Menu'
 import {
   AppBar,
@@ -21,13 +25,16 @@ const Header = (props: { userInfo: string }) => {
   const [open, setOpen] = useState(false)
   const router = useRouter()
 
+  // Drawer 데이터
   const data = [{ name: '모바일 전자 동의서' }]
 
+  // 로그아웃 클릭 이벤트
   const logout = () => {
     deleteCookie('loginCookie')
     router.push('/login')
   }
 
+  // Drawer 컴포넌트
   const getList = () => (
     <div onClick={() => setOpen(false)} className="DrawerMenu">
       <Button startIcon={<KeyboardArrowUpIcon />}>Close</Button>
@@ -40,6 +47,7 @@ const Header = (props: { userInfo: string }) => {
     </div>
   )
 
+  // 좌측 메인로고 클릭 이벤트
   const mainLogo = () => {
     router.push('/')
   }

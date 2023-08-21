@@ -1,3 +1,7 @@
+/**
+ * 하단 Footer 컴포넌트
+ */
+
 import { Container, Typography as T } from '@mui/material'
 import Image from 'next/image'
 import React from 'react'

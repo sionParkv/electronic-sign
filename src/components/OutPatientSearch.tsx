@@ -1,3 +1,7 @@
+/**
+ * 외래 조회 컴포넌트
+ */
+
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
@@ -35,6 +39,7 @@ interface OutPatientSearchProps {
   handleStateChange: (newList: any) => void
 }
 
+// 날짜 포맷 레이아웃
 const DatePicker = (props: {
   defaultValue: string
   onChange: React.ChangeEventHandler
@@ -67,6 +72,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   )
   const [patNm, setPatNm] = useState('')
 
+  // 진료과, 진료의 api 호출
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -95,6 +101,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     }
   }
 
+  // 조회 클릭 이벤트
   const patSearch = async () => {
     await axios
       .post('/api/outPatient', {
@@ -137,6 +144,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     loadItems()
   }, [])
 
+  // 진료과 상태관리
   const handleSelect1 = (e: any) => {
     setSelected1(e.target?.value)
     axios
@@ -151,10 +159,13 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         console.log(error)
       })
   }
+
+  // 진료의 상태관리
   const handleSelect2 = (e: any) => {
     setSelected2(e.target?.value)
   }
 
+  // 초기화 버튼 클릭 이벤트
   const handleReset = () => {
     localStorage.removeItem('filters')
     setSelected1('-')
@@ -162,9 +173,11 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     setPatNm('')
   }
 
+  // 날짜 상태관리
   const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value)
   }
+  // 환자 인풋박스 상태관리
   const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatNm(event.target.value)
   }

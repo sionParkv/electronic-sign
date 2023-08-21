@@ -1,3 +1,7 @@
+/**
+ * 환자 정보 컴포넌트
+ */
+
 import {
   Box,
   Container,
@@ -24,6 +28,7 @@ interface Patient {
 const PatientInfo = () => {
   const [patInfo, setList] = useState<Patient>()
 
+  // localStorage 데이터가 있을 때만 로드 되도록
   useEffect(() => {
     if (localStorage.getItem('patientInfo') !== 'undefined') {
       patMethod()
@@ -36,10 +41,10 @@ const PatientInfo = () => {
       localStorage.getItem('patientInfo') !== 'undifined'
     ) {
       setList(JSON.parse(localStorage.getItem('patientInfo')!))
-      // patInfo = patInfoList as String)!
     }
   }
 
+  // 진료일 년월일 포맷
   const formatDate = (dateString: string) => {
     const year = dateString.slice(0, 4)
     const month = dateString.slice(4, 6)

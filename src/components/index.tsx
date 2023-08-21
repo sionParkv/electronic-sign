@@ -6,7 +6,6 @@ import PatientInfo from './PatientInfo'
 import Document from './Document'
 import AdmissionSearch from './AdmissionSearch'
 import SurgerySearch from './SurgerySearch'
-import Popup from './Popup'
 import {
   closeConfirmDialog,
   openConfirmDialog,
@@ -24,8 +23,7 @@ const components = {
   PatientInfo,
   Document,
   AdmissionSearch,
-  SurgerySearch,
-  Popup
+  SurgerySearch
 }
 
 export default components

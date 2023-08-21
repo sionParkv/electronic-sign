@@ -1,3 +1,7 @@
+/**
+ * 로그인 api.
+ */
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { setCookie } from 'cookies-next'
 

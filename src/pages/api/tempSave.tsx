@@ -1,3 +1,7 @@
+/**
+ * 임시 동의서 저장 api.
+ */
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { logger } from '@/utils/Winston'
