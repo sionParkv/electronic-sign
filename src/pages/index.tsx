@@ -96,10 +96,12 @@ const HomePage = () => {
             console.log(error)
           })
       } else if (getItem === 1 && !existsOutpatient) {
+        const today = moment()
         axios
           .post('/api/outPatient', {
-            CLINIC_YMD: '20220603',
-            // CLINIC_YMD : selectedDate,
+            // CLINIC_YMD: '20220603',
+            // TODO: 임시 테스트를 위해 날짜 고정
+            CLINIC_YMD: today.format('YYYYMMDD'),
             DEPT_CD: 'ALL',
             DOCT_EMPL_NO: 'ALL',
             PTNT_NM: ''
