@@ -138,12 +138,20 @@
                       @include font(700, 14px, 1.5);
                     }
 
+                    .MuiAccordionDetails-root {
+                      padding: 0;
+                    }
+
+                    .MuiButtonBase-root {
+                      padding: 0 0 0 5px;
+                    }
+
                     .MuiCollapse-root {
                       max-height: 188px;
                       overflow-y: scroll;
 
                       p {
-                        font-size: 14px;
+                        font-size: 12px;
                       }
                     }
 

@@ -164,7 +164,7 @@ const Document = (userInfo: any) => {
     // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번
     // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO
     const userNo = user?.match(/\d+/g).join('')
-    const formInfo: { FORM_CD: string; FORM_NM: string } = favoriteList[index]
+    const formInfo: { FORM_CD: Number; FORM_NM: string } = favoriteList[index]
     const iOrO = pat.division === '외래' ? 'O' : 'I'
     const sendForm = encodeURI(
       `http://210.107.85.110:8080/ClipReport5/eform2.jsp?FILE_NAME=${formInfo.FORM_NM}&RECEPT_NO=${pat.receptNo}&FORM_CD=${formInfo.FORM_CD}&PTNT_NO=${pat.number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
