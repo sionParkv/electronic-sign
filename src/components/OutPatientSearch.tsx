@@ -99,7 +99,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     await axios
       .post('/api/outPatient', {
         CLINIC_YMD: '20220603',
-        // CLINIC_YMD : selectedDate.replace(/[-.]/g, ''),
+        // TODO: 임시 테스트를 위해 날짜 고정
+        // CLINIC_YMD: selectedDate.replace(/[-.]/g, ''),
         DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
         DOCT_EMPL_NO: selected2 === '-' ? 'ALL' : selected2,
         PTNT_NM: patNm
