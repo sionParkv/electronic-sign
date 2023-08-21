@@ -1,3 +1,7 @@
+/**
+ * 수술 조회 컴포넌트
+ */
+
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
@@ -38,6 +42,7 @@ interface SurgerySearchProps {
   handleStateChange: (newList: any) => void
 }
 
+// 날짜 포맷
 const DatePicker = (props: {
   defaultValue: string
   onChange: React.ChangeEventHandler
@@ -74,6 +79,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const [selected3, setSelected3] = useState('-')
   const [patNm, setPatNm] = useState('')
 
+  // 진료과, 마취구분, 수술구분 api 호출
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -121,6 +127,8 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const handleSelect3 = (e: any) => {
     setSelected3(e.target?.value)
   }
+
+  // 수술 조회 클릭 이벤트
   const patSearch = async () => {
     await axios
       .post('/api/surgery', {
@@ -159,14 +167,17 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
         console.log(error)
       })
   }
+
+  // 환자명 인풋박스 상태관리
   const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatNm(event.target.value)
   }
-
+  // 날짜 포맷 상태관리
   const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value)
   }
 
+  // 초기화 버튼 클릭 이벤트
   const handleReset = () => {
     localStorage.removeItem('filters')
     setSelected1('-')

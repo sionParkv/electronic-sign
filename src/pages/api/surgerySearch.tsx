@@ -1,3 +1,7 @@
+/**
+ * 수술 구분 조회 api.
+ */
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { MsSql } from '@/db/MsSql'

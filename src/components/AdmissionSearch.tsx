@@ -1,3 +1,7 @@
+/**
+ * 입원 조회 컴포넌트
+ */
+
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
@@ -36,6 +40,7 @@ interface AdmissionSearchProps {
   handleStateChange: (newList: any) => void
 }
 
+// 달력 UI 포맷
 const DatePicker = (props: {
   defaultValue: string
   onChange: React.ChangeEventHandler
@@ -68,8 +73,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD')
   )
-  console.log(departments)
-  console.log(wards)
+
+  // api 호출
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -97,15 +102,18 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
     }
   }
 
+  // 진료과 상태관리
   const handleSelect1 = (e: any) => {
     console.log('departments:: ', e.target.value)
     setSelected1(e.target?.value)
   }
+  // 병동 상태관리
   const handleSelect2 = (e: any) => {
     console.log('wards:: ', e.target.value)
     setSelected2(e.target?.value)
   }
 
+  // 조회 버튼 클릭 이벤트
   const patSearch = async () => {
     await axios
       .post('/api/admission', {
@@ -139,14 +147,15 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         console.log(error)
       })
   }
+  // 환자 인풋박스 상태관리
   const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatNm(event.target.value)
   }
-
+  // 날짜 상태관리
   const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value)
   }
-
+  // 초기화 버튼 이벤트
   const handleReset = () => {
     localStorage.removeItem('filters')
     setSelected1('-')

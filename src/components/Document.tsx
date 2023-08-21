@@ -1,3 +1,7 @@
+/**
+ * 문서 목록 컴포넌트
+ */
+
 import {
   Accordion,
   AccordionDetails,
@@ -20,6 +24,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { getCookie, hasCookie } from 'cookies-next'
 import { AES256 } from '@/utils/AES256'
+import components from '.'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -76,14 +81,15 @@ const Document = (userInfo: any) => {
   const [favoriteList, setFavoriteList] = useState([])
   const router = useRouter()
 
+  // 작성서식 목록 탭 상태관리
   const handleChangeL = (event: React.SyntheticEvent, newTab: number) => {
     setTabL(newTab)
   }
-
+  // 서식 목록 탭 상태관리
   const handleChangeR = (event: React.SyntheticEvent, newTab: number) => {
     setTabR(newTab)
   }
-
+  // 전체 문서 아코디언 상태관리
   const accordionChange =
     (index: number) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
       if (isExpanded) {
@@ -93,6 +99,7 @@ const Document = (userInfo: any) => {
       }
     }
 
+  // 쿠기 있을 시 자동 로그인
   let tempObject: any = []
   if (hasCookie('loginCookie')) {
     let temp = getCookie('loginCookie')
@@ -116,6 +123,7 @@ const Document = (userInfo: any) => {
     }
   }
 
+  // 문서 api 호출
   const loadItems = async () => {
     await axios
       .post('/api/tempList', {
@@ -160,6 +168,7 @@ const Document = (userInfo: any) => {
       })
   }
 
+  // 문서 클릭 시 호출 이벤트
   const handleOpenEform = (index: number) => {
     // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번
     // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO
@@ -173,6 +182,17 @@ const Document = (userInfo: any) => {
     router.push(sendForm)
   }
 
+  const completeEform = () => {
+    return components.openConfirmDialog({
+      contents: 'http://210.107.85.110:8080/ClipReport5/eform2.jsp',
+      ok: {
+        label: '닫기'
+      },
+      title: ''
+    })
+  }
+
+  // 목록 버튼 클릭 이벤트
   const backPage = () => {
     router.push('/')
   }
@@ -219,7 +239,9 @@ const Document = (userInfo: any) => {
                   {givenList ? (
                     givenList.map((index: any, i) => (
                       <ListItem key={i}>
-                        <T className="Title">{index.FORM_NM}</T>
+                        <T className="Title" onClick={() => completeEform()}>
+                          {index.FORM_NM}
+                        </T>
                       </ListItem>
                     ))
                   ) : (
