@@ -9,6 +9,12 @@ import { logger } from '@/utils/Winston'
 import { MsSql } from '@/db/MsSql'
 import { Readable } from 'stream'
 
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const fs = require('fs')
+const path = require('path')
+
 const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[completeSave] 작성완료 동의서 저장 리퀘스트 %o', req.body)
   const {
@@ -36,8 +42,10 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
         meesage: '작성완료 동의서 저장에 성공 하였습니다.'
       })
 
-      const allowedOrigins = ['210.107.85.113']
+      const allowedOrigins = ['https://210.107.85.113']
       const origin: any = req.headers.origin
+
+      app.use(bodyParser.json())
 
       if (allowedOrigins.includes(origin)) {
         // 허용된 도메인일 경우 해당 도메인을 허용합니다.
@@ -51,12 +59,6 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
       )
 
       // 이원서버에 이미지 저장
-      const express = require('express')
-      const app = express()
-      const bodyParser = require('body-parser')
-      const fs = require('fs')
-      const path = require('path')
-
       app.use(bodyParser.urlencoded({ extended: true }))
       app.use(bodyParser.json())
 
