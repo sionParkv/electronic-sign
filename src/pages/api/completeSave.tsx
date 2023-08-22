@@ -12,6 +12,7 @@ import { Readable } from 'stream'
 
 const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[completeSave] 작성완료 동의서 저장 리퀘스트 %o', req.body)
+  res.setHeader('Access-Control-Allow-Origin', '*')
   const {
     RECEPT_NO,
     FORM_CD,
