@@ -36,6 +36,20 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
         meesage: '작성완료 동의서 저장에 성공 하였습니다.'
       })
 
+      const allowedOrigins = ['210.107.85.113']
+      const origin: any = req.headers.origin
+
+      if (allowedOrigins.includes(origin)) {
+        // 허용된 도메인일 경우 해당 도메인을 허용합니다.
+        res.setHeader('Access-Control-Allow-Origin', origin)
+      }
+
+      res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE')
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+      )
+
       // 이원서버에 이미지 저장
       const express = require('express')
       const app = express()
@@ -46,7 +60,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
       app.use(bodyParser.urlencoded({ extended: true }))
       app.use(bodyParser.json())
 
-      const saveDirectory = path.join('$C$app', TEMP)
+      const saveDirectory = path.join('/C/app', TEMP)
 
       if (!fs)
         if (!fs.existsSync(saveDirectory)) {
