@@ -43,22 +43,28 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
       try {
         fs.writeFileSync(filePath, TEMP)
         logger.debug('Data saved successfully')
-        // ftp서버에 이미지 저장
-        const client = new ftp.Client()
-        client.ftp.verbose = true
-
-        client.access({
-          host: '192.168.100.207',
-          user: 'medimcc',
-          password: 'Medi3574mcc',
-          port: 21
-        })
-        client.cd('/test') // 서버에 접속 후, 업로드할 폴더로 이동
-        client.uploadFrom(fileName, filePath)
-        res.json({
-          code: 'OK',
-          message: '동의서 저장에 성공 하였습니다.'
-        })
+        upload(fileName, filePath)
+          .then((result) => {
+            if (result) {
+              res.json({
+                code: 'OK',
+                message: '동의서 저장에 성공 하였습니다.'
+              })
+            } else {
+              res.json({
+                code: 'FAIL',
+                message: '동의서 저장에 실패 하였습니다.'
+              })
+            }
+          })
+          .catch((error) => {
+            logger.error(`TEST : ${error}`)
+            res.json({
+              code: 'FAIL',
+              message: 'FTP 업로드중 오류가 발생 하였습니다.',
+              error: error
+            })
+          })
       } catch (error) {
         logger.error('Error saving data:', error)
         res.json({
@@ -80,6 +86,30 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
         error: error.message
       })
     })
+  async function upload(fileName: any, filePath: string) {
+    return new Promise(function (resolve, reject) {
+      const client = new ftp.Client()
+      client.ftp.verbose = true // 통신 상세 과정 볼거면 true, 아니면 false
+
+      try {
+        client.access({
+          host: '192.168.100.207',
+          user: 'medimcc',
+          password: 'Medi3574mcc',
+          port: 21
+        })
+        client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
+        client.uploadFrom(fileName, filePath)
+        resolve(true)
+      } catch (error) {
+        logger.error('Error saving data:', error)
+        reject(error)
+      }
+
+      client.close()
+      resolve(true)
+    })
+  }
 }
 
 export default completeSave
