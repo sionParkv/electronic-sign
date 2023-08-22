@@ -90,21 +90,26 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
     return new Promise(function (resolve, reject) {
       const client = new ftp.Client()
       client.ftp.verbose = true // 통신 상세 과정 볼거면 true, 아니면 false
-
-      try {
-        client.access({
+      logger.debug('1111111')
+      client
+        .access({
           host: '192.168.100.207',
           user: 'medimcc',
           password: 'Medi3574mcc',
           port: 21
         })
-        client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
-        client.uploadFrom(fileName, filePath)
-        resolve(true)
-      } catch (error) {
-        logger.error('Error saving data:', error)
-        reject(error)
-      }
+        .then((result) => {
+          logger.debug('%o', result)
+          logger.debug('22222222')
+          client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
+          logger.debug('333333333')
+          client.uploadFrom(fileName, filePath)
+          logger.debug('4444444')
+        })
+        .catch((error) => {
+          logger.error(`TEST ERROR : ${error}`)
+          reject(error)
+        })
 
       client.close()
       resolve(true)
