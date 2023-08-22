@@ -39,7 +39,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
 
       const currentDate = new Date().toISOString().replace(/:/g, '-')
       const fileName = currentDate + '.jpg'
-      const filePath = saveDirectory + fileName
+      const filePath = saveDirectory + '\\' + fileName
       try {
         fs.writeFileSync(filePath, TEMP)
         logger.debug('Data saved successfully')
@@ -55,6 +55,10 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
         })
         client.cd('C:\\') // 서버에 접속 후, 업로드할 폴더로 이동
         client.uploadFrom(fileName, filePath)
+        res.json({
+          code: 'OK',
+          message: '동의서 저장에 성공 하였습니다.'
+        })
       } catch (error) {
         logger.error('Error saving data:', error)
         res.json({
