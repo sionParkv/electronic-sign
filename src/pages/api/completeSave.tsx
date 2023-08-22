@@ -33,8 +33,8 @@ const upload = (fileName: any, filePath: string) =>
 
     try {
       logger.debug('FTP Client connection response: %o', response)
-      response = await client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
-      logger.debug('FTP Client change directory response: %o', response)
+      // response = await client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
+      // logger.debug('FTP Client change directory response: %o', response)
       response = await client.uploadFrom(filePath, fileName)
       logger.debug('FTP Client file upload response: %o', response)
       resolve(true)
