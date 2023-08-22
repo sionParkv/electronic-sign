@@ -117,13 +117,13 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
               logger.error(`TEST2 ERROR : ${error}`)
               reject(error)
             })
+            .finally(() => {
+              client.close()
+            })
         })
         .catch((error) => {
           logger.error(`TEST ERROR : ${error}`)
           reject(error)
-        })
-        .finally(() => {
-          client.close()
         })
     })
   }
