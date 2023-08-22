@@ -8,7 +8,6 @@ import fs, { existsSync, mkdirSync } from 'fs'
 
 import { logger } from '@/utils/Winston'
 import { MsSql } from '@/db/MsSql'
-import { Readable } from 'stream'
 
 const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[completeSave] 작성완료 동의서 저장 리퀘스트 %o', req.body)
@@ -39,53 +38,31 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       const currentDate = new Date().toISOString().replace(/:/g, '-')
-      const fileName = currentDate
-      const filePath = saveDirectory + fileName + '.jpg'
+      const fileName = currentDate + '.jpg'
+      const filePath = saveDirectory + fileName
+      try {
+        fs.writeFileSync(filePath, TEMP)
+        logger.debug('Data saved successfully')
+        // ftp서버에 이미지 저장
+        const client = new ftp.Client()
+        client.ftp.verbose = true
 
-      fs.writeFile(filePath, TEMP, (err: any) => {
-        if (err) {
-          logger.error('Error saving data:', err)
-          res.json({
-            code: 'FAIL',
-            message: '이미지 파일 저장 중 오류가 발생 하였습니다.',
-            error: err.message
-          })
-        } else {
-          logger.debug('Data saved successfully')
-          // ftp서버에 이미지 저장
-          const client = new ftp.Client()
-
-          client.access({
-            host: '192.168.100.207',
-            user: 'medimcc',
-            password: 'Medi3574mcc',
-            port: 21
-          })
-
-          const source = new Readable()
-          source.push(TEMP)
-          source.push(null)
-
-          client
-            .uploadFrom(source, '')
-            .then(() => {
-              logger.debug('업로드 성공')
-              res.json({
-                code: 'OK',
-                meesage: '작성완료 동의서 저장에 성공 하였습니다.'
-              })
-            })
-            .catch((e) => {
-              logger.error(e)
-              res.json({
-                code: 'FAIL',
-                message: 'FTP업로드에 실패 하였습니다.',
-                error: e.message
-              })
-            })
-          client.close()
-        }
-      })
+        client.access({
+          host: '192.168.100.207',
+          user: 'medimcc',
+          password: 'Medi3574mcc',
+          port: 21
+        })
+        client.cd('C:\\') // 서버에 접속 후, 업로드할 폴더로 이동
+        client.uploadFrom(fileName, filePath)
+      } catch (error) {
+        logger.error('Error saving data:', error)
+        res.json({
+          code: 'FAIL',
+          message: '이미지 파일 저장 중 오류가 발생 하였습니다.',
+          error: error
+        })
+      }
     })
     .catch((error) => {
       error &&
