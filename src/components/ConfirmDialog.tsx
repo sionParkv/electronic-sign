@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   Button,
   Dialog,
@@ -24,7 +25,7 @@ import { createRoot } from 'react-dom/client'
  * @returns {React.Component} 확인 대화상자 컴포넌트.
  */
 const ConfirmDialog = (props: any) => {
-  const { cancel, className, contents, ok, title } = props
+  const { cancel, className, contents, ok, title, imageUrl } = props
   const [open, setOpen] = useState(true)
   const clsConfirmDialog = 'ConfirmDialog ' + className
 
@@ -72,6 +73,7 @@ const ConfirmDialog = (props: any) => {
       )}
       {contents && (
         <DialogContent className="ConfirmDialogContents">
+          <img src={imageUrl} alt="Img" />
           {contents}
         </DialogContent>
       )}
