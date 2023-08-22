@@ -104,10 +104,18 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
           logger.debug('22222222')
           client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
           logger.debug('333333333')
-          client.uploadFrom(fileName, filePath)
-          logger.debug('4444444')
-          client.close()
-          resolve(true)
+          client
+            .uploadFrom(fileName, filePath)
+            .then((result2) => {
+              logger.debug('>>>>>> %o', result2)
+              logger.debug('4444444')
+              client.close()
+              resolve(true)
+            })
+            .catch((error) => {
+              logger.error(`TEST2 ERROR : ${error}`)
+              reject(error)
+            })
         })
         .catch((error) => {
           logger.error(`TEST ERROR : ${error}`)
