@@ -32,7 +32,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
         result
       )
 
-      const saveDirectory = 'C:\\app' + TEMP
+      const saveDirectory = 'C:\\app\\images'
 
       if (!existsSync(saveDirectory)) {
         mkdirSync(saveDirectory)
