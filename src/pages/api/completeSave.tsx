@@ -25,7 +25,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
   } = req.body
   let query = `exec [UP_S1MOBILE_PTNT_EFORM_C] ${RECEPT_NO}, ${FORM_CD}, '${FILE_NM}', ${SEQ}, '${UPLOAD_NM}', ${PTNT_NO}, '${IO_GB}', ${ENT_EMPL_NO}, 'MOBILE', '${EFORM_DATA}', 'Y'`
   MsSql.executeQuery(query)
-    .then((result: any) => {
+    .then(async (result: any) => {
       logger.debug(
         '[completeSave] 작성완료 동의서 저장에 성공 하였습니다. %o',
         result
@@ -86,7 +86,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
         error: error.message
       })
     })
-  async function upload(fileName: any, filePath: string) {
+  function upload(fileName: any, filePath: string) {
     return new Promise(function (resolve, reject) {
       const client = new ftp.Client()
       client.ftp.verbose = true // 통신 상세 과정 볼거면 true, 아니면 false
@@ -106,14 +106,13 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
           logger.debug('333333333')
           client.uploadFrom(fileName, filePath)
           logger.debug('4444444')
+          client.close()
+          resolve(true)
         })
         .catch((error) => {
           logger.error(`TEST ERROR : ${error}`)
           reject(error)
         })
-
-      client.close()
-      resolve(true)
     })
   }
 }
