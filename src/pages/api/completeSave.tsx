@@ -107,7 +107,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
           client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
           logger.debug('333333333')
           client
-            .uploadFrom(fileName, filePath)
+            .uploadFrom(filePath, fileName)
             .then((result2) => {
               logger.debug('>>>>>> %o', result2)
               logger.debug('4444444')
