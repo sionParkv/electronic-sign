@@ -40,18 +40,18 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
 
       const currentDate = new Date().toISOString().replace(/:/g, '-')
       const fileName = currentDate
-      const filePath = saveDirectory + fileName
+      const filePath = saveDirectory + fileName + '.jpg'
 
       fs.writeFile(filePath, TEMP, (err: any) => {
         if (err) {
-          console.error('Error saving data:', err)
+          logger.error('Error saving data:', err)
           res.json({
             code: 'FAIL',
             message: '이미지 파일 저장 중 오류가 발생 하였습니다.',
             error: err.message
           })
         } else {
-          console.log('Data saved successfully')
+          logger.debug('Data saved successfully')
           // ftp서버에 이미지 저장
           const client = new ftp.Client()
 
@@ -69,14 +69,14 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
           client
             .uploadFrom(source, '')
             .then(() => {
-              console.log('업로드 성공')
+              logger.debug('업로드 성공')
               res.json({
                 code: 'OK',
                 meesage: '작성완료 동의서 저장에 성공 하였습니다.'
               })
             })
             .catch((e) => {
-              console.log(e)
+              logger.error(e)
               res.json({
                 code: 'FAIL',
                 message: 'FTP업로드에 실패 하였습니다.',
