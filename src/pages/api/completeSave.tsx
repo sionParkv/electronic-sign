@@ -111,7 +111,6 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
             .then((result2) => {
               logger.debug('>>>>>> %o', result2)
               logger.debug('4444444')
-              client.close()
               resolve(true)
             })
             .catch((error) => {
@@ -122,6 +121,9 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
         .catch((error) => {
           logger.error(`TEST ERROR : ${error}`)
           reject(error)
+        })
+        .finally(() => {
+          client.close()
         })
     })
   }
