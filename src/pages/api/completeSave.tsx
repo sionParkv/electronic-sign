@@ -96,7 +96,8 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
           host: '192.168.100.207',
           user: 'medimcc',
           password: 'Medi3574mcc',
-          port: 21
+          port: 21,
+          secure: false
         })
         .then((result) => {
           logger.debug('%o', result)
