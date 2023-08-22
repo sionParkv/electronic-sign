@@ -53,7 +53,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
           password: 'Medi3574mcc',
           port: 21
         })
-        client.cd('C:\\') // 서버에 접속 후, 업로드할 폴더로 이동
+        client.cd('/test') // 서버에 접속 후, 업로드할 폴더로 이동
         client.uploadFrom(fileName, filePath)
         res.json({
           code: 'OK',
