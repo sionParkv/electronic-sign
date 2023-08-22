@@ -87,6 +87,8 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
       })
     })
   function upload(fileName: any, filePath: string) {
+    logger.debug(fileName)
+    logger.debug(filePath)
     return new Promise(function (resolve, reject) {
       const client = new ftp.Client()
       client.ftp.verbose = true // 통신 상세 과정 볼거면 true, 아니면 false
