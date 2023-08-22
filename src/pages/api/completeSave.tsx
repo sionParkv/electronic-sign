@@ -4,16 +4,11 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as ftp from 'basic-ftp'
+import fs, { existsSync, mkdirSync } from 'fs'
 
 import { logger } from '@/utils/Winston'
 import { MsSql } from '@/db/MsSql'
 import { Readable } from 'stream'
-
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
-const fs = require('fs')
-const path = require('path')
 
 const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[completeSave] 작성완료 동의서 저장 리퀘스트 %o', req.body)
@@ -37,41 +32,15 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
         result
       )
 
-      res.json({
-        code: 'OK',
-        meesage: '작성완료 동의서 저장에 성공 하였습니다.'
-      })
+      const saveDirectory = 'C:\\app' + TEMP
 
-      const allowedOrigins = ['https://210.107.85.113']
-      const origin: any = req.headers.origin
-
-      app.use(bodyParser.json())
-
-      if (allowedOrigins.includes(origin)) {
-        // 허용된 도메인일 경우 해당 도메인을 허용합니다.
-        res.setHeader('Access-Control-Allow-Origin', origin)
+      if (!existsSync(saveDirectory)) {
+        mkdirSync(saveDirectory)
       }
 
-      res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE')
-      res.setHeader(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization'
-      )
-
-      // 이원서버에 이미지 저장
-      app.use(bodyParser.urlencoded({ extended: true }))
-      app.use(bodyParser.json())
-
-      const saveDirectory = path.join('/C/app', TEMP)
-
-      if (!fs)
-        if (!fs.existsSync(saveDirectory)) {
-          fs.mkdirSync(saveDirectory)
-        }
-
       const currentDate = new Date().toISOString().replace(/:/g, '-')
-      const fileName = `${currentDate}`
-      const filePath = path.join(saveDirectory, fileName)
+      const fileName = currentDate
+      const filePath = saveDirectory + fileName
 
       fs.writeFile(filePath, JSON.stringify(TEMP, null, 2), (err: any) => {
         if (err) {
@@ -79,33 +48,40 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
           res.status(500).send('Error saving data')
         } else {
           console.log('Data saved successfully')
-          res.status(200).send('Data saved successfully')
+          // ftp서버에 이미지 저장
+          const client = new ftp.Client()
+
+          client.access({
+            host: '210.107.85.117',
+            user: 'medimcc',
+            password: 'Medi3574mcc',
+            port: 21
+          })
+
+          const source = new Readable()
+          source.push(TEMP)
+          source.push(null)
+
+          client
+            .uploadFrom(source, '')
+            .then(() => {
+              console.log('업로드 성공')
+              res.json({
+                code: 'OK',
+                meesage: '작성완료 동의서 저장에 성공 하였습니다.'
+              })
+            })
+            .catch((e) => {
+              console.log(e)
+              res.json({
+                code: 'FAIL',
+                message: 'FTP업로드에 실패 하였습니다.',
+                error: e.message
+              })
+            })
+          client.close()
         }
       })
-
-      // ftp서버에 이미지 저장
-      const client = new ftp.Client()
-
-      client.access({
-        host: '210.107.85.117',
-        user: 'medimcc',
-        password: 'Medi3574mcc',
-        port: 21
-      })
-
-      const source = new Readable()
-      source.push(TEMP)
-      source.push(null)
-
-      client
-        .uploadFrom(source, '')
-        .then(() => {
-          console.log('업로드 성공')
-        })
-        .catch((e) => {
-          console.log(e)
-        })
-      client.close
     })
     .catch((error) => {
       error &&
