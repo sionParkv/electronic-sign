@@ -184,11 +184,10 @@ const Document = (userInfo: any) => {
 
   const completeEform = () => {
     return components.openConfirmDialog({
-      contents: 'http://210.107.85.110:8080/ClipReport5/eform2.jsp',
+      imageUrl: 'http://210.107.85.110:8080/ClipReport5/eform2.jsp',
       ok: {
         label: '닫기'
-      },
-      title: ''
+      }
     })
   }
 
