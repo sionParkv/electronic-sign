@@ -56,7 +56,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
           const client = new ftp.Client()
 
           client.access({
-            host: '',
+            host: '192.168.100.207',
             user: 'medimcc',
             password: 'Medi3574mcc',
             port: 21
