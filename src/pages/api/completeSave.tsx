@@ -17,33 +17,33 @@ const upload = (fileName: any, filePath: string) =>
     client.ftp.verbose = true // 통신 상세 과정 볼거면 true, 아니면 false
     logger.debug('FTP Client: %o', client)
 
-    let response: any
-    try {
-      response = client.access({
+    await client
+      .access({
         host: '192.168.100.207',
         user: 'medimcc',
         password: 'Medi3574mcc',
         port: 21,
         secure: false
       })
-    } catch (error) {
-      logger.error('FTP Client connection error : %o', error)
-      return reject(error)
-    }
-
-    try {
-      logger.debug('FTP Client connection response: %o', response)
-      // response = await client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
-      // logger.debug('FTP Client change directory response: %o', response)
-      response = await client.uploadFrom(filePath, fileName)
-      logger.debug('FTP Client file upload response: %o', response)
-      resolve(true)
-    } catch (error) {
-      logger.error('FTP Client cd or upload error: %o', error)
-      reject(error)
-    }
-
-    client.close && client.close()
+      .then(async (response) => {
+        try {
+          logger.debug('FTP Client connection response: %o', response)
+          // response = await client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
+          // logger.debug('FTP Client change directory response: %o', response)
+          response = await client.uploadFrom(filePath, fileName)
+          logger.debug('FTP Client file upload response: %o', response)
+          resolve(true)
+        } catch (error) {
+          logger.error('FTP Client cd or upload error: %o', error)
+          reject(error)
+        } finally {
+          client.close && client.close()
+        }
+      })
+      .catch((error) => {
+        logger.error('FTP Client connection error : %o', error)
+        return reject(error)
+      })
   })
 
 const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
