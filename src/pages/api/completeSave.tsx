@@ -12,7 +12,6 @@ import { Readable } from 'stream'
 
 const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[completeSave] 작성완료 동의서 저장 리퀘스트 %o', req.body)
-  res.setHeader('Access-Control-Allow-Origin', '*')
   const {
     RECEPT_NO,
     FORM_CD,
@@ -46,7 +45,11 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
       fs.writeFile(filePath, JSON.stringify(TEMP, null, 2), (err: any) => {
         if (err) {
           console.error('Error saving data:', err)
-          res.status(500).send('Error saving data')
+          res.json({
+            code: 'FAIL',
+            message: '이미지 파일 저장 중 오류가 발생 하였습니다.',
+            error: err.message
+          })
         } else {
           console.log('Data saved successfully')
           // ftp서버에 이미지 저장
