@@ -42,7 +42,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
       const fileName = currentDate
       const filePath = saveDirectory + fileName
 
-      fs.writeFile(filePath, JSON.stringify(TEMP, null, 2), (err: any) => {
+      fs.writeFile(filePath, TEMP, (err: any) => {
         if (err) {
           console.error('Error saving data:', err)
           res.json({
@@ -56,7 +56,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
           const client = new ftp.Client()
 
           client.access({
-            host: '210.107.85.117',
+            host: '',
             user: 'medimcc',
             password: 'Medi3574mcc',
             port: 21
