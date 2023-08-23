@@ -97,6 +97,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     if (getStorage) {
       setSelected1(getStorage?.selected1)
       setSelected2(getStorage?.selected2)
+      setPatNm(getStorage?.patNm)
       setSelectedDate(getStorage?.selectedDate)
     }
   }
@@ -119,8 +120,6 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
             `{"outPatient":${JSON.stringify(response.data.data)}}`
           )
           handleStateChange(response.data.data)
-          console.log(response.data.data)
-          return
         } else {
           localStorage.setItem(
             'patientList',
@@ -131,6 +130,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         const setStorage: any = {
           selected1: selected1,
           selected2: selected2,
+          patNm: patNm,
           selectedDate: selectedDate
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
@@ -139,10 +139,6 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         console.log(error)
       })
   }
-
-  useEffect(() => {
-    loadItems()
-  }, [])
 
   // 진료과 상태관리
   const handleSelect1 = (e: any) => {
@@ -165,14 +161,6 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     setSelected2(e.target?.value)
   }
 
-  // 초기화 버튼 클릭 이벤트
-  const handleReset = () => {
-    localStorage.removeItem('filters')
-    setSelected1('-')
-    setSelected2('-')
-    setPatNm('')
-  }
-
   // 날짜 상태관리
   const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value)
@@ -181,6 +169,19 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatNm(event.target.value)
   }
+
+  // 초기화 버튼 클릭 이벤트
+  const handleReset = () => {
+    localStorage.removeItem('filters')
+    setSelected1('-')
+    setSelected2('-')
+    setPatNm('')
+  }
+
+  useEffect(() => {
+    loadItems()
+  }, [])
+
   return (
     <Container className="SearchBar">
       <Box className="Fields">

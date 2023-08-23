@@ -175,16 +175,42 @@ const Document = (userInfo: any) => {
     const userNo = user?.match(/\d+/g).join('')
     const formInfo: { FORM_CD: Number; FORM_NM: string } = favoriteList[index]
     const iOrO = pat.division === '외래' ? 'O' : 'I'
+    const data = { formInfo: formInfo.FORM_NM }
     const sendForm = encodeURI(
       `http://210.107.85.110:8080/ClipReport5/eform2.jsp?FILE_NAME=${formInfo.FORM_NM}&RECEPT_NO=${pat.receptNo}&FORM_CD=${formInfo.FORM_CD}&PTNT_NO=${pat.number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
     )
+    router.push({
+      pathname: 'http://210.107.85.110:8080/ClipReport5/eform2.jsp',
+      query: data
+    })
 
     router.push(sendForm)
   }
 
   const completeEform = () => {
+    axios
+      .post('/api/givenList', {
+        PTNT_NO: pat.number
+      })
+      .then((response) => {
+        setGivenList(response.data.data)
+
+        // components.openConfirmDialog({
+        //   //imageUrl: `http://localhost/images/${response.data.data.FILE_NM}.jpg`,
+        //   imageUrl:
+        //     'https://img.freepik.com/premium-vector/cute-background-girly-wallpaper_608030-24.jpg',
+        //   contents: '',
+        //   ok: {
+        //     label: '닫기'
+        //   }
+        // })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
     return components.openConfirmDialog({
-      imageUrl: 'http://210.107.85.110:8080/ClipReport5/eform2.jsp',
+      className: 'DialogDocument',
+      imageUrl: 'http://210.107.85.113/images/20230823141754_8117_0.jpg',
       ok: {
         label: '닫기'
       }
