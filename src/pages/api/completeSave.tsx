@@ -129,3 +129,12 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 export default completeSave
+
+export const config = {
+  api: {
+    responseLimit: false,
+    bodyParser: {
+      sizeLimit: '25mb'
+    }
+  }
+}
