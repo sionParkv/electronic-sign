@@ -5,6 +5,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as ftp from 'basic-ftp'
 import fs, { existsSync, mkdirSync } from 'fs'
+import moment from 'moment'
 
 import { logger } from '@/utils/Winston'
 import { MsSql } from '@/db/MsSql'
@@ -53,70 +54,74 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
     RECEPT_NO,
     FORM_CD,
     FILE_NM,
-    SEQ,
-    UPLOAD_NM,
     PTNT_NO,
     IO_GB,
     ENT_EMPL_NO,
     EFORM_DATA,
     TEMP
   } = req.body
-  let query = `exec [UP_S1MOBILE_PTNT_EFORM_C] ${RECEPT_NO}, ${FORM_CD}, '${FILE_NM}', ${SEQ}, '${UPLOAD_NM}', ${PTNT_NO}, '${IO_GB}', ${ENT_EMPL_NO}, 'MOBILE', '${EFORM_DATA}', 'Y'`
+  let query = ''
   logger.debug(typeof JSON.parse(TEMP))
-  let result: any
-  try {
-    result = MsSql.executeQuery(query)
-  } catch (error: any) {
-    error &&
-      error.message &&
-      logger.error(
-        `[completeSave] 작성완료 동의서 저장 중 오류가 발생 하였습니다. : ${error.messgae}`
-      )
-    res.json({
-      code: 'FAIL',
-      meesage: '작성완료 동의서 저장 중 오류가 발생 하였습니다.',
-      error: error.message
-    })
-  }
+  const imageObject = JSON.parse(TEMP)
+  for (var i = 0; i < imageObject.length; i++) {
+    const saveDirectory = 'C:\\app\\images'
+    const currentDate = moment().format('YYYYMMDDHHmmss')
+    const fileName = currentDate + '_' + FORM_CD + '_' + i + '.jpg'
+    const filePath = saveDirectory + '\\' + fileName
 
-  logger.debug(
-    '[completeSave] 작성완료 동의서 저장에 성공 하였습니다. %o',
-    result
-  )
-
-  const saveDirectory = 'C:\\app\\images'
-
-  if (!existsSync(saveDirectory)) {
-    mkdirSync(saveDirectory)
-  }
-
-  const currentDate = new Date().toISOString().replace(/:/g, '-')
-  const fileName = currentDate + '.jpg'
-  const filePath = saveDirectory + '\\' + fileName
-  try {
-    fs.writeFileSync(filePath, TEMP, 'base64')
-    logger.debug('Data saved successfully')
-  } catch (error) {
-    logger.error('Error saving data:', error)
-    res.json({
-      code: 'FAIL',
-      message: '이미지 파일 저장 중 오류가 발생 하였습니다.',
-      error
-    })
-  }
-
-  upload(fileName, filePath)
-    .then(() => {
-      res.json({ code: 'OK', message: '동의서 저장에 성공 하였습니다.' })
-    })
-    .catch((error) => {
-      logger.error('File upload error: %o', error)
+    query = `exec [UP_S1MOBILE_PTNT_EFORM_C] ${RECEPT_NO}, ${FORM_CD}, '${FILE_NM}', ${
+      i + 1
+    }, '${fileName}', ${PTNT_NO}, '${IO_GB}', ${ENT_EMPL_NO}, 'MOBILE', '${EFORM_DATA}', 'Y'`
+    let result: any
+    try {
+      result = MsSql.executeQuery(query)
+    } catch (error: any) {
+      error &&
+        error.message &&
+        logger.error(
+          `[completeSave] 작성완료 동의서 저장 중 오류가 발생 하였습니다. : ${error.messgae}`
+        )
       res.json({
         code: 'FAIL',
-        message: 'FTP 업로드중 오류가 발생 하였습니다.',
+        meesage: '작성완료 동의서 저장 중 오류가 발생 하였습니다.',
+        error: error.message
+      })
+    }
+
+    logger.debug(
+      '[completeSave] 작성완료 동의서 저장에 성공 하였습니다. %o',
+      result
+    )
+
+    if (!existsSync(saveDirectory)) {
+      mkdirSync(saveDirectory)
+    }
+
+    try {
+      fs.writeFileSync(filePath, TEMP, 'base64')
+      logger.debug('Data saved successfully')
+    } catch (error) {
+      logger.error('Error saving data:', error)
+      res.json({
+        code: 'FAIL',
+        message: '이미지 파일 저장 중 오류가 발생 하였습니다.',
         error
       })
-    })
+    }
+
+    upload(fileName, filePath)
+      .then(() => {
+        res.json({ code: 'OK', message: '동의서 저장에 성공 하였습니다.' })
+      })
+      .catch((error) => {
+        logger.error('File upload error: %o', error)
+        res.json({
+          code: 'FAIL',
+          message: 'FTP 업로드중 오류가 발생 하였습니다.',
+          error
+        })
+      })
+  }
 }
 
 export default completeSave
