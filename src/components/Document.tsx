@@ -188,8 +188,29 @@ const Document = (userInfo: any) => {
   }
 
   const completeEform = () => {
+    axios
+      .post('/api/givenList', {
+        PTNT_NO: pat.number
+      })
+      .then((response) => {
+        setGivenList(response.data.data)
+
+        // components.openConfirmDialog({
+        //   //imageUrl: `http://localhost/images/${response.data.data.FILE_NM}.jpg`,
+        //   imageUrl:
+        //     'https://img.freepik.com/premium-vector/cute-background-girly-wallpaper_608030-24.jpg',
+        //   contents: '',
+        //   ok: {
+        //     label: '닫기'
+        //   }
+        // })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
     return components.openConfirmDialog({
-      imageUrl: 'http://210.107.85.113:8080/ClipReport5/eform2.jsp',
+      className: 'DialogDocument',
+      imageUrl: 'http://210.107.85.113/images/20230823141754_8117_0.jpg',
       ok: {
         label: '닫기'
       }

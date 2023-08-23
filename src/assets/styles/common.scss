@@ -245,6 +245,14 @@ input:autofill:active {
   }
 }
 
+.DialogDocument {
+  .MuiButtonBase-root {
+    width: 300px;
+    display: flex;
+    align-items: center;
+  }
+}
+
 .Header {
   position: relative;
   background-color: white;

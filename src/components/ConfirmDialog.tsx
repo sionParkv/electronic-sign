@@ -61,11 +61,15 @@ const ConfirmDialog = (props: any) => {
     close()
   }
 
+  console.log(
+    'https://img.freepik.com/premium-vector/cute-background-girly-wallpaper_608030-24.jpg'
+  )
+
   return (
     <Dialog
       className={clsConfirmDialog}
       disableEscapeKeyDown
-      maxWidth="xs"
+      maxWidth="md"
       open={open}
     >
       {title && (
@@ -73,8 +77,12 @@ const ConfirmDialog = (props: any) => {
       )}
       {contents && (
         <DialogContent className="ConfirmDialogContents">
-          <img src={imageUrl} alt="Img" />
           {contents}
+        </DialogContent>
+      )}
+      {imageUrl && (
+        <DialogContent className="ConfirmDialogContents">
+          <img src={imageUrl} alt="Img" />
         </DialogContent>
       )}
       <DialogActions className="ConfirmDialogButtons">
@@ -84,7 +92,12 @@ const ConfirmDialog = (props: any) => {
           </Button>
         )}
         {ok && (
-          <Button className="ButtonOK" fullWidth onClick={handleOK}>
+          <Button
+            className="ButtonOK"
+            fullWidth
+            onClick={handleOK}
+            variant="outlined"
+          >
             {ok.label}
           </Button>
         )}
