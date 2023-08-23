@@ -98,7 +98,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
-      fs.writeFileSync(filePath, TEMP, 'base64')
+      fs.writeFileSync(filePath, TEMP[i], 'base64')
       logger.debug('Data saved successfully')
     } catch (error) {
       logger.error('Error saving data:', error)
@@ -111,7 +111,9 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
 
     upload(fileName, filePath)
       .then(() => {
-        res.json({ code: 'OK', message: '동의서 저장에 성공 하였습니다.' })
+        if (i === imageObject.length) {
+          res.json({ code: 'OK', message: '동의서 저장에 성공 하였습니다.' })
+        }
       })
       .catch((error) => {
         logger.error('File upload error: %o', error)
