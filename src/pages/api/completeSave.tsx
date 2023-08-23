@@ -93,6 +93,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
       result
     )
     logger.debug('23232323232' + i)
+    logger.debug('45454545454' + imageObject.length)
 
     if (!existsSync(saveDirectory)) {
       mkdirSync(saveDirectory)
