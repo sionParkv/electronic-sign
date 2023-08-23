@@ -10,6 +10,7 @@ import { logger } from '@/utils/Winston'
 import { MsSql } from '@/db/MsSql'
 
 const upload = (fileName: any, filePath: string) =>
+  // eslint-disable-next-line no-async-promise-executor
   new Promise(async (resolve, reject) => {
     logger.debug(fileName)
     logger.debug(filePath)
@@ -28,8 +29,8 @@ const upload = (fileName: any, filePath: string) =>
       .then(async (response) => {
         try {
           logger.debug('FTP Client connection response: %o', response)
-          // response = await client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
-          // logger.debug('FTP Client change directory response: %o', response)
+          response = await client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
+          logger.debug('FTP Client change directory response: %o', response)
           response = await client.uploadFrom(filePath, fileName)
           logger.debug('FTP Client file upload response: %o', response)
           resolve(true)
@@ -93,7 +94,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
   const fileName = currentDate + '.jpg'
   const filePath = saveDirectory + '\\' + fileName
   try {
-    fs.writeFileSync(filePath, TEMP)
+    fs.writeFileSync(filePath, TEMP, 'base64')
     logger.debug('Data saved successfully')
   } catch (error) {
     logger.error('Error saving data:', error)
