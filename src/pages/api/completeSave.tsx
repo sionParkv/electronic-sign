@@ -62,7 +62,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
     TEMP
   } = req.body
   let query = `exec [UP_S1MOBILE_PTNT_EFORM_C] ${RECEPT_NO}, ${FORM_CD}, '${FILE_NM}', ${SEQ}, '${UPLOAD_NM}', ${PTNT_NO}, '${IO_GB}', ${ENT_EMPL_NO}, 'MOBILE', '${EFORM_DATA}', 'Y'`
-  logger.debug(typeof JSON.parse(TEMP))
+  logger.debug(typeof TEMP)
   let result: any
   try {
     result = MsSql.executeQuery(query)
