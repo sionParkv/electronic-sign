@@ -146,7 +146,6 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
             `{"surgery":${JSON.stringify(response.data.data)}}`
           )
           handleStateChange(response.data.data)
-          return
         } else {
           localStorage.setItem(
             'patientList',
