@@ -92,13 +92,14 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
       '[completeSave] 작성완료 동의서 저장에 성공 하였습니다. %o',
       result
     )
+    logger.debug('23232323232' + i)
 
     if (!existsSync(saveDirectory)) {
       mkdirSync(saveDirectory)
     }
 
     try {
-      fs.writeFileSync(filePath, TEMP[i], 'base64')
+      fs.writeFileSync(filePath, imageObject[i], 'base64')
       logger.debug('Data saved successfully')
     } catch (error) {
       logger.error('Error saving data:', error)
