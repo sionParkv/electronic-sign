@@ -175,16 +175,21 @@ const Document = (userInfo: any) => {
     const userNo = user?.match(/\d+/g).join('')
     const formInfo: { FORM_CD: Number; FORM_NM: string } = favoriteList[index]
     const iOrO = pat.division === '외래' ? 'O' : 'I'
+    const data = { formInfo: formInfo.FORM_NM }
     const sendForm = encodeURI(
       `http://210.107.85.110:8080/ClipReport5/eform2.jsp?FILE_NAME=${formInfo.FORM_NM}&RECEPT_NO=${pat.receptNo}&FORM_CD=${formInfo.FORM_CD}&PTNT_NO=${pat.number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
     )
+    router.push({
+      pathname: 'http://210.107.85.110:8080/ClipReport5/eform2.jsp',
+      query: data
+    })
 
     router.push(sendForm)
   }
 
   const completeEform = () => {
     return components.openConfirmDialog({
-      imageUrl: 'http://210.107.85.110:8080/ClipReport5/eform2.jsp',
+      imageUrl: 'http://210.107.85.113:8080/ClipReport5/eform2.jsp',
       ok: {
         label: '닫기'
       }
