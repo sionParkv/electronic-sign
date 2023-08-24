@@ -168,25 +168,33 @@ const Document = (userInfo: any) => {
       })
   }
 
-  // 문서 클릭 시 호출 이벤트
-  const handleOpenEform = (index: number) => {
+  // 즐겨찾기 문서 클릭 시 호출 이벤트
+  const handleOpenFavoriteList = (index: number) => {
     // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번
     // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO
     const userNo = user?.match(/\d+/g).join('')
     const formInfo: { FORM_CD: Number; FORM_NM: string } = favoriteList[index]
     const iOrO = pat.division === '외래' ? 'O' : 'I'
-    const data = { formInfo: formInfo.FORM_NM }
     const sendForm = encodeURI(
       `http://210.107.85.110:8080/ClipReport5/eform2.jsp?FILE_NAME=${formInfo.FORM_NM}&RECEPT_NO=${pat.receptNo}&FORM_CD=${formInfo.FORM_CD}&PTNT_NO=${pat.number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
     )
-    router.push({
-      pathname: 'http://210.107.85.110:8080/ClipReport5/eform2.jsp',
-      query: data
-    })
-
     router.push(sendForm)
   }
 
+  // 전체 문서 클릭시 호출 이벤트
+  const handleOpenAllList = (index: number) => {
+    // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번
+    // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO
+    const userNo = user?.match(/\d+/g).join('')
+    const formInfo: { FORM_CD: Number; FORM_NM: string } = list[index]
+    const iOrO = pat.division === '외래' ? 'O' : 'I'
+    const sendForm = encodeURI(
+      `http://210.107.85.110:8080/ClipReport5/eform2.jsp?FILE_NAME=${formInfo.FORM_NM}&RECEPT_NO=${pat.receptNo}&FORM_CD=${formInfo.FORM_CD}&PTNT_NO=${pat.number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
+    )
+    router.push(sendForm)
+  }
+
+  // 작성완료 문서 클릭 이벤트
   const completeEform = () => {
     axios
       .post('/api/givenList', {
@@ -194,16 +202,6 @@ const Document = (userInfo: any) => {
       })
       .then((response) => {
         setGivenList(response.data.data)
-
-        // components.openConfirmDialog({
-        //   //imageUrl: `http://localhost/images/${response.data.data.FILE_NM}.jpg`,
-        //   imageUrl:
-        //     'https://img.freepik.com/premium-vector/cute-background-girly-wallpaper_608030-24.jpg',
-        //   contents: '',
-        //   ok: {
-        //     label: '닫기'
-        //   }
-        // })
       })
       .catch((error) => {
         console.log(error)
@@ -297,7 +295,10 @@ const Document = (userInfo: any) => {
                   {favoriteList &&
                     favoriteList.map((index: any, i) => (
                       <ListItem key={i}>
-                        <T className="Title" onClick={() => handleOpenEform(i)}>
+                        <T
+                          className="Title"
+                          onClick={() => handleOpenFavoriteList(i)}
+                        >
                           {index.FORM_NM}
                         </T>
                       </ListItem>
@@ -324,7 +325,7 @@ const Document = (userInfo: any) => {
                               <ListItem key={i}>
                                 <T
                                   className="Content"
-                                  onClick={() => handleOpenEform(i)}
+                                  onClick={() => handleOpenAllList(i)}
                                 >
                                   {index.FORM_NM}
                                 </T>
