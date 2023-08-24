@@ -19,14 +19,13 @@ const LoginPage = () => {
   const [pw, setPw] = useState('')
   const className = 'Pages LoginPage'
   const router = useRouter()
+  const [userInfo, setUserInfo] = useState({
+    name: '',
+    dept: ''
+  })
 
   if (hasCookie('loginCookie')) {
     router.push('/')
-  }
-
-  const handleChangeEmpNo = (e: any) => {
-    const empNoValue = e.target.value
-    setEmpNo(empNoValue)
   }
 
   const handleChangePw = (e: any) => {
@@ -34,20 +33,65 @@ const LoginPage = () => {
     setPw(pwValue)
   }
 
-  const inputValue = () => {
-    axios
-      .post('/api/login', {
-        EMPL_NO: empNo,
-        PASS_WORD: pw
-      })
-      .then((response) => {
-        if (response.data.code === 'OK') {
-          document.getElementsByTagName('input')[1].value =
-            response.data.data[0].EMPL_NM
-          document.getElementsByTagName('input')[2].value =
-            response.data.data[0].DEPT_GB
-        }
-      })
+  const handleEmpNo = (e: React.FocusEvent<HTMLInputElement>) => {
+    const EMPL_NO = e.target.value
+    setEmpNo(EMPL_NO)
+
+    if (!EMPL_NO) return
+    if (EMPL_NO !== empNo) {
+      axios
+        .post('/api/login', {
+          EMPL_NO,
+          PASS_WORD: pw,
+          CODE: 'EMPL_NO_CHECK'
+        })
+        .then((response) => {
+          const result = response.data
+          if (result.code === 'OK') {
+            const data = result.data[0]
+            setUserInfo({
+              name: data.EMPL_NM,
+              dept: data.DEPT_GB
+            })
+            return
+          } else if (result.code === 'FAIL') {
+            setUserInfo({ name: '', dept: '' })
+            setPw('')
+            components.openConfirmDialog({
+              contents: result.message,
+              ok: {
+                label: '닫기',
+                action: () => {
+                  setTimeout(() => {
+                    document.getElementsByTagName('input')[0].focus()
+                  }, 50)
+                }
+              },
+              title: '입력 오류'
+            })
+            return
+          }
+        })
+        .catch(() => {
+          components.openConfirmDialog({
+            contents: (
+              <>
+                전산상의 오류가 발생했습니다. <br /> 다음에 다시 시도해주세요.
+              </>
+            ),
+            ok: {
+              label: '닫기',
+              action: () => {
+                setTimeout(() => {
+                  document.getElementsByTagName('input')[0].focus()
+                }, 50)
+              }
+            },
+            title: '입력 오류'
+          })
+          return
+        })
+    }
   }
 
   const handleLogin = () => {
@@ -78,20 +122,23 @@ const LoginPage = () => {
         title: '입력 오류'
       })
     }
-
     axios
       .post('/api/login', {
         EMPL_NO: empNo,
-        PASS_WORD: pw
+        PASS_WORD: pw,
+        CODE: 'LOGIN'
       })
       .then((response) => {
         if (response.data.code === 'OK') {
-          console.log(response.data.data[0].EMPL_NM)
-
           router.push('/')
         } else {
           components.openConfirmDialog({
-            contents: response.data.message,
+            contents: (
+              <>
+                입력한 결과와 일치하는 <br />
+                직원 정보가 없습니다.
+              </>
+            ),
             ok: {
               label: '닫기',
               action: () => {
@@ -112,46 +159,50 @@ const LoginPage = () => {
   return (
     <Container className={className}>
       <Box className="Logo">
-        <Image src={IMGS.Logo} alt="Logo" />
+        <Image src={IMGS.Logo} alt="Logo" width="143" height="30" />
       </Box>
       <Box className="LoginBox">
         <T component="h1">MOBILE CONSENT SYSTEM</T>
         <T component="h2">모바일 전자동의서 시스템</T>
-        <Box className="LoginText">
+        <Box className="LoginText" component="form">
           <Box>
             <T>사번</T>
             <TextField
               defaultValue={empNo}
-              onChange={handleChangeEmpNo}
-              placeholder="필수입력"
-              onBlur={inputValue}
+              onBlur={handleEmpNo}
+              placeholder="사번 입력"
+              type="number"
             />
           </Box>
-          <Box className="Nmae">
+          <Box className="Name">
             <T>이름</T>
-            <TextField disabled />
+            <TextField
+              InputProps={{ readOnly: true }}
+              placeholder="사번 일치 시 자동 입력"
+              value={userInfo.name}
+            />
           </Box>
           <Box className="Dept">
             <T>부서</T>
-            <TextField disabled />
+            <TextField
+              InputProps={{ readOnly: true }}
+              placeholder="사번 일치 시 자동 입력"
+              value={userInfo.dept}
+            />
           </Box>
           <Box>
             <T>비밀번호</T>
             <TextField
               type="password"
-              defaultValue={pw}
+              value={pw}
+              placeholder="비밀번호 입력"
               onChange={handleChangePw}
+              autoComplete="off"
             />
           </Box>
         </Box>
         <Box className="LoginBtn">
-          <Button
-            onClick={() => {
-              handleLogin()
-            }}
-          >
-            로그인
-          </Button>
+          <Button onClick={handleLogin}>로그인</Button>
         </Box>
       </Box>
       <components.Footer />

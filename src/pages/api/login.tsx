@@ -11,13 +11,12 @@ import { logger } from '@/utils/Winston'
 
 const login = async (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[login] 로그인 리퀘스트 %o', req.body)
-  const { EMPL_NO, PASS_WORD } = req.body
+  const { EMPL_NO, PASS_WORD, CODE } = req.body
   let query = `exec [UP_S1MOBILE_EMPL_INFO_R] '${EMPL_NO}', '${PASS_WORD}'`
-
   MsSql.executeQuery(query)
     .then((result: any) => {
       if (result.length === 0) {
-        logger.debug('[login] 일치하는 정보가 업습니다.')
+        logger.debug('[login] 일치하는 정보가 없습니다.')
         res.json({
           code: 'FAIL',
           message: '일치하는 직원정보가 없습니다.',
@@ -42,9 +41,11 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
       // }
       else {
         logger.debug('[login] 로그인에 성공 하였습니다. %o', result)
-        let incoding = AES256.AES_encrypt(JSON.stringify(result))
-        const expiryDate = new Date(Number(new Date()) + 315360000000)
-        setCookie('loginCookie', incoding, { req, res, expires: expiryDate })
+        if (CODE === 'LOGIN') {
+          let incoding = AES256.AES_encrypt(JSON.stringify(result))
+          const expiryDate = new Date(Number(new Date()) + 315360000000)
+          setCookie('loginCookie', incoding, { req, res, expires: expiryDate })
+        }
         res.json({
           code: 'OK',
           message: '로그인되었습니다.',

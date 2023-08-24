@@ -61,10 +61,6 @@ const ConfirmDialog = (props: any) => {
     close()
   }
 
-  console.log(
-    'https://img.freepik.com/premium-vector/cute-background-girly-wallpaper_608030-24.jpg'
-  )
-
   return (
     <Dialog
       className={clsConfirmDialog}
