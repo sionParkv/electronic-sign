@@ -347,6 +347,13 @@ input:autofill:active {
   }
 }
 
+// 로딩바
+.Progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
 /* -------------------------------------------------------------------------- */
 
 @import './HomePage.scss';

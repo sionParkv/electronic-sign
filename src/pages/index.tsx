@@ -1,4 +1,4 @@
-import { Box, Container, Tab, Tabs } from '@mui/material'
+import { Box, CircularProgress, Container, Tab, Tabs } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { getCookie, hasCookie } from 'cookies-next'
 
@@ -28,6 +28,7 @@ const HomePage = () => {
   const router = useRouter()
   const state = useStateValue()
   const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState(true)
   const [tab, setTab] = useState<number>(0)
   const [userInfo, setUserInfo] = useState<string>('')
   const className = 'Pages HomePage'
@@ -69,8 +70,12 @@ const HomePage = () => {
       const existsAdmission = jsonPatientList?.admission?.length
       const existsOutpatient = jsonPatientList?.outpatient?.length
       const existsSurgery = jsonPatientList?.surgery?.length
-
+      console.log(jsonPatientList)
       if (getItem === 0 && !existsAdmission) {
+        if (patientList && jsonPatientList['admission']) {
+          setIsLoading(false)
+          return
+        }
         axios
           .post('/api/admission', {
             DEPT_CD: 'ALL',
@@ -97,6 +102,10 @@ const HomePage = () => {
           })
       } else if (getItem === 1 && !existsOutpatient) {
         // const today = moment()
+        if (patientList && jsonPatientList['outpatient']) {
+          setIsLoading(false)
+          return
+        }
         axios
           .post('/api/outPatient', {
             CLINIC_YMD: '20220603',
@@ -125,6 +134,10 @@ const HomePage = () => {
             console.log(error)
           })
       } else if (getItem === 2 && !existsSurgery) {
+        if (patientList && jsonPatientList['surgery']) {
+          setIsLoading(false)
+          return
+        }
         const today = moment()
         axios
           .post('/api/surgery', {
@@ -155,8 +168,8 @@ const HomePage = () => {
           })
       }
     }
+    setIsLoading(false)
   }, [tab])
-
   const propsHeader = {
     userInfo: userInfo
   }
@@ -166,46 +179,56 @@ const HomePage = () => {
         <React.Fragment> */}
       <components.Header {...propsHeader} />
       <Container className="PageWrapper">
-        <Container className="Contents">
-          {tab === 0 && (
-            <components.AdmissionSearch
-              state={state}
-              handleStateChange={handleStateChange}
-            />
-          )}
-          {tab === 1 && (
-            <components.OutPatientSearch
-              state={state}
-              handleStateChange={handleStateChange}
-            />
-          )}
-          {tab === 2 && (
-            <components.SurgerySearch
-              state={state}
-              handleStateChange={handleStateChange}
-            />
-          )}
-          <Container className="TabContainer">
-            <Box>
-              <Tabs value={tab} onChange={handleTabChange} variant="fullWidth">
-                <Tab label="입원" />
-                <Tab label="외래" />
-                <Tab label="수술" />
-              </Tabs>
-            </Box>
-            <React.Fragment>
-              <PatientListTabPanel value={tab} index={0}>
-                <components.PatientList tabValue={tab} />
-              </PatientListTabPanel>
-              <PatientListTabPanel value={tab} index={1}>
-                <components.PatientList tabValue={tab} />
-              </PatientListTabPanel>
-              <PatientListTabPanel value={tab} index={2}>
-                <components.PatientList tabValue={tab} />
-              </PatientListTabPanel>
-            </React.Fragment>
+        {isLoading ? (
+          <Box className="Progress">
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Container className="Contents">
+            {tab === 0 && (
+              <components.AdmissionSearch
+                state={state}
+                handleStateChange={handleStateChange}
+              />
+            )}
+            {tab === 1 && (
+              <components.OutPatientSearch
+                state={state}
+                handleStateChange={handleStateChange}
+              />
+            )}
+            {tab === 2 && (
+              <components.SurgerySearch
+                state={state}
+                handleStateChange={handleStateChange}
+              />
+            )}
+            <Container className="TabContainer">
+              <Box>
+                <Tabs
+                  value={tab}
+                  onChange={handleTabChange}
+                  variant="fullWidth"
+                >
+                  <Tab label="입원" />
+                  <Tab label="외래" />
+                  <Tab label="수술" />
+                </Tabs>
+              </Box>
+              <React.Fragment>
+                <PatientListTabPanel value={tab} index={0}>
+                  <components.PatientList tabValue={tab} />
+                </PatientListTabPanel>
+                <PatientListTabPanel value={tab} index={1}>
+                  <components.PatientList tabValue={tab} />
+                </PatientListTabPanel>
+                <PatientListTabPanel value={tab} index={2}>
+                  <components.PatientList tabValue={tab} />
+                </PatientListTabPanel>
+              </React.Fragment>
+            </Container>
           </Container>
-        </Container>
+        )}
       </Container>
       <components.Footer />
       {/* </React.Fragment>

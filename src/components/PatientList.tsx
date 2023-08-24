@@ -49,9 +49,11 @@ const PatientList = (props: PatientListProps) => {
     '진료일',
     '진단명'
   ]
+
   const router = useRouter()
   let patList: any = {}
   let patientList: any = ''
+  const [isLoading, setIsLoading] = useState(true)
   const [list, setList] = useState<Patient[]>([])
   const state = useStateValue()
   const stateList: any[] = state?.list || []
@@ -81,8 +83,9 @@ const PatientList = (props: PatientListProps) => {
       }
       setList(mapList)
     }
+    setIsLoading(false)
   }, [state])
-
+  console.log(list)
   // localStorage에 데이터 없을 시 데이터 로드 안되도록
   const patMethod = () => {
     let mapList = []
@@ -161,7 +164,6 @@ const PatientList = (props: PatientListProps) => {
 
   // 전체 환자 수
   const total = list?.length
-
   return (
     <Container className="PatientListContainer">
       <Box>
@@ -182,7 +184,7 @@ const PatientList = (props: PatientListProps) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {list === undefined ? (
+                {isLoading || list === undefined ? (
                   <TableRow>
                     <TableCell colSpan={9}>
                       <CircularProgress />

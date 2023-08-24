@@ -131,6 +131,7 @@ const LoginPage = () => {
       .then((response) => {
         if (response.data.code === 'OK') {
           router.push('/')
+          localStorage.setItem('newTab', '0')
         } else {
           components.openConfirmDialog({
             contents: (

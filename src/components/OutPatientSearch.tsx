@@ -203,7 +203,6 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
               <em>진료의 선택</em>
             </MenuItem>
             {doctor.map((doctor: Doctor, d) => {
-              console.log(doctor)
               return (
                 <MenuItem key={d} value={doctor.DOCT_EMPL_NO}>
                   {doctor.DOCT_EMPL_NM}
