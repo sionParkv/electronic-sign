@@ -72,12 +72,13 @@ const Document = (userInfo: any) => {
   const [tabL, setTabL] = useState<number>(0)
   const [tabR, setTabR] = useState<number>(0)
 
-  const [accordionNo, setAccordionNo] = useState<number>(-1)
+  // const [accordionNo, setAccordionNo] = useState<number>(-1)
 
   const [pat, setPat] = useState<Patient>(initialPatient)
   const [tempList, setTempList] = useState([])
   const [givenList, setGivenList] = useState([])
   const [list, setList] = useState([])
+  const lists = Object.keys(list)
   const [favoriteList, setFavoriteList] = useState([])
   const router = useRouter()
 
@@ -90,14 +91,15 @@ const Document = (userInfo: any) => {
     setTabR(newTab)
   }
   // 전체 문서 아코디언 상태관리
-  const accordionChange =
-    (index: number) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
-      if (isExpanded) {
-        setAccordionNo(index)
-      } else {
-        setAccordionNo(-1)
-      }
-    }
+  // const accordionChange =
+  //   (index: number) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+  //     console.log(index)
+  //     if (isExpanded) {
+  //       setAccordionNo(index)
+  //     } else {
+  //       setAccordionNo(-1)
+  //     }
+  //   }
 
   // 쿠기 있을 시 자동 로그인
   let tempObject: any = []
@@ -150,7 +152,16 @@ const Document = (userInfo: any) => {
     await axios
       .get('/api/List')
       .then((response) => {
-        setList(response?.data?.data)
+        const data = response?.data?.data
+        const newList = data.reduce((acc: any, item: any) => {
+          const categoryName = item.CATEGORY_NAME
+          if (!acc[categoryName]) {
+            acc[categoryName] = []
+          }
+          acc[categoryName].push(item)
+          return acc
+        }, {})
+        setList(newList)
       })
       .catch((error) => {
         console.log(error)
@@ -182,11 +193,11 @@ const Document = (userInfo: any) => {
   }
 
   // 전체 문서 클릭시 호출 이벤트
-  const handleOpenAllList = (index: number) => {
+  const handleOpenAllList = (li: { FORM_CD: Number; FORM_NM: string }) => {
     // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번
     // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO
     const userNo = user?.match(/\d+/g).join('')
-    const formInfo: { FORM_CD: Number; FORM_NM: string } = list[index]
+    const formInfo: { FORM_CD: Number; FORM_NM: string } = li
     const iOrO = pat.division === '외래' ? 'O' : 'I'
     const sendForm = encodeURI(
       `http://210.107.85.110:8080/ClipReport5/eform2.jsp?FILE_NAME=${formInfo.FORM_NM}&RECEPT_NO=${pat.receptNo}&FORM_CD=${formInfo.FORM_CD}&PTNT_NO=${pat.number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
@@ -308,33 +319,29 @@ const Document = (userInfo: any) => {
             </DocumentListTabPanel>
             <DocumentListTabPanel value={tabR} index={1}>
               <DocumentListContainer>
-                <Box className="AllList">
-                  {list &&
-                    list.map((index: any, i) => (
-                      <Accordion
-                        key={i}
-                        expanded={accordionNo === index}
-                        onChange={accordionChange(index)}
-                      >
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <T className="Title">{index.CATEGORY_NAME}</T>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          {list &&
-                            list.map((index: any, i) => (
-                              <ListItem key={i}>
-                                <T
-                                  className="Content"
-                                  onClick={() => handleOpenAllList(i)}
-                                >
-                                  {index.FORM_NM}
-                                </T>
+                {lists &&
+                  lists.map((item: any, idx: number) => {
+                    const details: [] = list[item]
+                    return (
+                      <Box className="AllList" key={idx}>
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <T>{item}</T>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            {details.map((li: any, index: number) => (
+                              <ListItem
+                                key={index}
+                                onClick={() => handleOpenAllList(li)}
+                              >
+                                <T>{li.FORM_NM}</T>
                               </ListItem>
                             ))}
-                        </AccordionDetails>
-                      </Accordion>
-                    ))}
-                </Box>
+                          </AccordionDetails>
+                        </Accordion>
+                      </Box>
+                    )
+                  })}
               </DocumentListContainer>
             </DocumentListTabPanel>
           </Box>

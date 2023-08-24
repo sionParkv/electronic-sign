@@ -35,7 +35,7 @@ const HomePage = () => {
 
   const handleStateChange = (newList: any) => {
     if (dispatch) {
-      dispatch({ type: 'PATIENT_LIST', list: newList })
+      dispatch({ type: 'PATIENT_LIST', list: newList, isLoading: isLoading })
     }
   }
 
@@ -67,10 +67,11 @@ const HomePage = () => {
 
       const patientList = localStorage.getItem('patientList') || '{}'
       const jsonPatientList = JSON.parse(patientList)
+
       const existsAdmission = jsonPatientList?.admission?.length
-      const existsOutpatient = jsonPatientList?.outpatient?.length
+      const existsOutpatient = jsonPatientList?.outPatient?.length
       const existsSurgery = jsonPatientList?.surgery?.length
-      console.log(jsonPatientList)
+
       if (getItem === 0 && !existsAdmission) {
         if (patientList && jsonPatientList['admission']) {
           setIsLoading(false)
@@ -103,9 +104,11 @@ const HomePage = () => {
       } else if (getItem === 1 && !existsOutpatient) {
         // const today = moment()
         if (patientList && jsonPatientList['outpatient']) {
+          console.log('@@#@#@#@#@#@#@#@#@')
           setIsLoading(false)
           return
         }
+        console.log('#######')
         axios
           .post('/api/outPatient', {
             CLINIC_YMD: '20220603',

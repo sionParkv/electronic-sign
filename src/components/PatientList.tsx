@@ -85,7 +85,6 @@ const PatientList = (props: PatientListProps) => {
     }
     setIsLoading(false)
   }, [state])
-  console.log(list)
   // localStorage에 데이터 없을 시 데이터 로드 안되도록
   const patMethod = () => {
     let mapList = []

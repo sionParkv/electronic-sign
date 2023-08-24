@@ -5,25 +5,25 @@
     padding: 20px 50px 5px;
 
     .PatientInfo {
-      padding: 0 20px 27px;
       margin-bottom: 16px;
+      padding: 0 20px 27px;
       border-radius: 10px;
       background-color: white;
       box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
 
       .PatientTitle {
         display: flex;
-        padding: 18px 0 12px;
         margin-left: -2px;
+        padding: 18px 0 12px;
 
         img {
           padding-right: 4px;
         }
 
         p {
-          color: #2e5bdb;
-          font-weight: bold;
           font-size: 16px;
+          font-weight: bold;
+          color: #2e5bdb;
         }
       }
 
@@ -49,7 +49,6 @@
   .DocumentContainer {
     display: flex;
     flex-direction: column;
-    height: 531px;
     padding: 22px 4px 30px;
     border-radius: 10px;
     background-color: white;
@@ -61,6 +60,61 @@
       .DocumentBox {
         width: 50%;
         padding: 0 16px;
+        &:last-child {
+          .TabContainer {
+            .TabPanel {
+              &:last-child {
+                .Panel {
+                  .DocumentListContainer {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    grid-gap: 8px;
+                    .AllList {
+                      .MuiPaper-root {
+                        margin: 12px 0;
+                        border: 1px solid #dce2f2;
+                        border-radius: 0;
+                        background-color: #fafafa;
+                        box-shadow: none;
+                        .MuiAccordionSummary-root {
+                          width: 100%;
+                          height: 65px;
+                          p {
+                            @include font(bold, 14px, normal);
+                          }
+                        }
+                        .MuiCollapse-root {
+                          overflow-y: scroll;
+                          max-height: 188px;
+                          .MuiAccordionDetails-root {
+                            padding: 0 2px 0 12px;
+                            .MuiListItem-root {
+                              p {
+                                font-size: 12px;
+                                word-break: keep-all;
+                              }
+                              padding: 6px 5px;
+                              box-sizing: border-box;
+                              &::before {
+                                display: inline-block;
+                                width: 3px;
+                                height: 3px;
+                                margin-right: 5px;
+                                border-radius: 50%;
+                                background-color: #333;
+                                content: '';
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
 
         .DocumentTitle {
           display: flex;
@@ -72,12 +126,13 @@
           }
 
           p {
-            font-weight: bold;
             font-size: 16px;
+            font-weight: bold;
           }
         }
 
         .TabContainer {
+          height: 100%;
           .MuiTabs-root {
             min-height: auto;
 
@@ -101,11 +156,10 @@
               display: none;
             }
           }
-
           .TabPanel {
+            overflow-y: scroll;
             height: 326px;
             padding: 0;
-            overflow-y: scroll;
 
             .Panel {
               position: relative;
@@ -113,59 +167,6 @@
 
               .DocumentListContainer {
                 padding: 0;
-
-                .AllList {
-                  display: flex;
-                  flex-direction: row;
-                  padding: 8px 0;
-                  flex-wrap: wrap;
-
-                  :nth-child(1).Mui-expanded ~ :nth-child(4) {
-                    max-height: 0;
-                    overflow: hidden;
-                  }
-
-                  .MuiPaper-elevation {
-                    width: calc(50% - 32px);
-                    padding: 0 13px;
-                    margin: 4px 4px;
-                    border: 1px solid #dce2f2;
-                    background-color: #fafafa;
-
-                    .Title {
-                      padding: 5px 0;
-                      color: black;
-                      @include font(700, 14px, 1.5);
-                    }
-
-                    .MuiAccordionDetails-root {
-                      padding: 0;
-                    }
-
-                    .MuiButtonBase-root {
-                      padding: 0 0 0 5px;
-                    }
-
-                    .MuiCollapse-root {
-                      max-height: 188px;
-                      overflow-y: scroll;
-
-                      p {
-                        font-size: 12px;
-                      }
-                    }
-
-                    &:nth-child(odd) {
-                      min-height: 58px;
-                      margin-left: 0;
-                    }
-
-                    &:nth-child(even) {
-                      min-height: 58px;
-                      margin-right: 0;
-                    }
-                  }
-                }
 
                 .DocumentList {
                   display: flex;
@@ -175,11 +176,11 @@
 
                   li {
                     flex-direction: column;
-                    justify-content: center;
                     align-items: flex-start;
+                    justify-content: center;
                     width: calc(50% - 4px);
-                    padding: 11px 13px;
                     margin: 4px 4px;
+                    padding: 11px 13px;
                     border: 1px solid #dce2f2;
                     background-color: #fafafa;
 
