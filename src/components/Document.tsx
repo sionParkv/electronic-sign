@@ -114,6 +114,7 @@ const Document = (userInfo: any) => {
 
   const openErrorDialog = () => {
     components.openConfirmDialog({
+      className: 'custom-max-width',
       contents: (
         <>
           통신 오류가 발생했습니다. <br />
@@ -123,9 +124,7 @@ const Document = (userInfo: any) => {
       ok: {
         label: '닫기',
         action: () => {
-          setTimeout(() => {
-            document.getElementsByTagName('input')[0].focus()
-          }, 50)
+          setTimeout(() => {}, 50)
         }
       },
       title: '통신 오류'
@@ -271,7 +270,6 @@ const Document = (userInfo: any) => {
 
   // 작성완료 문서 클릭 이벤트
   const completeEform = (item: any) => {
-    console.log(item)
     // axios
     //   .post('/api/givenList', {
     //     PTNT_NO: pat.number
@@ -294,7 +292,7 @@ const Document = (userInfo: any) => {
         item.FILE_TYPE
       imageURLs.push(url)
     }
-    console.log(imageURLs)
+    // console.log(imageURLs)
 
     return components.openConfirmDialog({
       className: 'DialogDocument',

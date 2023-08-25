@@ -246,6 +246,39 @@ input:autofill:active {
 }
 
 .DialogDocument {
+  .MuiPaper-root {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    padding-top: 30px;
+    box-sizing: content-box;
+  }
+  // Set your desired max width value
+  .ConfirmDialogCarouselContents {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 0px 14px 15px 14px;
+    text-align: center;
+    letter-spacing: -0.35px;
+    box-sizing: border-box;
+    @include font(500, 16px, 1.5);
+  }
+  .CarouselItem {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: scroll;
+    img {
+      // 이미지 크기 조절
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+  }
   .MuiButtonBase-root {
     display: flex;
     align-items: center;
@@ -329,28 +362,11 @@ input:autofill:active {
     text-align: center;
   }
   .ConfirmDialogContents {
-    width: 100vw;
-    height: 100vh;
     padding: 0px 14px 15px 14px;
     text-align: center;
     letter-spacing: -0.35px;
     box-sizing: border-box;
     @include font(500, 16px, 1.5);
-  }
-  .CarouselItem {
-    position: absolute;
-    overflow: scroll;
-    width: 90%;
-    height: 100%;
-    margin: 0 auto;
-    img {
-      width: auto;
-      // 이미지 크기 조절
-      max-width: 80%;
-      height: auto;
-      max-height: 100%;
-      object-fit: contain;
-    }
   }
 
   .MuiDialogActions-root {

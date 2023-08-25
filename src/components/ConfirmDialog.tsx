@@ -9,6 +9,7 @@ import {
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import Carousel from 'react-material-ui-carousel'
 
 /**
@@ -79,21 +80,26 @@ const ConfirmDialog = (props: any) => {
         </DialogContent>
       )}
       {carousel && (
-        <DialogContent className="ConfirmDialogContents">
+        <DialogContent className="ConfirmDialogCarouselContents">
           <Carousel
-            className="CarouselItem"
+            animation="slide"
             autoPlay={false}
-            swipe={false}
+            className="CarouselItem"
+            cycleNavigation={false}
+            indicators={false}
+            navButtonsAlwaysVisible
+            NextIcon={<ArrowForwardIosIcon />}
             navButtonsProps={{
               style: {
-                backgroundColor: 'cornflowerblue',
+                backgroundColor: 'white',
                 borderRadius: 0,
                 width: 40, // 네비게이션 버튼의 너비 조절
-                height: 40 // 네비게이션 버튼의 높이 조절
+                height: 40, // 네비게이션 버튼의 높이 조절
+                color: 'black'
               }
             }}
-            NextIcon={<ArrowBackIosIcon />}
             PrevIcon={<ArrowBackIosIcon />}
+            swipe={false}
           >
             {carousel.map((image: string, index: number) => (
               <img key={index} src={image} alt={`Image ${index}`} />
