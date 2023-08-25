@@ -69,6 +69,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const [wards, setWards] = useState([])
   const [selected1, setSelected1] = useState('-')
   const [selected2, setSelected2] = useState('-')
+  const [radio, setRadio] = useState('all')
   const [patNm, setPatNm] = useState('')
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD')
@@ -147,6 +148,13 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         console.log(error)
       })
   }
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value === 'all') {
+      setPatNm('')
+    }
+    setRadio(e.target.value)
+  }
   // 환자 인풋박스 상태관리
   const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatNm(event.target.value)
@@ -197,7 +205,11 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
           <DatePicker defaultValue={selectedDate} onChange={handleDatePicker} />
         </Box>
         <Box className="Field2">
-          <RadioGroup className="RadioGroup" defaultValue="pat">
+          <RadioGroup
+            className="RadioGroup"
+            value={radio}
+            onChange={handleRadioChange}
+          >
             <FormControlLabel value="all" control={<Radio />} label="전체" />
             <FormControlLabel value="pat" control={<Radio />} label="환자명" />
           </RadioGroup>

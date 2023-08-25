@@ -70,6 +70,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD')
   )
+  const [radio, setRadio] = useState('all')
   const [patNm, setPatNm] = useState('')
 
   // 진료과, 진료의 api 호출
@@ -165,11 +166,17 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value)
   }
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value === 'all') {
+      setPatNm('')
+    }
+    setRadio(e.target.value)
+  }
   // 환자 인풋박스 상태관리
   const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPatNm(event.target.value)
   }
-
   // 초기화 버튼 클릭 이벤트
   const handleReset = () => {
     localStorage.removeItem('filters')
@@ -203,7 +210,6 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
               <em>진료의 선택</em>
             </MenuItem>
             {doctor.map((doctor: Doctor, d) => {
-              console.log(doctor)
               return (
                 <MenuItem key={d} value={doctor.DOCT_EMPL_NO}>
                   {doctor.DOCT_EMPL_NM}
@@ -215,19 +221,13 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           <DatePicker defaultValue={selectedDate} onChange={handleDatePicker} />
         </Box>
         <Box className="Field2">
-          <RadioGroup className="RadioGroup" defaultValue="pat">
-            <FormControlLabel
-              disabled
-              value="all"
-              control={<Radio />}
-              label="전체"
-            />
-            <FormControlLabel
-              disabled
-              value="pat"
-              control={<Radio />}
-              label="환자명"
-            />
+          <RadioGroup
+            className="RadioGroup"
+            value={radio}
+            onChange={handleRadioChange}
+          >
+            <FormControlLabel value="all" control={<Radio />} label="전체" />
+            <FormControlLabel value="pat" control={<Radio />} label="환자명" />
           </RadioGroup>
           <TextField
             className="Keyword"

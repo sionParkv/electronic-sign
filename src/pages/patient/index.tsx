@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import { AES256 } from '@/utils/AES256'
 
 const PatientPage = () => {
-  const className = 'Pages PatientPage'
+  const className = 'Pages PatientPage '
   const [userInfo, setUserInfo] = useState<string>('')
   const router = useRouter()
 
@@ -39,7 +39,7 @@ const PatientPage = () => {
       {/* {hasCookie('loginCookie') && (
         <React.Fragment> */}
       <components.Header {...propsHeader} />
-      <Container>
+      <Container className="Contents">
         <components.PatientInfo />
         <components.Document userInfo={userInfo} />
       </Container>

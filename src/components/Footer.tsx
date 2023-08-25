@@ -11,7 +11,7 @@ import IMGS from '../assets/images'
 const Footer = () => {
   return (
     <Container className="Footer">
-      <Image src={IMGS.LogoBottom} alt="EONE Logo" />
+      <Image src={IMGS.LogoBottom} alt="EONE Logo" width="129" height="25" />
       <T>COPYRIGHT(C) 2023 EONE HEALTHCARE. ALL RIGHTS RESERVED.</T>
     </Container>
   )

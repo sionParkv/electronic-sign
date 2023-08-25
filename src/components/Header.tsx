@@ -32,6 +32,7 @@ const Header = (props: { userInfo: string }) => {
   const logout = () => {
     deleteCookie('loginCookie')
     router.push('/login')
+    localStorage.clear()
   }
 
   // Drawer 컴포넌트
