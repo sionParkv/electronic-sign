@@ -105,12 +105,10 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
 
   // 진료과 상태관리
   const handleSelect1 = (e: any) => {
-    console.log('departments:: ', e.target.value)
     setSelected1(e.target?.value)
   }
   // 병동 상태관리
   const handleSelect2 = (e: any) => {
-    console.log('wards:: ', e.target.value)
     setSelected2(e.target?.value)
   }
 

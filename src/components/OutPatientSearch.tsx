@@ -154,7 +154,6 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
       })
       .then((respose) => {
         setDoctor(respose?.data?.data || [])
-        console.log(respose?.data?.data)
       })
       .catch((error) => {
         console.log(error)

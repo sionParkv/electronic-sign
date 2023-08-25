@@ -161,7 +161,6 @@ const PatientList = (props: PatientListProps) => {
   // 환자 클릭시 localStorage에 데이터 담으면서 화면 전환
   const rowClick = (index: any) => () => {
     localStorage.setItem('patientInfo', JSON.stringify(list[index]))
-    console.log(stateList)
     localStorage.setItem('sendToPatientInfo', JSON.stringify(sendInfo[index]))
     router.push('/patient')
   }

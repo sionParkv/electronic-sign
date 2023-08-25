@@ -114,7 +114,6 @@ const Document = (userInfo: any) => {
 
   // 문서 api 호출
   const loadItems = async () => {
-    console.log(patInfoList)
     await axios
       .post('/api/tempList', {
         PTNT_NO: patInfoList.number

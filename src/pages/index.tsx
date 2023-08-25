@@ -81,7 +81,6 @@ const HomePage = () => {
       .post(endpoint, data)
       .then((response) => {
         const newData = response.data.data || []
-        console.log(newData)
         localStorage.setItem(
           'patientList',
           `{"${storageKey}":${JSON.stringify(newData)}}`
