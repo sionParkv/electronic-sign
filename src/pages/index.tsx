@@ -24,21 +24,34 @@ const PatientListTabPanel = (props: TabPanelProps) => {
   )
 }
 
+/**
+ * 메인페이지 컴포넌트
+ * @returns {React.ReactNode} 메인페이지 컴포넌트
+ */
 const HomePage = () => {
-  const router = useRouter()
-  const state = useStateValue()
-  const dispatch = useDispatch()
-  const [isLoading, setIsLoading] = useState(true)
-  const [tab, setTab] = useState<number>(0)
-  const [userInfo, setUserInfo] = useState<string>('')
+  const router = useRouter() // Next.js의 라우터 훅 사용
+  const state = useStateValue() // 전역 상태 컨텍스트 사용
+  const dispatch = useDispatch() // 전역 상태 업데이트 디스패치 함수
+  const [isLoading, setIsLoading] = useState<boolean>(true) // 로딩 상태 관리
+  const [tab, setTab] = useState<number>(0) // 현재 선택된 탭 인덱스
+  const [userInfo, setUserInfo] = useState<string>('') // 로그인 사용자 정보
   const className = 'Pages HomePage'
 
-  const handleStateChange = (newList: any) => {
+  /**
+   * 환자 목록 상태 업데이트 함수
+   * @param {Array} newList - 새로운 환자 목록 데이터
+   */
+  const handleStateChange = (newList: Array<any>) => {
     if (dispatch) {
       dispatch({ type: 'PATIENT_LIST', list: newList, isLoading: isLoading })
     }
   }
 
+  /**
+   * 탭 변경 핸들러
+   * @param {React.SyntheticEvent} event - 이벤트 객체
+   * @param {number} newTab - 변경할 탭 인덱스
+   */
   const handleTabChange = (event: React.SyntheticEvent, newTab: number) => {
     localStorage.setItem('newTab', newTab.toString())
     setTab(newTab)
@@ -53,8 +66,37 @@ const HomePage = () => {
     loginCookie = JSON.parse(decodeCookie)
   }
 
+  /**
+   * Axios 요청을 통해 환자 목록을 가져오는 함수
+   * @param {string} endpoint - 요청할 API 엔드포인트
+   * @param {object} data - 요청 데이터
+   * @param {string} storageKey - localStorage에 저장할 데이터의 키
+   */
+  const fetchPatientList = (
+    endpoint: string,
+    data: object,
+    storageKey: string
+  ) => {
+    axios
+      .post(endpoint, data)
+      .then((response) => {
+        const newData = response.data.data || []
+        console.log(newData)
+        localStorage.setItem(
+          'patientList',
+          `{"${storageKey}":${JSON.stringify(newData)}}`
+        )
+        handleStateChange(newData)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  // 페이지 렌더링 완료 시 실행되는 효과 훅
   useEffect(() => {
     if (!hasCookie('loginCookie')) {
+      // 로그인되지 않은 경우 로그인 페이지로 이동
       router.push('/login')
     } else {
       if (loginCookie.length) {
@@ -72,103 +114,55 @@ const HomePage = () => {
       const existsOutpatient = jsonPatientList?.outPatient?.length
       const existsSurgery = jsonPatientList?.surgery?.length
 
+      // 선택한 탭에 따라 환자 목록 가져오기
       if (getItem === 0 && !existsAdmission) {
         if (patientList && jsonPatientList['admission']) {
           setIsLoading(false)
           return
         }
-        axios
-          .post('/api/admission', {
+        fetchPatientList(
+          '/api/admission',
+          {
             DEPT_CD: 'ALL',
             WARD_CD: 'ALL',
             PTNT_NM: ''
-          })
-          .then((response) => {
-            if (response.data.data) {
-              localStorage.setItem(
-                'patientList',
-                `{"admission":${JSON.stringify(response.data.data)}}`
-              )
-              handleStateChange(response.data.data)
-            } else {
-              localStorage.setItem(
-                'patientList',
-                `{"admission":${JSON.stringify([])}}`
-              )
-              handleStateChange([])
-            }
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+          },
+          'admission'
+        )
       } else if (getItem === 1 && !existsOutpatient) {
-        // const today = moment()
         if (patientList && jsonPatientList['outpatient']) {
-          console.log('@@#@#@#@#@#@#@#@#@')
           setIsLoading(false)
           return
         }
-        console.log('#######')
-        axios
-          .post('/api/outPatient', {
+        fetchPatientList(
+          '/api/outPatient',
+          {
             CLINIC_YMD: '20220603',
             // TODO: 임시 테스트를 위해 날짜 고정
             // CLINIC_YMD: today.format('YYYYMMDD'),
             DEPT_CD: 'ALL',
             DOCT_EMPL_NO: 'ALL',
             PTNT_NM: ''
-          })
-          .then((response) => {
-            if (response.data.data) {
-              localStorage.setItem(
-                'patientList',
-                `{"outPatient":${JSON.stringify(response.data.data)}}`
-              )
-              handleStateChange(response.data.data)
-            } else {
-              localStorage.setItem(
-                'patientList',
-                `{"outPatient":${JSON.stringify([])}}`
-              )
-              handleStateChange([])
-            }
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+          },
+          'outPatient'
+        )
       } else if (getItem === 2 && !existsSurgery) {
         if (patientList && jsonPatientList['surgery']) {
           setIsLoading(false)
           return
         }
         const today = moment()
-        axios
-          .post('/api/surgery', {
+        fetchPatientList(
+          '/api/surgery',
+          {
             OP_YMD: today.format('YYYYMMDD'),
             OP_DEPT_CD: '-',
             AN_TYPE_GB: '-',
             OP_GB: '-',
             PTNT_NM: ''
-          })
-          .then((response) => {
-            if (response.data.data) {
-              localStorage.setItem(
-                'patientList',
-                `{"surgery":${JSON.stringify(response.data.data)}}`
-              )
-              handleStateChange(response.data.data)
-              return
-            } else {
-              localStorage.setItem(
-                'patientList',
-                `{"surgery":${JSON.stringify([])}}`
-              )
-              handleStateChange([])
-            }
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+          },
+          'surgery'
+        )
       }
     }
     setIsLoading(false)
