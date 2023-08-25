@@ -65,8 +65,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
 }) => {
   const [departments, setDepartments] = useState([])
   const [doctor, setDoctor] = useState([])
-  const [selected1, setSelected1] = useState('-')
-  const [selected2, setSelected2] = useState('-')
+  const [selected1, setSelected1] = useState('ALL')
+  const [selected2, setSelected2] = useState('ALL')
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD')
   )
@@ -75,6 +75,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
 
   // 진료과, 진료의 api 호출
   const loadItems = async () => {
+    const getStorage = JSON.parse(localStorage.getItem('filters') as string)
     await axios
       .get('/api/deptSearch')
       .then((response) => {
@@ -86,7 +87,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
 
     await axios
       .post('/api/doctorSearch', {
-        DEPT_CD: selected1
+        DEPT_CD: getStorage ? getStorage.selected1 : selected1
       })
       .then((respose) => {
         setDoctor(respose?.data?.data || [])
@@ -94,14 +95,17 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
       .catch((error) => {
         console.log(error)
       })
-    const getStorage = JSON.parse(localStorage.getItem('filters') as string)
     if (getStorage) {
-      setSelected1(getStorage?.selected1)
-      setSelected2(getStorage?.selected2)
-      setPatNm(getStorage?.patNm)
-      setSelectedDate(getStorage?.selectedDate)
+      setSelected1(getStorage.selected1)
+      setSelected2(getStorage.selected2)
+      setPatNm(getStorage.patNm)
+      setSelectedDate(getStorage.selectedDate)
     }
   }
+
+  useEffect(() => {
+    loadItems()
+  }, [])
 
   // 조회 클릭 이벤트
   const patSearch = async () => {
@@ -110,8 +114,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         CLINIC_YMD: '20220603',
         // TODO: 임시 테스트를 위해 날짜 고정
         // CLINIC_YMD: selectedDate.replace(/[-.]/g, ''),
-        DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
-        DOCT_EMPL_NO: selected2 === '-' ? 'ALL' : selected2,
+        DEPT_CD: selected1,
+        DOCT_EMPL_NO: selected2,
         PTNT_NM: patNm
       })
       .then((response) => {
@@ -129,10 +133,10 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           handleStateChange([])
         }
         const setStorage: any = {
-          selected1: selected1,
-          selected2: selected2,
-          patNm: patNm,
-          selectedDate: selectedDate
+          selected1,
+          selected2,
+          patNm,
+          selectedDate
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
       })
@@ -180,14 +184,10 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   // 초기화 버튼 클릭 이벤트
   const handleReset = () => {
     localStorage.removeItem('filters')
-    setSelected1('-')
-    setSelected2('-')
+    setSelected1('ALL')
+    setSelected2('ALL')
     setPatNm('')
   }
-
-  useEffect(() => {
-    loadItems()
-  }, [])
 
   return (
     <Container className="SearchBar">
@@ -195,7 +195,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         <Box className="Field1">
           <InputLabel>진료과</InputLabel>
           <Select value={selected1} onChange={handleSelect1}>
-            <MenuItem disabled value="-">
+            <MenuItem disabled value="ALL">
               <em>진료과 선택</em>
             </MenuItem>
             {departments.map((department: Department, d) => (
@@ -206,7 +206,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           </Select>
           <InputLabel>진료의</InputLabel>
           <Select value={selected2} onChange={handleSelect2}>
-            <MenuItem disabled value="-">
+            <MenuItem disabled value="ALL">
               <em>진료의 선택</em>
             </MenuItem>
             {doctor.map((doctor: Doctor, d) => {
