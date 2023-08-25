@@ -114,9 +114,10 @@ const Document = (userInfo: any) => {
 
   // 문서 api 호출
   const loadItems = async () => {
+    console.log(patInfoList)
     await axios
       .post('/api/tempList', {
-        PTNT_NO: pat.number
+        PTNT_NO: patInfoList.number
       })
       .then((response) => {
         setTempList(response.data.data)
@@ -127,7 +128,7 @@ const Document = (userInfo: any) => {
 
     await axios
       .post('/api/givenList', {
-        PTNT_NO: pat.number
+        PTNT_NO: patInfoList.number
       })
       .then((response) => {
         setGivenList(response.data.data)
