@@ -55,7 +55,7 @@ const PatientList = (props: PatientListProps) => {
   let patientList: any = ''
   const [isLoading, setIsLoading] = useState(true)
   const [list, setList] = useState<Patient[]>([])
-  const [sendInfo, setSendInfo] = useState<Patient[]>([])
+  const [sendInfo, setSendInfo] = useState<Array<any>>([])
   const state = useStateValue()
   const stateList: any[] = state?.list || []
   const tabValue = props.tabValue
@@ -67,7 +67,8 @@ const PatientList = (props: PatientListProps) => {
     } else {
       let mapList: any[] = []
       if (stateList) {
-        mapList = stateList?.map((pat) => {
+        mapList = stateList?.map((pat: any) => {
+          setSendInfo(stateList)
           const sexAge = pat.SEX_AGE.toString().split('/')
           return {
             name: pat.PTNT_NM,
@@ -82,7 +83,6 @@ const PatientList = (props: PatientListProps) => {
           }
         })
       }
-      setSendInfo(stateList)
       setList(mapList)
     }
     setIsLoading(false)
@@ -103,6 +103,7 @@ const PatientList = (props: PatientListProps) => {
     // 입원 탭 클릭 이벤트
     if (tabValue === 0) {
       mapList = patList?.admission?.map((pat: any) => {
+        setSendInfo(patList.admission)
         const sexAge = pat?.SEX_AGE.split('/')
         return {
           name: pat.PTNT_NM,
@@ -121,6 +122,7 @@ const PatientList = (props: PatientListProps) => {
       // 외래 탭 클릭 이벤트
     } else if (tabValue === 1) {
       mapList = patList?.outPatient?.map((pat: any) => {
+        setSendInfo(patList.outPatient)
         const sexAge = pat?.SEX_AGE.split('/')
         return {
           name: pat.PTNT_NM,
@@ -139,6 +141,8 @@ const PatientList = (props: PatientListProps) => {
       // 수술 탭 클릭 이벤트
     } else if (tabValue === 2) {
       mapList = patList?.surgery?.map((pat: any) => {
+        setSendInfo(patList.surgery)
+
         return {
           name: pat.PTNT_NM,
           birth: pat.BIRTHDAY_YMD,
@@ -154,7 +158,6 @@ const PatientList = (props: PatientListProps) => {
         }
       })
     }
-    setSendInfo(mapList)
     setList(mapList)
   }
 
