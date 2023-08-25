@@ -55,10 +55,11 @@ const PatientList = (props: PatientListProps) => {
   let patientList: any = ''
   const [isLoading, setIsLoading] = useState(true)
   const [list, setList] = useState<Patient[]>([])
+  const [sendInfo, setSendInfo] = useState<Patient[]>([])
   const state = useStateValue()
   const stateList: any[] = state?.list || []
   const tabValue = props.tabValue
-
+  console.log(state)
   // 조회된 데이터 양식에 맞게 포맷
   useEffect(() => {
     if (localStorage.getItem('patientList') !== 'undefined') {
@@ -81,6 +82,7 @@ const PatientList = (props: PatientListProps) => {
           }
         })
       }
+      setSendInfo(stateList)
       setList(mapList)
     }
     setIsLoading(false)
@@ -152,13 +154,15 @@ const PatientList = (props: PatientListProps) => {
         }
       })
     }
+    setSendInfo(mapList)
     setList(mapList)
   }
 
   // 환자 클릭시 localStorage에 데이터 담으면서 화면 전환
   const rowClick = (index: any) => () => {
     localStorage.setItem('patientInfo', JSON.stringify(list[index]))
-    localStorage.setItem('sendToPatientInfo', JSON.stringify(stateList[index]))
+    console.log(stateList)
+    localStorage.setItem('sendToPatientInfo', JSON.stringify(sendInfo[index]))
     router.push('/patient')
   }
 
