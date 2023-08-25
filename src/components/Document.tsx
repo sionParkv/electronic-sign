@@ -259,13 +259,21 @@ const Document = (userInfo: any) => {
       .catch((error) => {
         console.log(error)
       })
-    // return components.openConfirmDialog({
-    //   className: 'DialogDocument',
-    //   imageUrl: 'http://210.107.85.113/images/20230823141754_8117_0.jpg',
-    //   ok: {
-    //     label: '닫기'
-    //   }
-    // })
+    const imageUrl =
+      'http://210.107.85.113/images/' +
+      item.FILE_NM +
+      '_' +
+      item.MAX_SEQ +
+      item.FILE_TYPE
+    console.log(imageUrl)
+
+    return components.openConfirmDialog({
+      className: 'DialogDocument',
+      imageUrl,
+      ok: {
+        label: '닫기'
+      }
+    })
   }
 
   // 목록 버튼 클릭 이벤트
