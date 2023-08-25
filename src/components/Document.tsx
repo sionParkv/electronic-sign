@@ -272,28 +272,33 @@ const Document = (userInfo: any) => {
   // 작성완료 문서 클릭 이벤트
   const completeEform = (item: any) => {
     console.log(item)
-    axios
-      .post('/api/givenList', {
-        PTNT_NO: pat.number
-      })
-      .then((response) => {
-        setGivenList(response.data.data)
-      })
-      .catch(() => {
-        openErrorDialog()
-      })
-    const imageUrl =
-      'http://210.107.85.113/images/' +
-      item.FILE_NM +
-      '_' +
-      // item.MAX_SEQ +
-      0 +
-      item.FILE_TYPE
-    console.log(imageUrl)
+    // axios
+    //   .post('/api/givenList', {
+    //     PTNT_NO: pat.number
+    //   })
+    //   .then((response) => {
+    //     console.log(response.data)
+    //     setGivenList(response.data.data)
+    //   })
+    //   .catch(() => {
+    //     openErrorDialog()
+    //   })
+    const imageURLs = []
+
+    for (let index = 0; index < item.MAX_SEQ; index++) {
+      const url =
+        'http://210.107.85.113/images/' +
+        item.FILE_NM +
+        '_' +
+        index +
+        item.FILE_TYPE
+      imageURLs.push(url)
+    }
+    console.log(imageURLs)
 
     return components.openConfirmDialog({
       className: 'DialogDocument',
-      imageUrl,
+      carousel: imageURLs,
       ok: {
         label: '닫기'
       }

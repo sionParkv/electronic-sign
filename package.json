@@ -25,6 +25,7 @@
     "next": "^13.4.9",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-material-ui-carousel": "^3.4.2",
     "sass": "^1.63.6",
     "typescript": "5.1.6",
     "winston": "^3.10.0",
