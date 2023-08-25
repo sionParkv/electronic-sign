@@ -71,9 +71,6 @@ const Document = (userInfo: any) => {
   let patInfoList: any = ''
   const [tabL, setTabL] = useState<number>(0)
   const [tabR, setTabR] = useState<number>(0)
-
-  // const [accordionNo, setAccordionNo] = useState<number>(-1)
-
   const [pat, setPat] = useState<Patient>(initialPatient)
   const [tempList, setTempList] = useState([])
   const [givenList, setGivenList] = useState([])
@@ -90,16 +87,6 @@ const Document = (userInfo: any) => {
   const handleChangeR = (event: React.SyntheticEvent, newTab: number) => {
     setTabR(newTab)
   }
-  // 전체 문서 아코디언 상태관리
-  // const accordionChange =
-  //   (index: number) => (_event: React.ChangeEvent<{}>, isExpanded: boolean) => {
-  //     console.log(index)
-  //     if (isExpanded) {
-  //       setAccordionNo(index)
-  //     } else {
-  //       setAccordionNo(-1)
-  //     }
-  //   }
 
   // 쿠기 있을 시 자동 로그인
   let tempObject: any = []
@@ -180,42 +167,125 @@ const Document = (userInfo: any) => {
   }
 
   // 문서 클릭 이벤트
-  // const handleOpenOneDocument = (li: { FORM_CD: Number; FORM_NM: string }) => {
-  //   // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번, 환자이름
-  //   // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO, PTNT_NM
-  //   const userNo = user?.match(/\d+/g).join('')
-  //   const formInfo: { FORM_CD: Number; FORM_NM: string } = li
-  //   const iOrO = pat.division === '외래' ? 'O' : 'I'
-  //   const CLIP_SOFT_URL = 'http://210.107.85.110:8080/ClipReport5/eform2.jsp?'
-  //   const { FORM_NM, FORM_CD } = formInfo
-  //   const { receptNo, number,name } = pat
-  //   const sendForm = encodeURI(
-  //     `${CLIP_SOFT_URL}FILE_NAME=${FORM_NM}&RECEPT_NO=${receptNo}&FORM_CD=${FORM_CD}&PTNT_NO=${number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
-  //   )
-  //   // router.push(sendForm)
-  // }
-
   const handleOpenOneDocument = (li: { FORM_CD: number; FORM_NM: string }) => {
     const userNo = user?.match(/\d+/g)?.join('')
     const formInfo: { FORM_CD: number; FORM_NM: string } = li
-    const iOrO = pat.division === '외래' ? 'O' : 'I'
     const CLIP_SOFT_URL = 'http://210.107.85.110:8080/ClipReport5/eform2.jsp'
     const { FORM_NM, FORM_CD } = formInfo
-    const { receptNo, number, name } = pat
-
+    patInfoList = JSON.parse(localStorage.getItem('sendToPatientInfo')!)
+    const {
+      ABO_RH,
+      ADDR,
+      ADM_YMD,
+      AGE,
+      AN_TYPE_GB_NM,
+      AN_TYPE_GB,
+      BIRTH_YMD,
+      BIRTHDAY_YMD,
+      CLINIC_TIME,
+      CLINIC_YMD,
+      CLN_DATE,
+      CLN_DEPT_CD,
+      CLN_DEPT_NM,
+      DEPT_CD,
+      DEPT_NM,
+      DIAG_CD,
+      DIAG_NM,
+      DOCT_EMPL_NM,
+      DOCT_EMPL_NO,
+      OP_DEPT_CD,
+      OP_DEPT_NM,
+      OP_DOCT_NM,
+      OP_DOCT_NO,
+      OP_GB_NM,
+      OP_GB,
+      OP_ROOM_CD,
+      OP_YMD,
+      ORD_YMD,
+      PATSECT,
+      PHONE_NO,
+      PRE_OP_NM,
+      PTNT_GB,
+      PTNT_NM_NICK,
+      PTNT_NM,
+      PTNT_NO,
+      RECEPT_NO,
+      ROOM_CD,
+      SEX_AGE,
+      SEX,
+      WARD_CD
+    } = patInfoList
+    const iOrO = pat.division === '외래' ? 'O' : 'I'
     const queryParams = new URLSearchParams({
-      FILE_NAME: FORM_NM,
-      RECEPT_NO: receptNo,
-      FORM_CD: FORM_CD.toString(),
-      PTNT_NO: number.toString(),
-      IO_GB: iOrO,
-      ENT_EMPL_NO: userNo,
-      PTNT_NM: name
+      //공통
+      FILE_NAME: FORM_NM ?? '',
+      RECEPT_NO: RECEPT_NO ?? '',
+      FORM_CD: FORM_CD.toString() ?? '',
+      PTNT_NO: PTNT_NO ?? '',
+      IO_GB: iOrO ?? '',
+      ENT_EMPL_NO: userNo ?? '',
+
+      //입원
+      ADM_YMD: ADM_YMD ?? '',
+      BIRTH_YMD: BIRTH_YMD ?? '',
+      DEPT_CD: DEPT_CD ?? '',
+      DEPT_NM: DEPT_NM ?? '',
+      DIAG_CD: DIAG_CD ?? '',
+      DIAG_NM: DIAG_NM ?? '',
+      DOCT_EMPL_NM: DOCT_EMPL_NM ?? '',
+      DOCT_EMPL_NO: DOCT_EMPL_NO ?? '',
+      PTNT_GB: PTNT_GB ?? '',
+      PTNT_NM_NICK: PTNT_NM_NICK ?? '',
+      PTNT_NM: PTNT_NM ?? '',
+      ROOM_CD: ROOM_CD ?? '',
+      SEX_AGE: SEX_AGE ?? '',
+      WARD_CD: WARD_CD ?? '',
+
+      //외래
+      CLINIC_TIME: CLINIC_TIME ?? '',
+      CLINIC_YMD: CLINIC_YMD ?? '',
+
+      // 수술
+      ABO_RH: ABO_RH ?? '',
+      ADDR: ADDR ?? '',
+      AGE: AGE ?? '',
+      AN_TYPE_GB_NM: AN_TYPE_GB_NM ?? '',
+      AN_TYPE_GB: AN_TYPE_GB ?? '',
+      BIRTHDAY_YMD: BIRTHDAY_YMD ?? '',
+      CLN_DATE: CLN_DATE ?? '',
+      CLN_DEPT_CD: CLN_DEPT_CD ?? '',
+      CLN_DEPT_NM: CLN_DEPT_NM ?? '',
+      OP_DEPT_CD: OP_DEPT_CD ?? '',
+      OP_DEPT_NM: OP_DEPT_NM ?? '',
+      OP_DOCT_NM: OP_DOCT_NM ?? '',
+      OP_DOCT_NO: OP_DOCT_NO ?? '',
+      OP_GB_NM: OP_GB_NM ?? '',
+      OP_GB: OP_GB ?? '',
+      OP_ROOM_CD: OP_ROOM_CD ?? '',
+      OP_YMD: OP_YMD ?? '',
+      ORD_YMD: ORD_YMD ?? '',
+      PATSECT: PATSECT ?? '',
+      PHONE_NO: PHONE_NO ?? '',
+      PRE_OP_NM: PRE_OP_NM ?? '',
+      SEX: SEX ?? ''
     })
     const queryStr = queryParams.toString()
     const sendForm = `${CLIP_SOFT_URL}?${queryStr}`
+    console.log(sendForm)
     router.push(sendForm)
   }
+
+  // const handleOpenOneDocument = (li: { FORM_CD: number; FORM_NM: string }) => {
+  //   // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번
+  //   // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO
+  //   const userNo = user?.match(/\d+/g).join('')
+  //   const formInfo: { FORM_CD: Number; FORM_NM: string } = li
+  //   const iOrO = pat.division === '외래' ? 'O' : 'I'
+  //   const sendForm = encodeURI(
+  //     `http://210.107.85.110:8080/ClipReport5/eform2.jsp?FILE_NAME=${formInfo.FORM_NM}&RECEPT_NO=${pat.receptNo}&FORM_CD=${formInfo.FORM_CD}&PTNT_NO=${pat.number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
+  //   )
+  //   router.push(sendForm)
+  // }
 
   // 작성완료 문서 클릭 이벤트
   const completeEform = () => {
@@ -368,3 +438,72 @@ const Document = (userInfo: any) => {
   )
 }
 export default Document
+
+/**
+ * //입원
+      // RECEPT_NO: RECEPT_NO ?? '',
+      ADM_YMD: ADM_YMD ?? '',
+      BIRTH_YMD: BIRTH_YMD ?? '',
+      DEPT_CD: DEPT_CD ?? '',
+      DEPT_NM: DEPT_NM ?? '',
+      DIAG_CD: DIAG_CD ?? '',
+      DIAG_NM: DIAG_NM ?? '',
+      DOCT_EMPL_NM: DOCT_EMPL_NM ?? '',
+      DOCT_EMPL_NO: DOCT_EMPL_NO ?? '',
+      // IO_GB: IO_GB ?? '',
+      PTNT_GB: PTNT_GB ?? '',
+      PTNT_NM_NICK: PTNT_NM_NICK ?? '',
+      PTNT_NM: PTNT_NM ?? '',
+      // PTNT_NO: PTNT_NO ?? '',
+      ROOM_CD: ROOM_CD ?? '',
+      SEX_AGE: SEX_AGE ?? '',
+      WARD_CD: WARD_CD ?? '',
+
+      //외래
+      // BIRTH_YMD,
+      CLINIC_TIME: CLINIC_TIME ?? '',
+      CLINIC_YMD: CLINIC_YMD ?? '',
+      // DEPT_CD,
+      // DEPT_NM,
+      // DIAG_CD,
+      // DIAG_NM,
+      // DOCT_EMPL_NM,
+      // DOCT_EMPL_NO,
+      // IO_GB,
+      // PTNT_NM,
+      // PTNT_NM_NICK,
+      // PTNT_NO,
+      // RECEPT_NO,
+      // SEX_AGE,
+
+      // 수술
+      ABO_RH: ABO_RH ?? '',
+      ADDR: ADDR ?? '',
+      AGE: AGE ?? '',
+      AN_TYPE_GB: AN_TYPE_GB ?? '',
+      AN_TYPE_GB_NM: AN_TYPE_GB_NM ?? '',
+      BIRTHDAY_YMD: BIRTHDAY_YMD ?? '',
+      CLN_DATE: CLN_DATE ?? '',
+      CLN_DEPT_CD: CLN_DEPT_CD ?? '',
+      CLN_DEPT_NM: CLN_DEPT_NM ?? '',
+      // DIAG_NM,
+      // IO_GB,
+      OP_DEPT_CD: OP_DEPT_CD ?? '',
+      OP_DEPT_NM: OP_DEPT_NM ?? '',
+      OP_DOCT_NM: OP_DOCT_NM ?? '',
+      OP_DOCT_NO: OP_DOCT_NO ?? '',
+      OP_GB: OP_GB ?? '',
+      OP_GB_NM: OP_GB_NM ?? '',
+      OP_ROOM_CD: OP_ROOM_CD ?? '',
+      OP_YMD: OP_YMD ?? '',
+      ORD_YMD: ORD_YMD ?? '',
+      PATSECT: PATSECT ?? '',
+      PHONE_NO: PHONE_NO ?? '',
+      PRE_OP_NM: PRE_OP_NM ?? '',
+      // PTNT_NM,
+      // PTNT_NO,
+      // RECEPT_NO,
+      // ROOM_CD,
+      SEX: SEX ?? ''
+      // WARD_CD,
+ */
