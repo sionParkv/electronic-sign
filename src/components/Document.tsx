@@ -247,7 +247,8 @@ const Document = (userInfo: any) => {
   // }
 
   // 작성완료 문서 클릭 이벤트
-  const completeEform = () => {
+  const completeEform = (item: any) => {
+    console.log(item)
     axios
       .post('/api/givenList', {
         PTNT_NO: pat.number
@@ -258,13 +259,13 @@ const Document = (userInfo: any) => {
       .catch((error) => {
         console.log(error)
       })
-    return components.openConfirmDialog({
-      className: 'DialogDocument',
-      imageUrl: 'http://210.107.85.113/images/20230823141754_8117_0.jpg',
-      ok: {
-        label: '닫기'
-      }
-    })
+    // return components.openConfirmDialog({
+    //   className: 'DialogDocument',
+    //   imageUrl: 'http://210.107.85.113/images/20230823141754_8117_0.jpg',
+    //   ok: {
+    //     label: '닫기'
+    //   }
+    // })
   }
 
   // 목록 버튼 클릭 이벤트
@@ -295,9 +296,12 @@ const Document = (userInfo: any) => {
               <DocumentListContainer>
                 <List className="DocumentList">
                   {tempList ? (
-                    tempList.map((index: any, i) => (
-                      <ListItem key={i}>
-                        <T className="Title">{index.FORM_NM}</T>
+                    tempList.map((item: any, i) => (
+                      <ListItem
+                        key={i}
+                        onClick={() => handleOpenOneDocument(item)}
+                      >
+                        <T className="Title">{item.FORM_NM}</T>
                       </ListItem>
                     ))
                   ) : (
@@ -312,10 +316,13 @@ const Document = (userInfo: any) => {
               <DocumentListContainer>
                 <List className="DocumentList">
                   {givenList ? (
-                    givenList.map((index: any, i) => (
+                    givenList.map((item: any, i) => (
                       <ListItem key={i}>
-                        <T className="Title" onClick={() => completeEform()}>
-                          {index.FORM_NM}
+                        <T
+                          className="Title"
+                          onClick={() => completeEform(item)}
+                        >
+                          {item.FORM_NM}
                         </T>
                       </ListItem>
                     ))
