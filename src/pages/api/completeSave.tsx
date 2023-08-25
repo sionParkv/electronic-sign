@@ -48,7 +48,7 @@ const upload = (fileName: any, filePath: string) =>
       })
   })
 
-const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
+const completeSave = async (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[completeSave] 작성완료 동의서 저장 리퀘스트 %o', req.body)
   const {
     RECEPT_NO,
@@ -73,7 +73,8 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
     }, '${fileName}', ${PTNT_NO}, '${IO_GB}', ${ENT_EMPL_NO}, 'MOBILE', '${EFORM_DATA}', 'Y'`
     let result: any
     try {
-      result = MsSql.executeQuery(query)
+      logger.debug('>>>>>> ' + query)
+      result = await MsSql.executeQuery(query)
     } catch (error: any) {
       error &&
         error.message &&
