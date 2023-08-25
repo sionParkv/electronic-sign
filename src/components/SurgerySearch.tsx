@@ -39,7 +39,7 @@ interface Anesthesia {
 interface SurgerySearchProps {
   state: any
   // eslint-disable-next-line no-unused-vars
-  handleStateChange: (newList: any) => void
+  handleStateChange: (newList: Array<any>) => void
 }
 
 // 날짜 포맷

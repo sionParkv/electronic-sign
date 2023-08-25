@@ -7,14 +7,18 @@ import React, {
 } from 'react'
 
 export type State = {
-  list: [] | undefined
+  list: Array<any> | undefined
   isLoading: boolean
 }
 const StateContext = createContext<State | undefined>(undefined)
 export type DispatchAction = Dispatch<Action>
 const DispatchContext = createContext<DispatchAction | undefined>(undefined)
 
-export type Action = { type: 'PATIENT_LIST'; list: []; isLoading: boolean }
+export type Action = {
+  type: 'PATIENT_LIST'
+  list: Array<any>
+  isLoading: boolean
+}
 const initialState: State = { list: [], isLoading: false }
 
 const reducer = (state: State, action: Action): State => {

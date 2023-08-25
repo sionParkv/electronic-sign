@@ -37,7 +37,7 @@ interface Hospital {
 interface AdmissionSearchProps {
   state: any
   // eslint-disable-next-line no-unused-vars
-  handleStateChange: (newList: any) => void
+  handleStateChange: (newList: Array<any>) => void
 }
 
 // 달력 UI 포맷

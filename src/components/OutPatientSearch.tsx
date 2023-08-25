@@ -36,7 +36,7 @@ interface Doctor {
 interface OutPatientSearchProps {
   state: any
   // eslint-disable-next-line no-unused-vars
-  handleStateChange: (newList: any) => void
+  handleStateChange: (newList: Array<any>) => void
 }
 
 // 날짜 포맷 레이아웃

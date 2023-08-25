@@ -159,7 +159,6 @@ const PatientList = (props: PatientListProps) => {
   const rowClick = (index: any) => () => {
     localStorage.setItem('patientInfo', JSON.stringify(list[index]))
     localStorage.setItem('sendToPatientInfo', JSON.stringify(stateList[index]))
-
     router.push('/patient')
   }
 
