@@ -65,8 +65,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
   const imageObject = JSON.parse(TEMP)
   for (var i = 0; i < imageObject.length; i++) {
     const saveDirectory = 'C:\\app\\images'
-    const currentDate = moment().format('YYYYMMDDHHmmss')
-    const fileName = currentDate + '_' + FORM_CD + '_' + i + '.jpg'
+    const fileName = FILE_NM + '_' + i + '.jpg'
     const filePath = saveDirectory + '\\' + fileName
 
     query = `exec [UP_S1MOBILE_PTNT_EFORM_C] ${RECEPT_NO}, ${FORM_CD}, '${FILE_NM}', ${
