@@ -66,6 +66,26 @@ const HomePage = () => {
     loginCookie = JSON.parse(decodeCookie)
   }
 
+  const openErrorDialog = () => {
+    components.openConfirmDialog({
+      contents: (
+        <>
+          통신 오류가 발생했습니다. <br />
+          잠시 후 다시 시도해주세요.
+        </>
+      ),
+      ok: {
+        label: '닫기',
+        action: () => {
+          setTimeout(() => {
+            document.getElementsByTagName('input')[0].focus()
+          }, 50)
+        }
+      },
+      title: '통신 오류'
+    })
+    return
+  }
   /**
    * Axios 요청을 통해 환자 목록을 가져오는 함수
    * @param {string} endpoint - 요청할 API 엔드포인트
@@ -87,8 +107,8 @@ const HomePage = () => {
         )
         handleStateChange(newData)
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
   }
 

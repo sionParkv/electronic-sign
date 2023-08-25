@@ -22,6 +22,8 @@ import React, { useEffect, useState } from 'react'
 import 'dayjs/locale/ko'
 import axios from 'axios'
 
+import components from '@/components'
+
 interface Department {
   [key: string]: string
   DEPT_CD: string
@@ -75,6 +77,27 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
     moment().format('YYYY-MM-DD')
   )
 
+  const openErrorDialog = () => {
+    components.openConfirmDialog({
+      contents: (
+        <>
+          통신 오류가 발생했습니다. <br />
+          잠시 후 다시 시도해주세요.
+        </>
+      ),
+      ok: {
+        label: '닫기',
+        action: () => {
+          setTimeout(() => {
+            document.getElementsByTagName('input')[0].focus()
+          }, 50)
+        }
+      },
+      title: '통신 오류'
+    })
+    return
+  }
+
   // api 호출
   const loadItems = async () => {
     await axios
@@ -82,8 +105,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
       .then((response) => {
         setDepartments(response?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
 
     await axios
@@ -91,8 +114,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
       .then((respose) => {
         setWards(respose?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
     const getStorage = JSON.parse(localStorage.getItem('filters') as string)
     if (getStorage) {
@@ -142,8 +165,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
   }
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {

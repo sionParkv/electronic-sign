@@ -112,6 +112,27 @@ const Document = (userInfo: any) => {
     }
   }
 
+  const openErrorDialog = () => {
+    components.openConfirmDialog({
+      contents: (
+        <>
+          통신 오류가 발생했습니다. <br />
+          잠시 후 다시 시도해주세요.
+        </>
+      ),
+      ok: {
+        label: '닫기',
+        action: () => {
+          setTimeout(() => {
+            document.getElementsByTagName('input')[0].focus()
+          }, 50)
+        }
+      },
+      title: '통신 오류'
+    })
+    return
+  }
+
   // 문서 api 호출
   const loadItems = async () => {
     await axios
@@ -121,8 +142,8 @@ const Document = (userInfo: any) => {
       .then((response) => {
         setTempList(response.data.data)
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
 
     await axios
@@ -132,8 +153,8 @@ const Document = (userInfo: any) => {
       .then((response) => {
         setGivenList(response.data.data)
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
 
     await axios
@@ -150,8 +171,8 @@ const Document = (userInfo: any) => {
         }, {})
         setList(newList)
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
 
     await axios
@@ -161,8 +182,8 @@ const Document = (userInfo: any) => {
       .then((response) => {
         setFavoriteList(response?.data?.data)
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
   }
 
@@ -174,6 +195,9 @@ const Document = (userInfo: any) => {
     const { FORM_NM, FORM_CD } = formInfo
     patInfoList = JSON.parse(localStorage.getItem('sendToPatientInfo')!)
     const iOrO = pat.division === '외래' ? 'O' : 'I'
+
+    console.log(patInfoList)
+
     const queryParams = new URLSearchParams({
       //공통
       FILE_NAME: FORM_NM ?? '',
@@ -255,14 +279,15 @@ const Document = (userInfo: any) => {
       .then((response) => {
         setGivenList(response.data.data)
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
     const imageUrl =
       'http://210.107.85.113/images/' +
       item.FILE_NM +
       '_' +
-      item.MAX_SEQ +
+      // item.MAX_SEQ +
+      0 +
       item.FILE_TYPE
     console.log(imageUrl)
 

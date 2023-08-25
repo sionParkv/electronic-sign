@@ -22,6 +22,8 @@ import React, { useEffect, useState } from 'react'
 import 'dayjs/locale/ko'
 import axios from 'axios'
 
+import components from '@/components'
+
 interface Department {
   [key: string]: string
   DEPT_CD: string
@@ -73,6 +75,27 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const [radio, setRadio] = useState('all')
   const [patNm, setPatNm] = useState('')
 
+  const openErrorDialog = () => {
+    components.openConfirmDialog({
+      contents: (
+        <>
+          통신 오류가 발생했습니다. <br />
+          잠시 후 다시 시도해주세요.
+        </>
+      ),
+      ok: {
+        label: '닫기',
+        action: () => {
+          setTimeout(() => {
+            document.getElementsByTagName('input')[0].focus()
+          }, 50)
+        }
+      },
+      title: '통신 오류'
+    })
+    return
+  }
+
   // 진료과, 진료의 api 호출
   const loadItems = async () => {
     const getStorage = JSON.parse(localStorage.getItem('filters') as string)
@@ -81,8 +104,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
       .then((response) => {
         setDepartments(response?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
 
     await axios
@@ -92,8 +115,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
       .then((respose) => {
         setDoctor(respose?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
     if (getStorage) {
       setSelected1(getStorage.selected1)
@@ -140,8 +163,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
   }
 
@@ -155,8 +178,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
       .then((respose) => {
         setDoctor(respose?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
   }
 
