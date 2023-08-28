@@ -210,8 +210,6 @@ const Document = (userInfo: any) => {
     patInfoList = JSON.parse(localStorage.getItem('sendToPatientInfo')!)
     const iOrO = pat.division === '외래' ? 'O' : 'I'
 
-    console.log(patInfoList)
-
     const queryParams = new URLSearchParams({
       //공통
       FILE_NAME: FORM_NM ?? '',
@@ -322,7 +320,6 @@ const Document = (userInfo: any) => {
             { name: 'PRE_OP_NM', value: patInfoList?.PRE_OP_NM ?? '' },
             { name: 'SEX', value: patInfoList?.SEX ?? '' }
           ]
-          console.log(tempFormData[0])
           for (let index = 0; index < tempFormData.length; index++) {
             let eformDataInput = document.createElement('input')
             eformDataInput.type = 'hidden'
@@ -354,7 +351,6 @@ const Document = (userInfo: any) => {
         item.FILE_TYPE
       imageURLs.push(url)
     }
-    // console.log(imageURLs)
 
     return components.openConfirmDialog({
       className: 'DialogDocument',
