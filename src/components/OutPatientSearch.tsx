@@ -1,7 +1,7 @@
 /**
  * 외래 조회 컴포넌트
  */
-
+import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
@@ -260,6 +260,13 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         </Box>
       </Box>
       <Box className="Buttons">
+        <Button
+          variant="outlined"
+          startIcon={<CenterFocusWeakIcon />}
+          onClick={() => {}}
+        >
+          QR바코드
+        </Button>
         <Button
           variant="outlined"
           startIcon={<RestartAltIcon />}
