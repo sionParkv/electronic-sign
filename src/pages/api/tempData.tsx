@@ -11,7 +11,7 @@ const tempData = (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[tempData] 임시저장 동의서 데이터 조회 리퀘스트 %o', req.body)
   const { RECEPT_NO, FILE_NM, FORM_CD } = req.body
 
-  let query = `exec [UP_S1MOBILE_TEMP_LIST_R$001] ${RECEPT_NO}, '${FILE_NM}', ${FORM_CD}`
+  let query = `exec [UP_S1MOBILE_TEMP_LIST_R$001] ${RECEPT_NO}, ${FORM_CD}, '${FILE_NM}'`
   MsSql.executeQuery(query)
     .then((result: any) => {
       if (result?.length > 0) {
