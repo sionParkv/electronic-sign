@@ -83,7 +83,7 @@ const completeSave = async (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '작성완료 동의서 저장 중 오류가 발생 하였습니다.',
+        message: '작성완료 동의서 저장 중 오류가 발생 하였습니다.',
         error: error.message
       })
     }

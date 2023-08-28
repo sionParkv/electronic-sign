@@ -26,7 +26,7 @@ const tempSave = (req: NextApiRequest, res: NextApiResponse) => {
       logger.debug('[tempSave] 임시 동의서 저장에 성공 하였습니다. %o', result)
       res.json({
         code: 'OK',
-        meesage: '임시 동의서 저장에 성공 하였습니다.'
+        message: '임시 동의서 저장에 성공 하였습니다.'
       })
     })
     .catch((error) => {
@@ -37,7 +37,7 @@ const tempSave = (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '임시 동의서 저장 중 오류가 발생 하였습니다.',
+        message: '임시 동의서 저장 중 오류가 발생 하였습니다.',
         error: error.message
       })
     })

@@ -19,14 +19,14 @@ const hospital = (req: NextApiRequest, res: NextApiResponse) => {
         )
         res.json({
           code: 'OK',
-          meesage: '병동 목록 조회에 성공 하였습니다.',
+          message: '병동 목록 조회에 성공 하였습니다.',
           data: result
         })
       } else {
         logger.debug('[hospital] 병동 목록이 없습니다.')
         res.json({
           code: 'OK',
-          meesage: '병동 목록이 없습니다.'
+          message: '병동 목록이 없습니다.'
         })
       }
     })
@@ -38,7 +38,7 @@ const hospital = (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '병동 목록 조회 중 오류가 발생 하였습니다.',
+        message: '병동 목록 조회 중 오류가 발생 하였습니다.',
         error: error.message
       })
     })

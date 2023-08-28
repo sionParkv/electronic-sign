@@ -61,7 +61,7 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '로그인 중 오류가 발생 하였습니다.',
+        message: '로그인 중 오류가 발생 하였습니다.',
         error: error.message
       })
     })
