@@ -16,7 +16,7 @@ import {
   Tabs
 } from '@mui/material'
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import images from '@/assets/images'
@@ -24,7 +24,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { getCookie, hasCookie } from 'cookies-next'
 import { AES256 } from '@/utils/AES256'
-import components from '.'
+import components from '@/components'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -78,7 +78,9 @@ const Document = (userInfo: any) => {
   const lists = Object.keys(list)
   const [favoriteList, setFavoriteList] = useState([])
   const router = useRouter()
-
+  const formRef = useRef<HTMLFormElement | null>(null) // useRef로 form 엘리먼트에 대한 참조 생성
+  const CLIP_SOFT_URL2 = 'http://210.107.85.110:8080/ClipReport5/eform2.jsp'
+  const CLIP_SOFT_URL4 = 'http://210.107.85.110:8080/ClipReport5/eform4.jsp'
   // 작성서식 목록 탭 상태관리
   const handleChangeL = (event: React.SyntheticEvent, newTab: number) => {
     setTabL(newTab)
@@ -187,11 +189,24 @@ const Document = (userInfo: any) => {
   }
 
   // 문서 클릭 이벤트
-  const handleOpenOneDocument = (li: { FORM_CD: number; FORM_NM: string }) => {
+  const handleOpenOneDocument = async (
+    li: {
+      FILE_NM: string
+      FORM_CD: number
+      RECEPT_NO: number
+      FORM_NM: string
+    },
+    code: string
+  ) => {
     const userNo = user?.match(/\d+/g)?.join('')
-    const formInfo: { FORM_CD: number; FORM_NM: string } = li
-    const CLIP_SOFT_URL = 'http://210.107.85.110:8080/ClipReport5/eform2.jsp'
-    const { FORM_NM, FORM_CD } = formInfo
+    const formInfo: {
+      FILE_NM: string
+      FORM_CD: number
+      RECEPT_NO: number
+      FORM_NM: string
+    } = li
+
+    const { FILE_NM, FORM_CD, RECEPT_NO, FORM_NM } = formInfo
     patInfoList = JSON.parse(localStorage.getItem('sendToPatientInfo')!)
     const iOrO = pat.division === '외래' ? 'O' : 'I'
 
@@ -251,36 +266,83 @@ const Document = (userInfo: any) => {
       SEX: patInfoList?.SEX ?? ''
     })
     const queryStr = queryParams.toString()
-    const sendForm = `${CLIP_SOFT_URL}?${queryStr}`
-    console.log(sendForm)
-    router.push(sendForm)
+    const sendForm = `${CLIP_SOFT_URL2}?${queryStr}`
+    if (code === 'temp') {
+      await axios
+        .post('/api/tempData', {
+          FILE_NM: FILE_NM,
+          FORM_CD: FORM_CD,
+          RECEPT_NO: RECEPT_NO
+        })
+        .then((result) => {
+          const tempFormData = [
+            { name: 'EFORM_DATA', value: result.data.data[0].EFORM_DATA },
+            { name: 'FILE_NAME', value: FORM_NM ?? '' },
+            { name: 'RECEPT_NO', value: patInfoList?.RECEPT_NO ?? '' },
+            { name: 'FORM_CD', value: FORM_CD?.toString() ?? '' },
+            { name: 'PTNT_NO', value: patInfoList?.PTNT_NO ?? '' },
+            { name: 'IO_GB', value: iOrO },
+            { name: 'ENT_EMPL_NO', value: userNo ?? '' },
+            { name: 'ADM_YMD', value: patInfoList?.ADM_YMD ?? '' },
+            { name: 'BIRTH_YMD', value: patInfoList?.BIRTH_YMD ?? '' },
+            { name: 'DEPT_CD', value: patInfoList?.DEPT_CD ?? '' },
+            { name: 'DEPT_NM', value: patInfoList?.DEPT_NM ?? '' },
+            { name: 'DIAG_CD', value: patInfoList?.DIAG_CD ?? '' },
+            { name: 'DIAG_NM', value: patInfoList?.DIAG_NM ?? '' },
+            { name: 'DOCT_EMPL_NM', value: patInfoList?.DOCT_EMPL_NM ?? '' },
+            { name: 'DOCT_EMPL_NO', value: patInfoList?.DOCT_EMPL_NO ?? '' },
+            { name: 'PTNT_GB', value: patInfoList?.PTNT_GB ?? '' },
+            { name: 'PTNT_NM_NICK', value: patInfoList?.PTNT_NM_NICK ?? '' },
+            { name: 'PTNT_NM', value: patInfoList?.PTNT_NM ?? '' },
+            { name: 'ROOM_CD', value: patInfoList?.ROOM_CD ?? '' },
+            { name: 'SEX_AGE', value: patInfoList?.SEX_AGE ?? '' },
+            { name: 'WARD_CD', value: patInfoList?.WARD_CD ?? '' },
+            { name: 'CLINIC_TIME', value: patInfoList?.CLINIC_TIME ?? '' },
+            { name: 'CLINIC_YMD', value: patInfoList?.CLINIC_YMD ?? '' },
+            { name: 'ABO_RH', value: patInfoList?.ABO_RH ?? '' },
+            { name: 'ADDR', value: patInfoList?.ADDR ?? '' },
+            { name: 'AGE', value: patInfoList?.AGE ?? '' },
+            { name: 'AN_TYPE_GB_NM', value: patInfoList?.AN_TYPE_GB_NM ?? '' },
+            { name: 'AN_TYPE_GB', value: patInfoList?.AN_TYPE_GB ?? '' },
+            { name: 'BIRTHDAY_YMD', value: patInfoList?.BIRTHDAY_YMD ?? '' },
+            { name: 'CLN_DATE', value: patInfoList?.CLN_DATE ?? '' },
+            { name: 'CLN_DEPT_CD', value: patInfoList?.CLN_DEPT_CD ?? '' },
+            { name: 'CLN_DEPT_NM', value: patInfoList?.CLN_DEPT_NM ?? '' },
+            { name: 'OP_DEPT_CD', value: patInfoList?.OP_DEPT_CD ?? '' },
+            { name: 'OP_DEPT_NM', value: patInfoList?.OP_DEPT_NM ?? '' },
+            { name: 'OP_DOCT_NM', value: patInfoList?.OP_DOCT_NM ?? '' },
+            { name: 'OP_DOCT_NO', value: patInfoList?.OP_DOCT_NO ?? '' },
+            { name: 'OP_GB_NM', value: patInfoList?.OP_GB_NM ?? '' },
+            { name: 'OP_GB', value: patInfoList?.OP_GB ?? '' },
+            { name: 'OP_ROOM_CD', value: patInfoList?.OP_ROOM_CD ?? '' },
+            { name: 'OP_YMD', value: patInfoList?.OP_YMD ?? '' },
+            { name: 'ORD_YMD', value: patInfoList?.ORD_YMD ?? '' },
+            { name: 'PATSECT', value: patInfoList?.PATSECT ?? '' },
+            { name: 'PHONE_NO', value: patInfoList?.PHONE_NO ?? '' },
+            { name: 'PRE_OP_NM', value: patInfoList?.PRE_OP_NM ?? '' },
+            { name: 'SEX', value: patInfoList?.SEX ?? '' }
+          ]
+          console.log(tempFormData[0])
+          for (let index = 0; index < tempFormData.length; index++) {
+            let eformDataInput = document.createElement('input')
+            eformDataInput.type = 'hidden'
+            eformDataInput.name = tempFormData[index].name
+            eformDataInput.value = encodeURIComponent(tempFormData[index].value)
+            formRef.current?.appendChild(eformDataInput)
+          }
+          // 여기서 formRef.current를 사용하여 form 엘리먼트에 접근
+          if (formRef.current) {
+            formRef.current.submit() // 예시로 submit을 호출하도록 설정
+          }
+        })
+      //catch
+    } else {
+      router.push(sendForm)
+    }
   }
-
-  // const handleOpenOneDocument = (li: { FORM_CD: number; FORM_NM: string }) => {
-  //   // 접수번호, 동의서서식코드, 환자번호, 입외구분(입원I|O외래), 입력자사번
-  //   // RECEPT_NO, FORM_CD, PTNT_NO, IO_GB,ENT_EMPL_NO
-  //   const userNo = user?.match(/\d+/g).join('')
-  //   const formInfo: { FORM_CD: Number; FORM_NM: string } = li
-  //   const iOrO = pat.division === '외래' ? 'O' : 'I'
-  //   const sendForm = encodeURI(
-  //     `http://210.107.85.110:8080/ClipReport5/eform2.jsp?FILE_NAME=${formInfo.FORM_NM}&RECEPT_NO=${pat.receptNo}&FORM_CD=${formInfo.FORM_CD}&PTNT_NO=${pat.number}&IO_GB=${iOrO}&ENT_EMPL_NO=${userNo}`
-  //   )
-  //   router.push(sendForm)
-  // }
 
   // 작성완료 문서 클릭 이벤트
   const completeEform = (item: any) => {
-    // axios
-    //   .post('/api/givenList', {
-    //     PTNT_NO: pat.number
-    //   })
-    //   .then((response) => {
-    //     console.log(response.data)
-    //     setGivenList(response.data.data)
-    //   })
-    //   .catch(() => {
-    //     openErrorDialog()
-    //   })
     const imageURLs = []
 
     for (let index = 0; index < item.MAX_SEQ; index++) {
@@ -334,7 +396,7 @@ const Document = (userInfo: any) => {
                     tempList.map((item: any, i) => (
                       <ListItem
                         key={i}
-                        onClick={() => handleOpenOneDocument(item)}
+                        onClick={() => handleOpenOneDocument(item, 'temp')}
                       >
                         <T className="Title">{item.FORM_NM}</T>
                       </ListItem>
@@ -391,7 +453,9 @@ const Document = (userInfo: any) => {
                       <ListItem key={i}>
                         <T
                           className="Title"
-                          onClick={() => handleOpenOneDocument(item)}
+                          onClick={() =>
+                            handleOpenOneDocument(item, 'favorite')
+                          }
                         >
                           {item.FORM_NM}
                         </T>
@@ -415,7 +479,7 @@ const Document = (userInfo: any) => {
                             {details.map((li: any, index: number) => (
                               <ListItem
                                 key={index}
-                                onClick={() => handleOpenOneDocument(li)}
+                                onClick={() => handleOpenOneDocument(li, 'all')}
                               >
                                 <T>{li.FORM_NM}</T>
                               </ListItem>
@@ -435,76 +499,15 @@ const Document = (userInfo: any) => {
           목록
         </Button>
       </Box>
+      <form
+        ref={formRef}
+        method="post"
+        action={CLIP_SOFT_URL4}
+        acceptCharset="euc-kr"
+      >
+        {/* form 내용 */}
+      </form>
     </Container>
   )
 }
 export default Document
-
-/**
- * //입원
-      // RECEPT_NO: RECEPT_NO ?? '',
-      ADM_YMD: ADM_YMD ?? '',
-      BIRTH_YMD: BIRTH_YMD ?? '',
-      DEPT_CD: DEPT_CD ?? '',
-      DEPT_NM: DEPT_NM ?? '',
-      DIAG_CD: DIAG_CD ?? '',
-      DIAG_NM: DIAG_NM ?? '',
-      DOCT_EMPL_NM: DOCT_EMPL_NM ?? '',
-      DOCT_EMPL_NO: DOCT_EMPL_NO ?? '',
-      // IO_GB: IO_GB ?? '',
-      PTNT_GB: PTNT_GB ?? '',
-      PTNT_NM_NICK: PTNT_NM_NICK ?? '',
-      PTNT_NM: PTNT_NM ?? '',
-      // PTNT_NO: PTNT_NO ?? '',
-      ROOM_CD: ROOM_CD ?? '',
-      SEX_AGE: SEX_AGE ?? '',
-      WARD_CD: WARD_CD ?? '',
-
-      //외래
-      // BIRTH_YMD,
-      CLINIC_TIME: CLINIC_TIME ?? '',
-      CLINIC_YMD: CLINIC_YMD ?? '',
-      // DEPT_CD,
-      // DEPT_NM,
-      // DIAG_CD,
-      // DIAG_NM,
-      // DOCT_EMPL_NM,
-      // DOCT_EMPL_NO,
-      // IO_GB,
-      // PTNT_NM,
-      // PTNT_NM_NICK,
-      // PTNT_NO,
-      // RECEPT_NO,
-      // SEX_AGE,
-
-      // 수술
-      ABO_RH: ABO_RH ?? '',
-      ADDR: ADDR ?? '',
-      AGE: AGE ?? '',
-      AN_TYPE_GB: AN_TYPE_GB ?? '',
-      AN_TYPE_GB_NM: AN_TYPE_GB_NM ?? '',
-      BIRTHDAY_YMD: BIRTHDAY_YMD ?? '',
-      CLN_DATE: CLN_DATE ?? '',
-      CLN_DEPT_CD: CLN_DEPT_CD ?? '',
-      CLN_DEPT_NM: CLN_DEPT_NM ?? '',
-      // DIAG_NM,
-      // IO_GB,
-      OP_DEPT_CD: OP_DEPT_CD ?? '',
-      OP_DEPT_NM: OP_DEPT_NM ?? '',
-      OP_DOCT_NM: OP_DOCT_NM ?? '',
-      OP_DOCT_NO: OP_DOCT_NO ?? '',
-      OP_GB: OP_GB ?? '',
-      OP_GB_NM: OP_GB_NM ?? '',
-      OP_ROOM_CD: OP_ROOM_CD ?? '',
-      OP_YMD: OP_YMD ?? '',
-      ORD_YMD: ORD_YMD ?? '',
-      PATSECT: PATSECT ?? '',
-      PHONE_NO: PHONE_NO ?? '',
-      PRE_OP_NM: PRE_OP_NM ?? '',
-      // PTNT_NM,
-      // PTNT_NO,
-      // RECEPT_NO,
-      // ROOM_CD,
-      SEX: SEX ?? ''
-      // WARD_CD,
- */
