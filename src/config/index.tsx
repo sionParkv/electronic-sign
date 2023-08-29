@@ -11,7 +11,7 @@ const DB = {
   production: {
     user: 'mobile_base',
     password: 'mobile_!jj1m',
-    server: 'localhost',
+    server: '210.107.85.113',
     database: 'MEDIPLUS_MEDIYIN',
     steram: true,
     pool: {
@@ -43,7 +43,7 @@ const DB = {
   test: {
     user: 'mobile_base',
     password: 'mobile_!jj1m',
-    server: 'localhost',
+    server: '210.107.85.113',
     database: 'MEDIPLUS_MEDIYIN',
     steram: true,
     pool: {
