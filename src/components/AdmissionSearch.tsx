@@ -25,6 +25,7 @@ import axios from 'axios'
 import { startScanner } from '../pages/_app'
 
 import components from '@/components'
+import { useDispatch, useStateValue } from '@/context/stateContext'
 
 interface Department {
   [key: string]: string
@@ -78,6 +79,23 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD')
   )
+  const state = useStateValue()
+  const scannedData = state?.scannedData
+  const dispatch = useDispatch()
+
+  // eslint-disable-next-line no-unused-vars
+  const onQRCodeScanned = (data: any) => {
+    //Qr스캔 후 환자번호를 가져올 거
+    if (dispatch) {
+      dispatch({ type: 'QR_CODE_SCANNED', data })
+    }
+  }
+  console.log(scannedData)
+  useEffect(() => {
+    if (scannedData) {
+      setPatNm(scannedData)
+    }
+  }, [scannedData])
 
   const openErrorDialog = () => {
     components.openConfirmDialog({

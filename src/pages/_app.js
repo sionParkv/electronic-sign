@@ -9,11 +9,6 @@ export const startScanner = () => {
   window.Android.startQRScanner()
 }
 
-export const onQRCodeScanned = (data) => {
-  //Qr스캔 후 환자번호를 가져올 거
-  return data
-}
-
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter()
 
