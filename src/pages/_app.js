@@ -4,12 +4,23 @@ import '../assets/styles/common.scss'
 import { StateProvider } from '@/context/stateContext'
 import { useRouter } from 'next/router'
 
+//Qr코드 버튼 누를 떄 실행할 버튼
+export const startScanner = () => {
+  window.Android.startQRScanner()
+}
+
+export const onQRCodeScanned = (data) => {
+  //Qr스캔 후 환자번호를 가져올 거
+  return data
+}
+
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter()
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       historyBack()
+      onQRCodeScanned()
     }
   }, [router.asPath])
 

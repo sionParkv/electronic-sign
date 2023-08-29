@@ -22,6 +22,7 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import 'dayjs/locale/ko'
 import axios from 'axios'
+import { startScanner } from '../pages/_app'
 
 import components from '@/components'
 
@@ -247,7 +248,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         <Button
           variant="outlined"
           startIcon={<CenterFocusWeakIcon />}
-          onClick={() => {}}
+          onClick={startScanner}
         >
           QR바코드
         </Button>
