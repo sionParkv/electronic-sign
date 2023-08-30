@@ -1,20 +1,31 @@
 import { useEffect } from 'react'
 import '../assets/styles/common.scss'
 
-import { StateProvider } from '@/context/stateContext'
+import { StateProvider, useDispatch } from '@/context/stateContext'
 import { useRouter } from 'next/router'
 
 //Qr코드 버튼 누를 떄 실행할 버튼
 export const startScanner = () => {
-  window.Android.startQRScanner()
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) // 안드로이드 아이폰을 검사해 체크
+  if (isMobile) {
+    window.Android.startQRScanner()
+  }
 }
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter()
+  const dispatch = useDispatch()
 
+  //Qr스캔 후 환자번호를 가져올 거
+  const onQRCodeScanned = (data) => {
+    if (data) {
+      dispatch({ type: 'QR_CODE_SCANNED', data })
+    }
+  }
   useEffect(() => {
     if (typeof window !== 'undefined') {
       historyBack()
+      onQRCodeScanned()
     }
   }, [router.asPath])
 
