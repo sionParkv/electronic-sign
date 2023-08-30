@@ -13,19 +13,25 @@ import axios from 'axios'
 import components from '@/components'
 import IMGS from '../../assets/images'
 import { useRouter } from 'next/router'
-// import { hasCookie } from 'cookies-next'
 
+/**
+ * 사용자 정보 인터페이스
+ */
 interface UserInfo {
   name: string
   dept: string
 }
 
+/**
+ * 로그인 유무 인터페이스
+ */
 interface LoginPageProps {
   isLoggedIn: boolean
 }
 
 /**
  * 로그인 페이지 컴포넌트
+ * @param {LoginPageProps} props - 로그인 페이지 프로퍼티
  * @returns {React.ReactNode} 로그인 페이지 컴포넌트
  */
 const LoginPage: React.FC<LoginPageProps> = ({ isLoggedIn }) => {
@@ -48,6 +54,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ isLoggedIn }) => {
     }
   }, [])
 
+  /**
+   * 오류 다이얼로그 열기
+   * @param {React.ReactNode} contents - 오류 내용
+   */
   const openErrorDialog = (contents: React.ReactNode) => {
     components.openConfirmDialog({
       contents,
@@ -64,6 +74,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ isLoggedIn }) => {
     return
   }
 
+  /**
+   * Axios 요청을 수행하고 응답에 따른 처리를 수행하는 함수
+   * @param {string} emplNo - 사용자 사번
+   * @param {string} passWord - 사용자 비밀번호
+   * @param {string} code - 요청 코드 ('LOGIN' 또는 'EMPL_NO_CHECK')
+   */
   const axiosRequest = (emplNo: string, passWord: string, code: string) => {
     axios
       .post('/api/login', {
@@ -219,6 +235,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ isLoggedIn }) => {
 
 export default LoginPage
 
+/**
+ * 서버 데이터 가져오기 함수
+ * @param {any} context - Next.js 컨텍스트
+ * @returns {Promise<{props: LoginPageProps}>} 페이지 프로퍼티
+ */
 export async function getServerSideProps(context: any) {
   const cookies = context.req.cookies
   const isLoggedIn = cookies.loginCookie ? true : false
