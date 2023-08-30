@@ -22,6 +22,8 @@ import React, { useEffect, useState } from 'react'
 import 'dayjs/locale/ko'
 import axios from 'axios'
 
+import { startScanner } from '../pages/_app'
+import { useDispatch, useStateValue } from '@/context/stateContext'
 import components from '@/components'
 
 interface Department {
@@ -74,6 +76,64 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   )
   const [radio, setRadio] = useState('all')
   const [patNm, setPatNm] = useState('')
+
+  const state = useStateValue()
+  const scannedData = state?.scannedData
+  const dispatch = useDispatch()
+  //Qr스캔 후 환자번호를 가져올 거
+  const onQRCodeScanned = () => {
+    window.onQRCodeScanned = (data: any) => {
+      if (!data) return
+
+      let parsedData: any
+
+      if (!isNaN(data)) {
+        parsedData = parseInt(data)
+      } else if (typeof data === 'string') {
+        parsedData = data
+      } else {
+        openErrorDialog()
+        return // 데이터가 숫자나 문자열이 아니면 함수 종료
+      }
+
+      if (dispatch) {
+        dispatch({ type: 'QR_CODE_SCANNED', data: parsedData })
+      }
+    }
+  }
+  console.log('scannedData:: ', scannedData)
+  useEffect(() => {
+    if (scannedData) {
+      setPatNm(scannedData)
+      axios
+        .post('/api/outPatient', {
+          CLINIC_YMD: '20220603',
+          // TODO: 임시 테스트를 위해 날짜 고정
+          // CLINIC_YMD: selectedDate.replace(/[-.]/g, ''),
+          DEPT_CD: selected1,
+          DOCT_EMPL_NO: selected2,
+          PTNT_NM: scannedData
+        })
+        .then((response) => {
+          const newData = response.data.data || []
+          localStorage.setItem(
+            'patientList',
+            `{"outPatient":${JSON.stringify(newData)}}`
+          )
+          handleStateChange(newData)
+          const setStorage: any = {
+            selected1,
+            selected2,
+            patNm: scannedData,
+            selectedDate
+          }
+          localStorage.setItem('filters', JSON.stringify(setStorage))
+        })
+        .catch(() => {
+          openErrorDialog()
+        })
+    }
+  }, [scannedData])
 
   const openErrorDialog = () => {
     components.openConfirmDialog({
@@ -128,6 +188,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
 
   useEffect(() => {
     loadItems()
+    onQRCodeScanned()
   }, [])
 
   // 조회 클릭 이벤트
@@ -263,7 +324,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         <Button
           variant="outlined"
           startIcon={<CenterFocusWeakIcon />}
-          onClick={() => {}}
+          onClick={startScanner}
         >
           QR바코드
         </Button>
