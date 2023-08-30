@@ -25,7 +25,7 @@ import axios from 'axios'
 import { startScanner } from '../pages/_app'
 
 import components from '@/components'
-import { useStateValue } from '@/context/stateContext'
+import { useDispatch, useStateValue } from '@/context/stateContext'
 
 interface Department {
   [key: string]: string
@@ -81,17 +81,20 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   )
   const state = useStateValue()
   const scannedData = state?.scannedData
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
-  // eslint-disable-next-line no-unused-vars
-  // const onQRCodeScanned =  (data: any) => {
-  //   //Qr스캔 후 환자번호를 가져올 거
-  //   if (dispatch) {
-  //     dispatch({ type: 'QR_CODE_SCANNED', data })
-  //     setPatNm(data)
-  //   }
-  // }
-  console.log(scannedData)
+  //Qr스캔 후 환자번호를 가져올 거
+  const onQRCodeScanned = () => {
+    window.onQRCodeScanned = (data: any) => {
+      if (data) {
+        console.log('dispatch2::', dispatch)
+        if (dispatch) {
+          dispatch({ type: 'QR_CODE_SCANNED', data })
+        }
+      }
+    }
+  }
+  console.log('scannedData:: ', scannedData)
   useEffect(() => {
     if (scannedData) {
       setPatNm(scannedData)
@@ -215,6 +218,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
 
   useEffect(() => {
     loadItems()
+    onQRCodeScanned()
   }, [])
 
   return (
