@@ -16,7 +16,7 @@ const PatientPage = () => {
   }
 
   let cookie = getCookie('loginCookie')
-  let tempCookie
+  let tempCookie: any = ''
   let loginCookie: any = []
   if (hasCookie('loginCookie')) {
     tempCookie = AES256.AES_decrypt(cookie)
