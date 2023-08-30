@@ -66,6 +66,9 @@ const HomePage = () => {
     loginCookie = JSON.parse(decodeCookie)
   }
 
+  /**
+   * 오류 다이얼로그 열기
+   */
   const openErrorDialog = () => {
     components.openConfirmDialog({
       contents: (
@@ -86,6 +89,7 @@ const HomePage = () => {
     })
     return
   }
+
   /**
    * Axios 요청을 통해 환자 목록을 가져오는 함수
    * @param {string} endpoint - 요청할 API 엔드포인트
@@ -132,6 +136,7 @@ const HomePage = () => {
       const existsAdmission = jsonPatientList?.admission?.length
       const existsOutpatient = jsonPatientList?.outPatient?.length
       const existsSurgery = jsonPatientList?.surgery?.length
+      const today = moment()
 
       // 선택한 탭에 따라 환자 목록 가져오기
       if (getItem === 0 && !existsAdmission) {
@@ -156,8 +161,8 @@ const HomePage = () => {
         fetchPatientList(
           '/api/outPatient',
           {
+            //TODO 날짜변경
             CLINIC_YMD: '20220603',
-            // TODO: 임시 테스트를 위해 날짜 고정
             // CLINIC_YMD: today.format('YYYYMMDD'),
             DEPT_CD: 'ALL',
             DOCT_EMPL_NO: 'ALL',
@@ -170,7 +175,6 @@ const HomePage = () => {
           setIsLoading(false)
           return
         }
-        const today = moment()
         fetchPatientList(
           '/api/surgery',
           {
@@ -186,13 +190,12 @@ const HomePage = () => {
     }
     setIsLoading(false)
   }, [tab])
+
   const propsHeader = {
     userInfo: userInfo
   }
   return (
     <Container className={className}>
-      {/* {hasCookie('loginCookie') && (
-        <React.Fragment> */}
       <components.Header {...propsHeader} />
       <Container className="PageWrapper">
         {isLoading ? (
@@ -247,8 +250,6 @@ const HomePage = () => {
         )}
       </Container>
       <components.Footer />
-      {/* </React.Fragment>
-      )} */}
     </Container>
   )
 }
