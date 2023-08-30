@@ -48,7 +48,7 @@ const upload = (fileName: any, filePath: string) =>
       })
   })
 
-const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
+const completeSave = async (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[completeSave] 작성완료 동의서 저장 리퀘스트 %o', req.body)
   const {
     RECEPT_NO,
@@ -65,8 +65,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
   const imageObject = JSON.parse(TEMP)
   for (var i = 0; i < imageObject.length; i++) {
     const saveDirectory = 'C:\\app\\images'
-    const currentDate = moment().format('YYYYMMDDHHmmss')
-    const fileName = currentDate + '_' + FORM_CD + '_' + i + '.jpg'
+    const fileName = FILE_NM + '_' + i + '.jpg'
     const filePath = saveDirectory + '\\' + fileName
 
     query = `exec [UP_S1MOBILE_PTNT_EFORM_C] ${RECEPT_NO}, ${FORM_CD}, '${FILE_NM}', ${
@@ -74,7 +73,8 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
     }, '${fileName}', ${PTNT_NO}, '${IO_GB}', ${ENT_EMPL_NO}, 'MOBILE', '${EFORM_DATA}', 'Y'`
     let result: any
     try {
-      result = MsSql.executeQuery(query)
+      logger.debug('>>>>>> ' + query)
+      result = await MsSql.executeQuery(query)
     } catch (error: any) {
       error &&
         error.message &&
@@ -83,7 +83,7 @@ const completeSave = (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '작성완료 동의서 저장 중 오류가 발생 하였습니다.',
+        message: '작성완료 동의서 저장 중 오류가 발생 하였습니다.',
         error: error.message
       })
     }

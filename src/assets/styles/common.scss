@@ -246,6 +246,39 @@ input:autofill:active {
 }
 
 .DialogDocument {
+  .MuiPaper-root {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    padding-top: 30px;
+    box-sizing: content-box;
+  }
+  // Set your desired max width value
+  .ConfirmDialogCarouselContents {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 0px 14px 15px 14px;
+    text-align: center;
+    letter-spacing: -0.35px;
+    box-sizing: border-box;
+    @include font(500, 16px, 1.5);
+  }
+  .CarouselItem {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: scroll;
+    img {
+      // 이미지 크기 조절
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+  }
   .MuiButtonBase-root {
     display: flex;
     align-items: center;
@@ -317,6 +350,9 @@ input:autofill:active {
 }
 
 .ConfirmDialog {
+  width: 100%;
+  height: 100%;
+
   .MuiPaper-root {
     min-width: 240px;
     min-height: 150px;
@@ -326,12 +362,13 @@ input:autofill:active {
     text-align: center;
   }
   .ConfirmDialogContents {
-    box-sizing: border-box;
-    @include font(500, 16px, 1.5);
+    padding: 0px 14px 15px 14px;
     text-align: center;
     letter-spacing: -0.35px;
-    padding: 0px 14px 15px 14px;
+    box-sizing: border-box;
+    @include font(500, 16px, 1.5);
   }
+
   .MuiDialogActions-root {
     button {
       width: auto;
@@ -346,6 +383,59 @@ input:autofill:active {
     padding-bottom: 15px;
   }
 }
+// .ConfirmDialog {
+//   background-color: rgba(0, 0, 0, 0.8);
+//   .MuiPaper-root {
+//     display: flex;
+//     justify-content: space-between;
+//     width: 290px;
+//     min-height: 223px;
+//     border-radius: 13px;
+//     background-color: #eef3f9;
+//     .MuiDialogTitle-root {
+//       padding: 30px 20px 6px 20px;
+//       color: #00358c;
+//       text-align: center !important;
+//       word-break: keep-all;
+//     }
+//     .MuiDialogContent-root {
+//       display: flex;
+//       align-items: center;
+//       justify-content: center;
+//       color: #333;
+//       text-align: center !important;
+//       word-break: keep-all;
+//     }
+
+//     .react-material-ui-carousel {
+//       // Carousel 내용 크기 조절
+//       width: 100%;
+//       height: 100%;
+//     }
+
+//     img {
+//       // 이미지 크기 조절
+//       width: 100%;
+//       height: 100%;
+//       object-fit: contain; // 이미지 비율 유지하며 최대한 내용을 채우기
+//     }
+//     .MuiDialogActions-root {
+//       display: flex;
+//       justify-content: space-between;
+
+//       button {
+//         width: 100%;
+//         margin: 0 4px;
+//         padding: 12px 16px 14px;
+//         border-radius: 13px;
+//         background-color: #00358c;
+//         box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.16);
+//         color: #ffffff;
+//         animation-fill-mode: forwards;
+//       }
+//     }
+//   }
+// }
 
 // 로딩바
 .Progress {

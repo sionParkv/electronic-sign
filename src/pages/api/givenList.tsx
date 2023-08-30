@@ -21,14 +21,14 @@ const givenList = (req: NextApiRequest, res: NextApiResponse) => {
         )
         res.json({
           code: 'OK',
-          meesage: '작성된 동의서 목록 조회에 성공 하였습니다.',
+          message: '작성된 동의서 목록 조회에 성공 하였습니다.',
           data: result
         })
       } else {
         logger.debug('[givenList] 작성된 동의서 목록이 없습니다.')
         res.json({
           code: 'OK',
-          meesage: '작성된 동의서 목록이 없습니다.'
+          message: '작성된 동의서 목록이 없습니다.'
         })
       }
     })
@@ -40,7 +40,7 @@ const givenList = (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '작성된 동의서 목록 조회 중 오류가 발생 하였습니다.',
+        message: '작성된 동의서 목록 조회 중 오류가 발생 하였습니다.',
         error: error.message
       })
     })

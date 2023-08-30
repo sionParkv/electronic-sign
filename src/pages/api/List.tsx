@@ -8,7 +8,7 @@ import { MsSql } from '@/db/MsSql'
 import { logger } from '@/utils/Winston'
 
 const List = (req: NextApiRequest, res: NextApiResponse) => {
-  logger.debug('[List] 임시저장 동의서 목록 조회 리퀘스트')
+  logger.debug('[List] 동의서 목록 조회 리퀘스트')
   let query = `exec [UP_S1MOBILE_EFORM_LIST_R]`
 
   MsSql.executeQuery(query)
@@ -17,14 +17,14 @@ const List = (req: NextApiRequest, res: NextApiResponse) => {
         logger.debug('[List] 동의서 목록 조회에 성공 하였습니다. %o', result)
         res.json({
           code: 'OK',
-          meesage: '동의서 목록 조회에 성공 하였습니다.',
+          message: '동의서 목록 조회에 성공 하였습니다.',
           data: result
         })
       } else {
-        logger.debug('[List] 임시저장 동의서 목록이 없습니다.')
+        logger.debug('[List] 동의서 목록이 없습니다.')
         res.json({
           code: 'OK',
-          meesage: '동의서 목록이 없습니다.'
+          message: '동의서 목록이 없습니다.'
         })
       }
     })
@@ -36,7 +36,7 @@ const List = (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '동의서 목록 조회 중 오류가 발생 하였습니다.',
+        message: '동의서 목록 조회 중 오류가 발생 하였습니다.',
         error: error.message
       })
     })

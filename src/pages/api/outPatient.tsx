@@ -21,14 +21,14 @@ const outPatinet = (req: NextApiRequest, res: NextApiResponse) => {
         )
         res.json({
           code: 'OK',
-          meesage: '외래 환자 목록 조회에 성공 하였습니다.',
+          message: '외래 환자 목록 조회에 성공 하였습니다.',
           data: result
         })
       } else {
         logger.debug('[admission] 입원 환자목록이 없습니다.')
         res.json({
           code: 'OK',
-          meesage: '입원 환자 목록이 없습니다.'
+          message: '입원 환자 목록이 없습니다.'
         })
       }
     })
@@ -40,7 +40,7 @@ const outPatinet = (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '외래 환자 목록 조회 중 오류가 발생 하였습니다.',
+        message: '외래 환자 목록 조회 중 오류가 발생 하였습니다.',
         error: error.message
       })
     })

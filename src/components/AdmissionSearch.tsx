@@ -2,6 +2,7 @@
  * 입원 조회 컴포넌트
  */
 
+import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
@@ -21,6 +22,10 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import 'dayjs/locale/ko'
 import axios from 'axios'
+import { startScanner } from '../pages/_app'
+
+import components from '@/components'
+import { useDispatch, useStateValue } from '@/context/stateContext'
 
 interface Department {
   [key: string]: string
@@ -37,7 +42,7 @@ interface Hospital {
 interface AdmissionSearchProps {
   state: any
   // eslint-disable-next-line no-unused-vars
-  handleStateChange: (newList: any) => void
+  handleStateChange: (newList: Array<any>) => void
 }
 
 // 달력 UI 포맷
@@ -74,6 +79,58 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD')
   )
+  const state = useStateValue()
+  const scannedData = state?.scannedData
+  const dispatch = useDispatch()
+  console.log()
+  //Qr스캔 후 환자번호를 가져올 거
+  const onQRCodeScanned = () => {
+    window.onQRCodeScanned = (data: any) => {
+      if (!data) return
+
+      let parsedData: any
+
+      if (!isNaN(data)) {
+        parsedData = parseInt(data)
+      } else if (typeof data === 'string') {
+        parsedData = data
+      } else {
+        openErrorDialog()
+        return // 데이터가 숫자나 문자열이 아니면 함수 종료
+      }
+
+      if (dispatch) {
+        dispatch({ type: 'QR_CODE_SCANNED', data: parsedData })
+      }
+    }
+  }
+  console.log('scannedData:: ', scannedData)
+  useEffect(() => {
+    if (scannedData) {
+      setPatNm(scannedData)
+    }
+  }, [scannedData])
+
+  const openErrorDialog = () => {
+    components.openConfirmDialog({
+      contents: (
+        <>
+          통신 오류가 발생했습니다. <br />
+          잠시 후 다시 시도해주세요.
+        </>
+      ),
+      ok: {
+        label: '닫기',
+        action: () => {
+          setTimeout(() => {
+            document.getElementsByTagName('input')[0].focus()
+          }, 50)
+        }
+      },
+      title: '통신 오류'
+    })
+    return
+  }
 
   // api 호출
   const loadItems = async () => {
@@ -82,8 +139,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
       .then((response) => {
         setDepartments(response?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
 
     await axios
@@ -91,8 +148,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
       .then((respose) => {
         setWards(respose?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
     const getStorage = JSON.parse(localStorage.getItem('filters') as string)
     if (getStorage) {
@@ -105,12 +162,10 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
 
   // 진료과 상태관리
   const handleSelect1 = (e: any) => {
-    console.log('departments:: ', e.target.value)
     setSelected1(e.target?.value)
   }
   // 병동 상태관리
   const handleSelect2 = (e: any) => {
-    console.log('wards:: ', e.target.value)
     setSelected2(e.target?.value)
   }
 
@@ -144,8 +199,8 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
   }
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,6 +228,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
 
   useEffect(() => {
     loadItems()
+    onQRCodeScanned()
   }, [])
 
   return (
@@ -222,6 +278,13 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         </Box>
       </Box>
       <Box className="Buttons">
+        <Button
+          variant="outlined"
+          startIcon={<CenterFocusWeakIcon />}
+          onClick={startScanner}
+        >
+          QR바코드
+        </Button>
         <Button
           variant="outlined"
           startIcon={<RestartAltIcon />}

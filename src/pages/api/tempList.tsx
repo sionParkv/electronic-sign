@@ -1,5 +1,5 @@
 /**
- * 임시저장 문서 조회 api.
+ * 임시저장 문서 목록 조회 api.
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -21,14 +21,14 @@ const tempList = (req: NextApiRequest, res: NextApiResponse) => {
         )
         res.json({
           code: 'OK',
-          meesage: '임시저장 동의서 목록 조회에 성공 하였습니다.',
+          message: '임시저장 동의서 목록 조회에 성공 하였습니다.',
           data: result
         })
       } else {
         logger.debug('[tempList] 임시저장 동의서 목록이 없습니다.')
         res.json({
-          code: 'OK',
-          meesage: '임시저장 동의서 목록이 없습니다.'
+          code: 'FAIL',
+          message: '임시저장 동의서 목록이 없습니다.'
         })
       }
     })
@@ -40,7 +40,7 @@ const tempList = (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '임시저장 동의서 목록 조회 중 오류가 발생 하였습니다.',
+        message: '임시저장 동의서 목록 조회 중 오류가 발생 하였습니다.',
         error: error.message
       })
     })

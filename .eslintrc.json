@@ -22,6 +22,8 @@
     "sourceType": "module"
   },
   "plugins": ["import"],
-  "rules": {},
+  "rules": {
+    "no-debugger": "off"
+  },
   "settings": {}
 }

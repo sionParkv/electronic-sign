@@ -8,6 +8,9 @@ import {
 } from '@mui/material'
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import Carousel from 'react-material-ui-carousel'
 
 /**
  * 확인 대화상자를 제공하는 컴포넌트.
@@ -25,7 +28,7 @@ import { createRoot } from 'react-dom/client'
  * @returns {React.Component} 확인 대화상자 컴포넌트.
  */
 const ConfirmDialog = (props: any) => {
-  const { cancel, className, contents, ok, title, imageUrl } = props
+  const { cancel, carousel, className, contents, ok, title, imageUrl } = props
   const [open, setOpen] = useState(true)
   const clsConfirmDialog = 'ConfirmDialog ' + className
 
@@ -65,7 +68,7 @@ const ConfirmDialog = (props: any) => {
     <Dialog
       className={clsConfirmDialog}
       disableEscapeKeyDown
-      maxWidth="md"
+      maxWidth="lg"
       open={open}
     >
       {title && (
@@ -74,6 +77,34 @@ const ConfirmDialog = (props: any) => {
       {contents && (
         <DialogContent className="ConfirmDialogContents">
           {contents}
+        </DialogContent>
+      )}
+      {carousel && (
+        <DialogContent className="ConfirmDialogCarouselContents">
+          <Carousel
+            animation="slide"
+            autoPlay={false}
+            className="CarouselItem"
+            cycleNavigation={false}
+            indicators={false}
+            navButtonsAlwaysVisible
+            NextIcon={<ArrowForwardIosIcon />}
+            navButtonsProps={{
+              style: {
+                backgroundColor: 'white',
+                borderRadius: 0,
+                width: 40, // 네비게이션 버튼의 너비 조절
+                height: 40, // 네비게이션 버튼의 높이 조절
+                color: 'black'
+              }
+            }}
+            PrevIcon={<ArrowBackIosIcon />}
+            swipe={false}
+          >
+            {carousel.map((image: string, index: number) => (
+              <img key={index} src={image} alt={`Image ${index}`} />
+            ))}
+          </Carousel>
         </DialogContent>
       )}
       {imageUrl && (

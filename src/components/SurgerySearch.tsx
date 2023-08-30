@@ -1,7 +1,7 @@
 /**
  * 수술 조회 컴포넌트
  */
-
+import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SearchIcon from '@mui/icons-material/Search'
@@ -17,6 +17,8 @@ import {
 import axios from 'axios'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
+
+import components from '@/components'
 
 interface Department {
   [key: string]: string
@@ -39,7 +41,7 @@ interface Anesthesia {
 interface SurgerySearchProps {
   state: any
   // eslint-disable-next-line no-unused-vars
-  handleStateChange: (newList: any) => void
+  handleStateChange: (newList: Array<any>) => void
 }
 
 // 날짜 포맷
@@ -79,6 +81,26 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const [selected3, setSelected3] = useState('-')
   const [patNm, setPatNm] = useState('')
 
+  const openErrorDialog = () => {
+    components.openConfirmDialog({
+      contents: (
+        <>
+          통신 오류가 발생했습니다. <br />
+          잠시 후 다시 시도해주세요.
+        </>
+      ),
+      ok: {
+        label: '닫기',
+        action: () => {
+          setTimeout(() => {
+            document.getElementsByTagName('input')[0].focus()
+          }, 50)
+        }
+      },
+      title: '통신 오류'
+    })
+    return
+  }
   // 진료과, 마취구분, 수술구분 api 호출
   const loadItems = async () => {
     await axios
@@ -86,8 +108,8 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
       .then((response) => {
         setDepartments(response?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
 
     await axios
@@ -95,8 +117,8 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
       .then((respose) => {
         setSurgery(respose?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
 
     await axios
@@ -104,8 +126,8 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
       .then((respose) => {
         setAnesth(respose?.data?.data || [])
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
 
     const getStorage = JSON.parse(localStorage.getItem('filters') as string)
@@ -162,8 +184,8 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        openErrorDialog()
       })
   }
 
@@ -240,6 +262,13 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
         </Box>
       </Box>
       <Box className="Buttons">
+        <Button
+          variant="outlined"
+          startIcon={<CenterFocusWeakIcon />}
+          onClick={() => {}}
+        >
+          QR바코드
+        </Button>
         <Button
           variant="outlined"
           startIcon={<RestartAltIcon />}

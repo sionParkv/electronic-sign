@@ -16,14 +16,14 @@ const server = (req: NextApiRequest, res: NextApiResponse) => {
         logger.debug('[server] 서버 조회 성공 하였습니다. %o', result)
         res.json({
           code: 'OK',
-          meesage: '서버 조회에 성공 하였습니다.',
+          message: '서버 조회에 성공 하였습니다.',
           data: result
         })
       } else {
         logger.debug('[server] 서버 목록이 없습니다. %o', result)
         res.json({
           code: 'OK',
-          meesage: '서버 목록이 없습니다.'
+          message: '서버 목록이 없습니다.'
         })
       }
     })
@@ -35,7 +35,7 @@ const server = (req: NextApiRequest, res: NextApiResponse) => {
         )
       res.json({
         code: 'FAIL',
-        meesage: '서버 조회 중 오류가 발생 하였습니다.',
+        message: '서버 조회 중 오류가 발생 하였습니다.',
         error: error.message
       })
     })

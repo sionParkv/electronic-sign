@@ -7,20 +7,31 @@ import React, {
 } from 'react'
 
 export type State = {
-  list: [] | undefined
+  list: Array<any> | undefined
   isLoading: boolean
+  scannedData?: any
 }
 const StateContext = createContext<State | undefined>(undefined)
 export type DispatchAction = Dispatch<Action>
 const DispatchContext = createContext<DispatchAction | undefined>(undefined)
 
-export type Action = { type: 'PATIENT_LIST'; list: []; isLoading: boolean }
-const initialState: State = { list: [], isLoading: false }
+export type Action =
+  | {
+      type: 'PATIENT_LIST'
+      list: Array<any>
+      isLoading: boolean
+    }
+  | {
+      type: 'QR_CODE_SCANNED'
+      data: any
+    }
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'PATIENT_LIST':
       return { ...state, list: action.list, isLoading: action.isLoading }
+    case 'QR_CODE_SCANNED':
+      return { ...state, scannedData: action.data }
     default:
       return state
   }
@@ -30,6 +41,7 @@ type StateProviderProps = {
   children: ReactNode
 }
 
+const initialState: State = { list: [], isLoading: false }
 export const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 

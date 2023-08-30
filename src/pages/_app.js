@@ -4,6 +4,14 @@ import '../assets/styles/common.scss'
 import { StateProvider } from '@/context/stateContext'
 import { useRouter } from 'next/router'
 
+//Qr코드 버튼 누를 떄 실행할 버튼
+export const startScanner = () => {
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) // 안드로이드 아이폰을 검사해 체크
+  if (isMobile) {
+    window.Android.startQRScanner()
+  }
+}
+
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter()
 
