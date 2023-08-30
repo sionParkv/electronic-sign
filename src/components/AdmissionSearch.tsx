@@ -82,15 +82,25 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   const state = useStateValue()
   const scannedData = state?.scannedData
   const dispatch = useDispatch()
-
+  console.log()
   //Qr스캔 후 환자번호를 가져올 거
   const onQRCodeScanned = () => {
     window.onQRCodeScanned = (data: any) => {
-      if (data) {
-        console.log('dispatch2::', dispatch)
-        if (dispatch) {
-          dispatch({ type: 'QR_CODE_SCANNED', data })
-        }
+      if (!data) return
+
+      let parsedData: any
+
+      if (!isNaN(data)) {
+        parsedData = parseInt(data)
+      } else if (typeof data === 'string') {
+        parsedData = data
+      } else {
+        openErrorDialog()
+        return // 데이터가 숫자나 문자열이 아니면 함수 종료
+      }
+
+      if (dispatch) {
+        dispatch({ type: 'QR_CODE_SCANNED', data: parsedData })
       }
     }
   }
