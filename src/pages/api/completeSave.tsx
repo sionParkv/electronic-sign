@@ -38,6 +38,8 @@ const upload = (fileName: any, filePath: string, PTNT_NO: string) =>
           )}/${moment().format('DD')}/${PTNT_NO.padStart(9, '0')}`
           logger.debug('원격 파일 저장 경로 ' + targetFolder)
           await client.ensureDir(targetFolder)
+          response = await client.cd(targetFolder)
+          logger.debug('FTP Client change2 directory response: %o', response)
           response = await client.uploadFrom(filePath, fileName)
           logger.debug('FTP Client file upload response: %o', response)
           resolve(true)
