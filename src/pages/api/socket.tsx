@@ -16,11 +16,7 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
     logger.debug('[Socket] 소켓 서버 실행')
     const httpServer: NetServer = res.socket.server as any
     const io = new ServerIO(httpServer, {
-      path: '/s2',
-      cors: {
-        origin: 'http://210.107.85.110:8080',
-        methods: ['GET', 'POST']
-      }
+      path: '/s2'
     })
     res.socket.server.io = io
     io.on('connection', (socket) => {
