@@ -18,7 +18,8 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
     const io = new ServerIO(httpServer, {
       path: '/s2',
       cors: {
-        origin: '*'
+        origin: 'http://210.107.85.110:8080',
+        methods: ['GET', 'POST']
       }
     })
     res.socket.server.io = io
