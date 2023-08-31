@@ -33,11 +33,11 @@ const upload = (fileName: any, filePath: string, PTNT_NO: string) =>
           logger.debug('FTP Client connection response: %o', response)
           response = await client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
           logger.debug('FTP Client change directory response: %o', response)
-          await client.ensureDir(
-            `/${moment().format('YYYY')}/${moment().format(
-              'MM'
-            )}/${moment().format('DD')}/${PTNT_NO.padStart(9, '0')}`
-          )
+          const targetFolder = `/${moment().format('YYYY')}/${moment().format(
+            'MM'
+          )}/${moment().format('DD')}/${PTNT_NO.padStart(9, '0')}`
+          logger.debug('원격 파일 저장 경로 ' + targetFolder)
+          await client.ensureDir(targetFolder)
           response = await client.uploadFrom(filePath, fileName)
           logger.debug('FTP Client file upload response: %o', response)
           resolve(true)
