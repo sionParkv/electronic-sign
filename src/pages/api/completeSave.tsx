@@ -5,10 +5,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as ftp from 'basic-ftp'
 import fs, { existsSync, mkdirSync } from 'fs'
-import moment from 'moment'
 
 import { logger } from '@/utils/Winston'
 import { MsSql } from '@/db/MsSql'
+import { SocketClient } from '@/utils/SocketClient'
 
 const upload = (fileName: any, filePath: string) =>
   // eslint-disable-next-line no-async-promise-executor
@@ -114,6 +114,11 @@ const completeSave = async (req: NextApiRequest, res: NextApiResponse) => {
     upload(fileName, filePath)
       .then(() => {
         if (i === imageObject.length) {
+          SocketClient.sendSocketMessage(
+            'saveDocument',
+            ENT_EMPL_NO,
+            'saveComplete'
+          )
           res.json({ code: 'OK', message: '동의서 저장에 성공 하였습니다.' })
         }
       })

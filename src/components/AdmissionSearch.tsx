@@ -108,6 +108,30 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   useEffect(() => {
     if (scannedData) {
       setPatNm(scannedData)
+      axios
+        .post('/api/admission', {
+          DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
+          WARD_CD: selected2 === '-' ? 'ALL' : selected2,
+          PTNT_NM: scannedData
+        })
+        .then((response) => {
+          const newData = response.data.data || []
+          localStorage.setItem(
+            'patientList',
+            `{"admission":${JSON.stringify(newData)}}`
+          )
+          handleStateChange(newData)
+          const setStorage: any = {
+            selected1: selected1,
+            selected2: selected2,
+            patNm: scannedData,
+            selectedDate: selectedDate
+          }
+          localStorage.setItem('filters', JSON.stringify(setStorage))
+        })
+        .catch(() => {
+          openErrorDialog()
+        })
     }
   }, [scannedData])
 
