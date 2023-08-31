@@ -18,8 +18,7 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
     const io = new ServerIO(httpServer, {
       path: '/s2',
       cors: {
-        origin: '*',
-        methods: ['GET', 'POST']
+        origin: '*'
       }
     })
     res.socket.server.io = io
