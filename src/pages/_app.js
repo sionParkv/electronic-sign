@@ -154,9 +154,6 @@ export default function MyApp({ Component, pageProps }) {
         }
       })
   })
-  SocketClient.socket.on('closeDocument', () => {
-    history.back()
-  })
 
   return (
     <StateProvider>

@@ -5,12 +5,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as ftp from 'basic-ftp'
 import fs, { existsSync, mkdirSync } from 'fs'
+import moment from 'moment'
 
 import { logger } from '@/utils/Winston'
 import { MsSql } from '@/db/MsSql'
 import { SocketClient } from '@/utils/SocketClient'
 
-const upload = (fileName: any, filePath: string) =>
+const upload = (fileName: any, filePath: string, PTNT_NO: string) =>
   // eslint-disable-next-line no-async-promise-executor
   new Promise(async (resolve, reject) => {
     logger.debug(fileName)
@@ -32,6 +33,11 @@ const upload = (fileName: any, filePath: string) =>
           logger.debug('FTP Client connection response: %o', response)
           response = await client.cd('/EFORM01') // 서버에 접속 후, 업로드할 폴더로 이동
           logger.debug('FTP Client change directory response: %o', response)
+          response = await client.cd(`'${moment().format('YYYY')}'`)
+          response = await client.cd(`'${moment().format('MM')}'`)
+          response = await client.cd(`'${moment().format('DD')}'`)
+          response = await client.cd(`'${moment().format('YYYY')}'`)
+          response = await client.cd(`'${PTNT_NO.padStart(9, '0')}'`)
           response = await client.uploadFrom(filePath, fileName)
           logger.debug('FTP Client file upload response: %o', response)
           resolve(true)
@@ -111,7 +117,7 @@ const completeSave = async (req: NextApiRequest, res: NextApiResponse) => {
       })
     }
 
-    upload(fileName, filePath)
+    upload(fileName, filePath, PTNT_NO)
       .then(() => {
         if (i === imageObject.length) {
           SocketClient.sendSocketMessage(
