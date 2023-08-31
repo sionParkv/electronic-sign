@@ -6,7 +6,7 @@ axios
   .then(() => {})
   .catch(() => {})
 
-const socket = connect({ path: '/s2/socket.io' })
+const socket = connect({ path: '/s2/socket.io', transports: ['polling'] })
 
 const connectSocket = (EMPL_NO: Number) => {
   console.log('233322233', socket)

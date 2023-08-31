@@ -36,6 +36,18 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
         logger.debug('[Socket] 문서열람 %o', data)
         io.to(data.roomName).emit('openDocument', data.message) // 모든 클라이언트에게 메시지 보내기
       })
+      socket.on('openTempDocument', (data) => {
+        logger.debug('[Socket] 임시저장 문서열람 %o', data)
+        io.to(data.roomName).emit('openTempDocument', data.message) // 모든 클라이언트에게 메시지 보내기
+      })
+      socket.on('saveDocument', (data) => {
+        logger.debug('[Socket] 문서저장 %o', data)
+        io.to(data.roomName).emit('saveDocument', data.message) // 모든 클라이언트에게 메시지 보내기
+      })
+      socket.on('saveTempDocument', (data) => {
+        logger.debug('[Socket] 임시문서저장 %o', data)
+        io.to(data.roomName).emit('saveTempDocument', data.message) // 모든 클라이언트에게 메시지 보내기
+      })
     })
   } else {
     logger.debug('[Socket] 소켓 서버가 이미 실행 중입니다.')
