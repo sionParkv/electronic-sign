@@ -25,6 +25,7 @@ import { useRouter } from 'next/router'
 import { getCookie, hasCookie } from 'cookies-next'
 import { AES256 } from '@/utils/AES256'
 import components from '@/components'
+import { SocketClient } from '@/utils/SocketClient'
 
 interface TabPanelProps {
   children: React.ReactNode
@@ -265,7 +266,21 @@ const Document = (userInfo: any) => {
     })
     const queryStr = queryParams.toString()
     const sendForm = `${CLIP_SOFT_URL2}?${queryStr}`
+
+    SocketClient.sendSocketMessage(
+      'openDocument',
+      tempObject[0].EMPL_NO,
+      sendForm
+    )
+
     if (code === 'temp') {
+      SocketClient.sendSocketMessage(
+        'openTempDocument',
+        tempObject[0].EMPL_NO,
+        `[{ FILE_NM: ${FILE_NM}, FORM_CD: ${FORM_CD}, RECEPT_NO: ${RECEPT_NO}, iOrO: ${iOrO}, FORM_NM: ${FORM_NM}, EMPL_NO: ${
+          tempObject[0].EMPL_NO
+        }, DATA: {${JSON.stringify(patInfoList)}}]`
+      )
       await axios
         .post('/api/tempData', {
           FILE_NM: FILE_NM,

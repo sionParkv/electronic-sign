@@ -6,6 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { logger } from '@/utils/Winston'
 import { MsSql } from '@/db/MsSql'
+import { SocketClient } from '@/utils/SocketClient'
 
 const tempSave = (req: NextApiRequest, res: NextApiResponse) => {
   logger.debug('[tempSave] 임시 동의서 저장 리퀘스트 %o', req.body)
@@ -24,6 +25,11 @@ const tempSave = (req: NextApiRequest, res: NextApiResponse) => {
   MsSql.executeQuery(query)
     .then((result: any) => {
       logger.debug('[tempSave] 임시 동의서 저장에 성공 하였습니다. %o', result)
+      SocketClient.sendSocketMessage(
+        'saveTempDocument',
+        ENT_EMPL_NO,
+        'saveComplete'
+      )
       res.json({
         code: 'OK',
         message: '임시 동의서 저장에 성공 하였습니다.'
