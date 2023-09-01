@@ -150,8 +150,10 @@ export default function MyApp({ Component, pageProps }) {
         }
         // 여기서 formRef.current를 사용하여 form 엘리먼트에 접근
         if (formRef.current) {
-          console.log(formRef)
+          console.log(formRef + '있음')
           formRef.current.submit() // 예시로 submit을 호출하도록 설정
+        } else {
+          console.log(formRef + '없음')
         }
       })
   })
