@@ -104,7 +104,6 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
       }
     }
   }
-  console.log('scannedData:: ', scannedData)
   useEffect(() => {
     if (scannedData) {
       setPatNm(scannedData)
