@@ -35,13 +35,13 @@ export default function MyApp({ Component, pageProps }) {
   const router = useRouter()
   let cookie = getCookie('loginCookie')
   const CLIP_SOFT_URL4 = 'http://210.107.85.110:8080/ClipReport5/eform4.jsp'
-  let formRef
+  let formRef = useRef(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       historyBack()
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      formRef = (useRef < HTMLFormElement) | (null > null)
+      // formRef = (useRef < HTMLFormElement) | (null > null)
     }
   }, [router.asPath])
 
