@@ -80,7 +80,7 @@ export default function MyApp({ Component, pageProps }) {
   })
   SocketClient.socket.on('openDocument', (URL) => {
     console.log(URL)
-    router.push(URL)
+    router.push(URL, { replace: false })
   })
   SocketClient.socket.on('openTempDocument', (data) => {
     console.log('임시문서 열람 ' + data)
