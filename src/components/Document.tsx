@@ -271,9 +271,9 @@ const Document = (userInfo: any) => {
       SocketClient.sendSocketMessage(
         'openTempDocument',
         tempObject[0].EMPL_NO,
-        `[{ FILE_NM: ${FILE_NM}, FORM_CD: ${FORM_CD}, RECEPT_NO: ${RECEPT_NO}, iOrO: ${iOrO}, FORM_NM: ${FORM_NM}, EMPL_NO: ${
+        `[{ "FILE_NM": "${FILE_NM}", "FORM_CD": "${FORM_CD}", "RECEPT_NO": "${RECEPT_NO}", "iOrO": "${iOrO}", "FORM_NM": "${FORM_NM}", "EMPL_NO": "${
           tempObject[0].EMPL_NO
-        }, DATA: ${JSON.stringify(patInfoList)}}]`
+        }", "DATA": ${JSON.stringify(patInfoList)}}]`
       )
       await axios
         .post('/api/tempData', {
