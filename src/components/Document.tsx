@@ -267,12 +267,6 @@ const Document = (userInfo: any) => {
     const queryStr = queryParams.toString()
     const sendForm = `${CLIP_SOFT_URL2}?${queryStr}`
 
-    SocketClient.sendSocketMessage(
-      'openDocument',
-      tempObject[0].EMPL_NO,
-      sendForm
-    )
-
     if (code === 'temp') {
       SocketClient.sendSocketMessage(
         'openTempDocument',
@@ -349,6 +343,11 @@ const Document = (userInfo: any) => {
         })
       //catch
     } else {
+      SocketClient.sendSocketMessage(
+        'openDocument',
+        tempObject[0].EMPL_NO,
+        sendForm
+      )
       router.push(sendForm)
     }
   }
