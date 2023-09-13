@@ -260,7 +260,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
     setSelectedDate(event.target.value)
   }
 
-  // 조회 조건 선택 시 바로 데이터 요청
+  // 조회 조건 선택 시 바로 데이터 요청 및 검색버튼 클릭시 요청하는 API
   const handleRequestAdmissions = async (sendForm: AdmissionSearchRequest) => {
     await axios
       .post('/api/admission', sendForm)
@@ -343,6 +343,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
             <FormControlLabel value="pat" control={<Radio />} label="환자명" />
           </RadioGroup>
           <TextField
+            autoComplete="off"
             className="Keyword"
             variant="outlined"
             value={patNm}

@@ -284,6 +284,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
     })
   }
 
+  // 조회 조건 선택 시 바로 데이터 요청 및 검색버튼 클릭시 요청하는 API
   const handleRequestOutpatients = async (
     sendForm: OutpatientSearchRequest
   ) => {
@@ -367,6 +368,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
             <FormControlLabel value="pat" control={<Radio />} label="환자명" />
           </RadioGroup>
           <TextField
+            autoComplete="off"
             className="Keyword"
             variant="outlined"
             value={patNm}

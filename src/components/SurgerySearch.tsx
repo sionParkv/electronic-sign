@@ -46,15 +46,23 @@ interface SurgerySearchProps {
   handleStateChange: (newList: Array<any>) => void
 }
 
+interface SurgerySearchRequest {
+  OP_YMD: string
+  OP_DEPT_CD: string
+  AN_TYPE_GB: string
+  OP_GB: string
+  PTNT_NM: string
+}
+
 // 날짜 포맷
 const DatePicker = (props: {
-  defaultValue: string
+  value: string
   onChange: React.ChangeEventHandler
 }) => {
   return (
     <div className="DatePicker">
       <input
-        defaultValue={props.defaultValue}
+        value={props.value}
         onChange={props.onChange}
         onKeyDown={(event) => {
           event.preventDefault()
@@ -67,10 +75,7 @@ const DatePicker = (props: {
   )
 }
 
-const SurgerySearch: React.FC<SurgerySearchProps> = ({
-  state,
-  handleStateChange
-}) => {
+const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
   const [departments, setDepartments] = useState([])
   const [surgery, setSurgery] = useState([])
   const [anesth, setAnesth] = useState([])
@@ -86,6 +91,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
   const qrState = useStateValue()
   const scannedData = qrState?.scannedData
   const dispatch = useDispatch()
+  // const extractHyphen = selectedDate.replace(/[-.]/g, '')
   //Qr스캔 후 환자번호를 가져올 거
   const onQRCodeScanned = () => {
     window.onQRCodeScanned = (data: any) => {
@@ -107,7 +113,6 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
       }
     }
   }
-  console.log('scannedData:: ', scannedData)
   useEffect(() => {
     if (scannedData) {
       setPatNm(scannedData)
@@ -115,7 +120,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
         .post('/api/surgery', {
           OP_YMD: '20221011',
           //TODO 날짜변경
-          // OP_YMD: selectedDate.replace(/[-.]/g, ''),
+          // OP_YMD: extractHyphen,
           OP_DEPT_CD: selected1 === '-' ? '' : selected1,
           AN_TYPE_GB: selected2 === '-' ? '' : selected2,
           OP_GB: selected3 === '-' ? '' : selected3,
@@ -202,28 +207,69 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
     }
   }
 
+  // 진료과 상태관리
   const handleSelect1 = (e: any) => {
-    setSelected1(e.target?.value)
-  }
-  const handleSelect2 = (e: any) => {
-    setSelected2(e.target?.value)
-  }
-  const handleSelect3 = (e: any) => {
-    setSelected3(e.target?.value)
+    const value = e.target?.value
+    setSelected1(value)
+    handleRequestSurgeries({
+      OP_YMD: '20221011',
+      OP_DEPT_CD: value === '-' ? ' ' : value,
+      AN_TYPE_GB: selected2 === '-' ? '' : selected2,
+      OP_GB: selected3 === '-' ? '' : selected3,
+      PTNT_NM: patNm
+    })
   }
 
-  // 수술 조회 클릭 이벤트
-  const patSearch = async () => {
+  // 마취구분 선택 상태관리
+  const handleSelect2 = (e: any) => {
+    const value = e.target?.value
+    setSelected2(value)
+    handleRequestSurgeries({
+      OP_YMD: '20221011',
+      OP_DEPT_CD: selected1 === '-' ? '' : selected1,
+      AN_TYPE_GB: value === '-' ? ' ' : value,
+      OP_GB: selected3 === '-' ? '' : selected3,
+      PTNT_NM: patNm
+    })
+  }
+
+  //수술구분 선택 상태관리
+  const handleSelect3 = (e: any) => {
+    const value = e.target?.value
+    setSelected3(value)
+    handleRequestSurgeries({
+      OP_YMD: '20221011',
+      OP_DEPT_CD: selected1 === '-' ? '' : selected1,
+      AN_TYPE_GB: selected2 === '-' ? '' : selected2,
+      OP_GB: value === '-' ? ' ' : value,
+      PTNT_NM: patNm
+    })
+  }
+
+  // 검색조건 조회버튼 이벤트
+  const patSearch = () => {
+    handleRequestSurgeries({
+      OP_YMD: '20221011',
+      OP_DEPT_CD: selected1 === '-' ? '' : selected1,
+      AN_TYPE_GB: selected2 === '-' ? '' : selected2,
+      OP_GB: selected3 === '-' ? '' : selected3,
+      PTNT_NM: patNm
+    })
+  }
+
+  // 환자명 인풋박스 상태관리
+  const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPatNm(event.target.value)
+  }
+  // 날짜 포맷 상태관리
+  const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(event.target.value)
+  }
+
+  // 조회 조건 선택 시 바로 데이터 요청 및 검색버튼 클릭시 요청하는 API
+  const handleRequestSurgeries = async (sendForm: SurgerySearchRequest) => {
     await axios
-      .post('/api/surgery', {
-        OP_YMD: '20221011',
-        //TODO 날짜변경
-        // OP_YMD: selectedDate.replace(/[-.]/g, ''),
-        OP_DEPT_CD: selected1 === '-' ? '' : selected1,
-        AN_TYPE_GB: selected2 === '-' ? '' : selected2,
-        OP_GB: selected3 === '-' ? '' : selected3,
-        PTNT_NM: patNm
-      })
+      .post('/api/surgery', sendForm)
       .then((response) => {
         if (response.data.data) {
           localStorage.setItem(
@@ -239,11 +285,11 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
           handleStateChange([])
         }
         const setStorage: any = {
-          selected1: selected1,
-          selected2: selected2,
-          selected3: selected3,
-          patNm: patNm,
-          selectedDate: selectedDate
+          selected1,
+          selected2,
+          selected3,
+          patNm,
+          selectedDate
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
       })
@@ -252,28 +298,21 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
       })
   }
 
-  // 환자명 인풋박스 상태관리
-  const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPatNm(event.target.value)
-  }
-  // 날짜 포맷 상태관리
-  const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(event.target.value)
-  }
-
   // 초기화 버튼 클릭 이벤트
   const handleReset = () => {
+    const newDate = moment().format('YYYY-MM-DD')
     localStorage.removeItem('filters')
     setSelected1('-')
     setSelected2('-')
     setSelected3('-')
+    setSelectedDate(newDate)
     setPatNm('')
   }
 
   useEffect(() => {
     loadItems()
     onQRCodeScanned()
-  }, [state])
+  }, [])
 
   return (
     <Container className="SearchBar">
@@ -281,7 +320,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
         <Box className="Field1">
           <InputLabel>진료과</InputLabel>
           <Select value={selected1} onChange={handleSelect1}>
-            <MenuItem disabled value="-">
+            <MenuItem value="-">
               <em>진료과 선택</em>
             </MenuItem>
             {departments.map((department: Department, d) => (
@@ -292,7 +331,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
           </Select>
           <InputLabel>마취구분</InputLabel>
           <Select value={selected2} onChange={handleSelect2}>
-            <MenuItem disabled value="-">
+            <MenuItem value="-">
               <em>마취구분 선택</em>
             </MenuItem>
             {anesth.map((anesthesia: Anesthesia, a) => (
@@ -303,7 +342,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
           </Select>
           <InputLabel>수술구분</InputLabel>
           <Select value={selected3} onChange={handleSelect3}>
-            <MenuItem disabled value="-">
+            <MenuItem value="-">
               <em>구분 선택</em>
             </MenuItem>
             {surgery.map((surgery: Surgery, s) => (
@@ -315,8 +354,9 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({
         </Box>
         <Box className="Field2">
           <InputLabel disabled={true}>진료일 조회</InputLabel>
-          <DatePicker defaultValue={selectedDate} onChange={handleDatePicker} />
+          <DatePicker value={selectedDate} onChange={handleDatePicker} />
           <TextField
+            autoComplete="off"
             className="Keyword"
             placeholder="환자명"
             variant="outlined"
