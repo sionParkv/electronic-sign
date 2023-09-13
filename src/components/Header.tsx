@@ -17,7 +17,7 @@ import React, { useState } from 'react'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
 import IMGS from '../assets/images'
-import { deleteCookie } from 'cookies-next'
+import { /*deleteCookie,*/ setCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
 
 const Header = (props: { userInfo: string }) => {
@@ -30,7 +30,8 @@ const Header = (props: { userInfo: string }) => {
 
   // 로그아웃 클릭 이벤트
   const logout = () => {
-    deleteCookie('loginCookie')
+    // deleteCookie('loginCookie')
+    setCookie('loginCookie', '', { expires: new Date(Number(new Date()) - 1) })
     router.push('/login')
     localStorage.clear()
   }

@@ -40,8 +40,6 @@ export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       historyBack()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      // formRef = (useRef < HTMLFormElement) | (null > null)
     }
   }, [router.asPath])
 

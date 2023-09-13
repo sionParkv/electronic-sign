@@ -33,9 +33,10 @@ const HomePage = () => {
   const state = useStateValue() // 전역 상태 컨텍스트 사용
   const dispatch = useDispatch() // 전역 상태 업데이트 디스패치 함수
   const [isLoading, setIsLoading] = useState<boolean>(true) // 로딩 상태 관리
+  const [isShow, setIsShow] = useState<boolean>(false) // 로딩 상태 관리
   const [tab, setTab] = useState<number>(0) // 현재 선택된 탭 인덱스
   const [userInfo, setUserInfo] = useState<string>('') // 로그인 사용자 정보
-  const className = 'Pages HomePage'
+  const className = isShow ? 'Pages HomePage' : 'Pages HomePage hidden'
 
   /**
    * 환자 목록 상태 업데이트 함수
@@ -119,9 +120,11 @@ const HomePage = () => {
   // 페이지 렌더링 완료 시 실행되는 효과 훅
   useEffect(() => {
     if (!hasCookie('loginCookie')) {
+      setIsShow(false)
       // 로그인되지 않은 경우 로그인 페이지로 이동
       router.push('/login')
     } else {
+      setIsShow(true)
       if (loginCookie.length) {
         const { EMPL_NM, DEPT_CD, EMPL_NO } = loginCookie[0]
         setUserInfo(`${EMPL_NM} ${DEPT_CD} ${EMPL_NO} 님`)
@@ -194,6 +197,7 @@ const HomePage = () => {
   const propsHeader = {
     userInfo: userInfo
   }
+
   return (
     <Container className={className}>
       <components.Header {...propsHeader} />
