@@ -1,7 +1,3 @@
-/**
- * 입원 조회 컴포넌트
- */
-
 import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
@@ -27,6 +23,7 @@ import { startScanner } from '../pages/_app'
 import components from '@/components'
 import { useDispatch, useStateValue } from '@/context/stateContext'
 
+// 부서 및 병원 정보에 대한 인터페이스 정의
 interface Department {
   [key: string]: string
   DEPT_CD: string
@@ -39,13 +36,14 @@ interface Hospital {
   SMPL_NM: string
 }
 
+// 컴포넌트 프롭스 속성 정의
 interface AdmissionSearchProps {
   state: any
   // eslint-disable-next-line no-unused-vars
   handleStateChange: (newList: Array<any>) => void
 }
 
-// 달력 UI 포맷
+// 달력 UI 포맷을 정의하는 컴포넌트
 const DatePicker = (props: {
   defaultValue: string
   onChange: React.ChangeEventHandler
@@ -67,13 +65,18 @@ const DatePicker = (props: {
   )
 }
 
+/**
+ * @description 입원 검색 컴포넌트
+ * @param {AdmissionSearchProps} props - 컴포넌트 속성
+ * @returns {JSX.Element} - JSX 요소
+ */
 const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   handleStateChange
 }) => {
   const [departments, setDepartments] = useState([])
   const [wards, setWards] = useState([])
-  const [selected1, setSelected1] = useState('-')
-  const [selected2, setSelected2] = useState('-')
+  const [selected1, setSelected1] = useState('ALL')
+  const [selected2, setSelected2] = useState('ALL')
   const [radio, setRadio] = useState('all')
   const [patNm, setPatNm] = useState('')
   const [selectedDate, setSelectedDate] = useState(
@@ -105,12 +108,13 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
     }
   }
   useEffect(() => {
+    // 스캔된 데이터가 있을 때의 동작
     if (scannedData) {
       setPatNm(scannedData)
       axios
         .post('/api/admission', {
-          DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
-          WARD_CD: selected2 === '-' ? 'ALL' : selected2,
+          DEPT_CD: selected1,
+          WARD_CD: selected2,
           PTNT_NM: scannedData
         })
         .then((response) => {
@@ -155,7 +159,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
     return
   }
 
-  // api 호출
+  // API 호출
   const loadItems = async () => {
     await axios
       .get('/api/deptSearch')
@@ -185,21 +189,71 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
 
   // 진료과 상태관리
   const handleSelect1 = (e: any) => {
-    setSelected1(e.target?.value)
+    const value = e.target?.value
+    setSelected1(value)
+    handleRequestAdmissions({
+      DEPT_CD: value,
+      WARD_CD: selected2,
+      PTNT_NM: patNm,
+      selectedDate
+    })
   }
   // 병동 상태관리
   const handleSelect2 = (e: any) => {
-    setSelected2(e.target?.value)
+    const value = e.target?.value
+    setSelected2(value)
+    handleRequestAdmissions({
+      DEPT_CD: selected1,
+      WARD_CD: value,
+      PTNT_NM: patNm,
+      selectedDate
+    })
   }
 
   // 조회 버튼 클릭 이벤트
-  const patSearch = async () => {
-    await axios
-      .post('/api/admission', {
-        DEPT_CD: selected1 === '-' ? 'ALL' : selected1,
-        WARD_CD: selected2 === '-' ? 'ALL' : selected2,
-        PTNT_NM: patNm
+  const patSearch = () => {
+    handleRequestAdmissions({
+      DEPT_CD: selected1,
+      WARD_CD: selected2,
+      PTNT_NM: patNm,
+      selectedDate
+    })
+  }
+
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value === 'all') {
+      setPatNm('')
+      handleRequestAdmissions({
+        DEPT_CD: selected1,
+        WARD_CD: selected2,
+        PTNT_NM: '',
+        selectedDate
       })
+    }
+    setRadio(e.target.value)
+  }
+  // 환자 인풋박스 상태관리
+  const handlePatNmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target?.value
+    setPatNm(value)
+    handleRequestAdmissions({
+      DEPT_CD: selected1,
+      WARD_CD: selected2,
+      PTNT_NM: value,
+      selectedDate
+    })
+  }
+
+  // 날짜 상태관리 (비활성화)
+  const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(event.target.value)
+  }
+
+  // 조회 조건 선택 시 바로 데이터 요청
+  const handleRequestAdmissions = async (sendForm: any) => {
+    await axios
+      .post('/api/admission', sendForm)
       .then((response) => {
         if (response.data.data) {
           localStorage.setItem(
@@ -215,10 +269,10 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
           handleStateChange([])
         }
         const setStorage: any = {
-          selected1: selected1,
-          selected2: selected2,
-          patNm: patNm,
-          selectedDate: selectedDate
+          selected1: sendForm.DEPT_CD,
+          selected2: sendForm.WARD_CD,
+          patNm: sendForm.PTNT_NM,
+          selectedDate
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
       })
@@ -226,26 +280,12 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         openErrorDialog()
       })
   }
-  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    if (value === 'all') {
-      setPatNm('')
-    }
-    setRadio(e.target.value)
-  }
-  // 환자 인풋박스 상태관리
-  const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPatNm(event.target.value)
-  }
-  // 날짜 상태관리
-  const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(event.target.value)
-  }
+
   // 초기화 버튼 이벤트
   const handleReset = () => {
     localStorage.removeItem('filters')
-    setSelected1('-')
-    setSelected2('-')
+    setSelected1('ALL')
+    setSelected2('ALL')
     setPatNm('')
   }
 
@@ -260,7 +300,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
         <Box className="Field1">
           <InputLabel>진료과</InputLabel>
           <Select value={selected1} onChange={handleSelect1}>
-            <MenuItem disabled value="-">
+            <MenuItem value="ALL">
               <em>진료과 선택</em>
             </MenuItem>
             {departments.map((department: Department, d) => (
@@ -271,7 +311,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
           </Select>
           <InputLabel>병동</InputLabel>
           <Select value={selected2} onChange={handleSelect2}>
-            <MenuItem disabled value="-">
+            <MenuItem value="ALL">
               <em>병동 선택</em>
             </MenuItem>
             {wards.map((ward: Hospital, h) => (
