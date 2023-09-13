@@ -37,6 +37,13 @@ interface Doctor {
   DOC_CD: string
   DOC_NM: string
 }
+
+interface OutpatientSearchRequest {
+  DEPT_CD: string
+  DOCT_EMPL_NO: string
+  CLINIC_YMD: string
+  PTNT_NM: string
+}
 interface OutPatientSearchProps {
   state: any
   // eslint-disable-next-line no-unused-vars
@@ -45,13 +52,13 @@ interface OutPatientSearchProps {
 
 // 날짜 포맷 레이아웃
 const DatePicker = (props: {
-  defaultValue: string
+  value: string
   onChange: React.ChangeEventHandler
 }) => {
   return (
     <div className="DatePicker">
       <input
-        defaultValue={props.defaultValue}
+        value={props.value}
         onChange={props.onChange}
         onKeyDown={(event) => {
           event.preventDefault()
@@ -80,6 +87,8 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   const state = useStateValue()
   const scannedData = state?.scannedData
   const dispatch = useDispatch()
+  // const extractHyphen = selectedDate.replace(/[-.]/g, '')
+
   //Qr스캔 후 환자번호를 가져올 거
   const onQRCodeScanned = () => {
     window.onQRCodeScanned = (data: any) => {
@@ -101,7 +110,6 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
       }
     }
   }
-  console.log('scannedData:: ', scannedData)
   useEffect(() => {
     if (scannedData) {
       setPatNm(scannedData)
@@ -193,15 +201,94 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
 
   // 조회 클릭 이벤트
   const patSearch = async () => {
+    handleRequestOutpatients({
+      CLINIC_YMD: '20220603',
+      // TODO: 임시 테스트를 위해 날짜 고정
+      // CLINIC_YMD: extractHyphen,
+      DEPT_CD: selected1,
+      DOCT_EMPL_NO: selected2,
+      PTNT_NM: patNm
+    })
+  }
+
+  // 진료과 상태관리
+  const handleSelect1 = async (e: any) => {
+    const value = e.target?.value
+    setSelected1(value)
     await axios
-      .post('/api/outPatient', {
+      .post('/api/doctorSearch', {
+        DEPT_CD: value
+      })
+      .then((respose) => {
+        setDoctor(respose?.data?.data || [])
+      })
+      .catch(() => {
+        openErrorDialog()
+      })
+
+    await handleRequestOutpatients({
+      CLINIC_YMD: '20220603',
+      DEPT_CD: value,
+      DOCT_EMPL_NO: selected2,
+      PTNT_NM: patNm
+    })
+  }
+
+  // 진료의 상태관리
+  const handleSelect2 = (e: any) => {
+    const value = e.target?.value
+    handleRequestOutpatients({
+      CLINIC_YMD: '20220603',
+      DEPT_CD: selected1,
+      DOCT_EMPL_NO: value,
+      PTNT_NM: patNm
+    })
+    setSelected2(value)
+  }
+
+  // 날짜 상태관리
+  const handleDatePicker = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target?.value
+    setSelectedDate(value)
+    handleRequestOutpatients({
+      CLINIC_YMD: value,
+      DEPT_CD: selected1,
+      DOCT_EMPL_NO: selected2,
+      PTNT_NM: patNm
+    })
+  }
+
+  //환자명 라디오 박스 상태관리
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value === 'all') {
+      setPatNm('')
+      handleRequestOutpatients({
         CLINIC_YMD: '20220603',
-        // TODO: 임시 테스트를 위해 날짜 고정
-        // CLINIC_YMD: selectedDate.replace(/[-.]/g, ''),
         DEPT_CD: selected1,
         DOCT_EMPL_NO: selected2,
-        PTNT_NM: patNm
+        PTNT_NM: ''
       })
+    }
+    setRadio(value)
+  }
+  // 환자 인풋박스 상태관리
+  const handlePatNmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target?.value
+    setPatNm(value)
+    handleRequestOutpatients({
+      CLINIC_YMD: '20220603',
+      DEPT_CD: selected1,
+      DOCT_EMPL_NO: selected2,
+      PTNT_NM: value
+    })
+  }
+
+  const handleRequestOutpatients = async (
+    sendForm: OutpatientSearchRequest
+  ) => {
+    await axios
+      .post('/api/outPatient', sendForm)
       .then((response) => {
         if (response.data.data) {
           localStorage.setItem(
@@ -229,46 +316,13 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
       })
   }
 
-  // 진료과 상태관리
-  const handleSelect1 = (e: any) => {
-    setSelected1(e.target?.value)
-    axios
-      .post('/api/doctorSearch', {
-        DEPT_CD: e.target?.value
-      })
-      .then((respose) => {
-        setDoctor(respose?.data?.data || [])
-      })
-      .catch(() => {
-        openErrorDialog()
-      })
-  }
-
-  // 진료의 상태관리
-  const handleSelect2 = (e: any) => {
-    setSelected2(e.target?.value)
-  }
-
-  // 날짜 상태관리
-  const handleDatePicker = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(event.target.value)
-  }
-  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    if (value === 'all') {
-      setPatNm('')
-    }
-    setRadio(e.target.value)
-  }
-  // 환자 인풋박스 상태관리
-  const handlePatNmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPatNm(event.target.value)
-  }
   // 초기화 버튼 클릭 이벤트
   const handleReset = () => {
+    const newDate = moment().format('YYYY-MM-DD')
     localStorage.removeItem('filters')
     setSelected1('ALL')
     setSelected2('ALL')
+    setSelectedDate(newDate)
     setPatNm('')
   }
 
@@ -278,7 +332,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
         <Box className="Field1">
           <InputLabel>진료과</InputLabel>
           <Select value={selected1} onChange={handleSelect1}>
-            <MenuItem disabled value="ALL">
+            <MenuItem value="ALL">
               <em>진료과 선택</em>
             </MenuItem>
             {departments.map((department: Department, d) => (
@@ -289,7 +343,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           </Select>
           <InputLabel>진료의</InputLabel>
           <Select value={selected2} onChange={handleSelect2}>
-            <MenuItem disabled value="ALL">
+            <MenuItem value="ALL">
               <em>진료의 선택</em>
             </MenuItem>
             {doctor.map((doctor: Doctor, d) => {
@@ -301,7 +355,7 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
             })}
           </Select>
           <InputLabel disabled={true}>진료일 조회</InputLabel>
-          <DatePicker defaultValue={selectedDate} onChange={handleDatePicker} />
+          <DatePicker value={selectedDate} onChange={handleDatePicker} />
         </Box>
         <Box className="Field2">
           <RadioGroup

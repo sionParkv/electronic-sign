@@ -36,6 +36,16 @@ interface Hospital {
   SMPL_NM: string
 }
 
+/**
+ * 검색 조건 선택 시 API 요청을 위한 데이터 형식
+ */
+interface AdmissionSearchRequest {
+  DEPT_CD: string
+  WARD_CD: string
+  PTNT_NM: string
+  selectedDate: string
+}
+
 // 컴포넌트 프롭스 속성 정의
 interface AdmissionSearchProps {
   state: any
@@ -251,7 +261,7 @@ const AdmissionSearch: React.FC<AdmissionSearchProps> = ({
   }
 
   // 조회 조건 선택 시 바로 데이터 요청
-  const handleRequestAdmissions = async (sendForm: any) => {
+  const handleRequestAdmissions = async (sendForm: AdmissionSearchRequest) => {
     await axios
       .post('/api/admission', sendForm)
       .then((response) => {
