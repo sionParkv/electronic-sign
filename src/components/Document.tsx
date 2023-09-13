@@ -486,7 +486,13 @@ const Document = (userInfo: any) => {
                         <Accordion>
                           <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
-                            onClick={() => setSelected(idx)}
+                            onClick={() => {
+                              if (selected === idx) {
+                                setSelected(undefined)
+                              } else {
+                                setSelected(idx)
+                              }
+                            }}
                           >
                             <T>{item}</T>
                           </AccordionSummary>
