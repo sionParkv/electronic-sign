@@ -115,6 +115,16 @@
                         }
                       }
                     }
+                    .current {
+                      .MuiPaper-root {
+                        border: 1px solid #257cfd;
+                        .MuiAccordionSummary-content {
+                          p {
+                            color: #257cfd;
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }

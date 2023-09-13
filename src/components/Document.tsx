@@ -70,6 +70,7 @@ const Document = (userInfo: any) => {
   const user = userInfo.userInfo
 
   let patInfoList: any = ''
+  const [selected, setSelected] = useState<number | undefined>(undefined)
   const [tabL, setTabL] = useState<number>(0)
   const [tabR, setTabR] = useState<number>(0)
   const [pat, setPat] = useState<Patient>(initialPatient)
@@ -188,7 +189,7 @@ const Document = (userInfo: any) => {
         openErrorDialog()
       })
   }
-
+  console.log(selected)
   // 문서 클릭 이벤트
   const handleOpenOneDocument = async (
     li: {
@@ -383,7 +384,6 @@ const Document = (userInfo: any) => {
   useEffect(() => {
     loadItems()
   }, [])
-
   return (
     <Container className="DocumentContainer">
       <Box className="Division">
@@ -479,10 +479,15 @@ const Document = (userInfo: any) => {
                 {lists &&
                   lists.map((item: any, idx: number) => {
                     const details: [] = list[item]
+                    const classes = selected === idx ? 'current' : ''
+                    console.log(classes)
                     return (
-                      <Box className="AllList" key={idx}>
+                      <Box className={`AllList ${classes}`} key={idx}>
                         <Accordion>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            onClick={() => setSelected(idx)}
+                          >
                             <T>{item}</T>
                           </AccordionSummary>
                           <AccordionDetails>
