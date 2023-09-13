@@ -237,13 +237,13 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
   // 진료의 상태관리
   const handleSelect2 = (e: any) => {
     const value = e.target?.value
+    setSelected2(value)
     handleRequestOutpatients({
       CLINIC_YMD: '20220603',
       DEPT_CD: selected1,
       DOCT_EMPL_NO: value,
       PTNT_NM: patNm
     })
-    setSelected2(value)
   }
 
   // 날짜 상태관리
@@ -305,10 +305,10 @@ const OutPatientSearch: React.FC<OutPatientSearchProps> = ({
           handleStateChange([])
         }
         const setStorage: any = {
-          selected1,
-          selected2,
-          patNm,
-          selectedDate
+          selectedDate: sendForm.CLINIC_YMD,
+          selected1: sendForm.DEPT_CD,
+          selected2: sendForm.DOCT_EMPL_NO,
+          patNm: sendForm.PTNT_NM
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
       })

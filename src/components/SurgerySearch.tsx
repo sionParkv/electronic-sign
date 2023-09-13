@@ -82,12 +82,10 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
   const [selectedDate, setSelectedDate] = useState(
     moment().format('YYYY-MM-DD')
   )
-
-  const [selected1, setSelected1] = useState('-')
-  const [selected2, setSelected2] = useState('-')
-  const [selected3, setSelected3] = useState('-')
+  const [selected1, setSelected1] = useState(' ')
+  const [selected2, setSelected2] = useState(' ')
+  const [selected3, setSelected3] = useState(' ')
   const [patNm, setPatNm] = useState('')
-
   const qrState = useStateValue()
   const scannedData = qrState?.scannedData
   const dispatch = useDispatch()
@@ -119,11 +117,11 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
       axios
         .post('/api/surgery', {
           OP_YMD: '20221011',
-          //TODO 날짜변경
+          // TODO 날짜변경
           // OP_YMD: extractHyphen,
-          OP_DEPT_CD: selected1 === '-' ? '' : selected1,
-          AN_TYPE_GB: selected2 === '-' ? '' : selected2,
-          OP_GB: selected3 === '-' ? '' : selected3,
+          OP_DEPT_CD: selected1,
+          AN_TYPE_GB: selected2,
+          OP_GB: selected3,
           PTNT_NM: scannedData
         })
         .then((response) => {
@@ -134,11 +132,11 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
           )
           handleStateChange(newData)
           const setStorage: any = {
-            selected1: selected1,
-            selected2: selected2,
+            selected1,
+            selected2,
             selected3: selected3,
             patNm: scannedData,
-            selectedDate: selectedDate
+            selectedDate
           }
           localStorage.setItem('filters', JSON.stringify(setStorage))
         })
@@ -213,9 +211,9 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
     setSelected1(value)
     handleRequestSurgeries({
       OP_YMD: '20221011',
-      OP_DEPT_CD: value === '-' ? ' ' : value,
-      AN_TYPE_GB: selected2 === '-' ? '' : selected2,
-      OP_GB: selected3 === '-' ? '' : selected3,
+      OP_DEPT_CD: value,
+      AN_TYPE_GB: selected2,
+      OP_GB: selected3,
       PTNT_NM: patNm
     })
   }
@@ -226,9 +224,9 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
     setSelected2(value)
     handleRequestSurgeries({
       OP_YMD: '20221011',
-      OP_DEPT_CD: selected1 === '-' ? '' : selected1,
-      AN_TYPE_GB: value === '-' ? ' ' : value,
-      OP_GB: selected3 === '-' ? '' : selected3,
+      OP_DEPT_CD: selected1,
+      AN_TYPE_GB: value,
+      OP_GB: selected3,
       PTNT_NM: patNm
     })
   }
@@ -239,9 +237,9 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
     setSelected3(value)
     handleRequestSurgeries({
       OP_YMD: '20221011',
-      OP_DEPT_CD: selected1 === '-' ? '' : selected1,
-      AN_TYPE_GB: selected2 === '-' ? '' : selected2,
-      OP_GB: value === '-' ? ' ' : value,
+      OP_DEPT_CD: selected1,
+      AN_TYPE_GB: selected2,
+      OP_GB: value,
       PTNT_NM: patNm
     })
   }
@@ -250,9 +248,9 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
   const patSearch = () => {
     handleRequestSurgeries({
       OP_YMD: '20221011',
-      OP_DEPT_CD: selected1 === '-' ? '' : selected1,
-      AN_TYPE_GB: selected2 === '-' ? '' : selected2,
-      OP_GB: selected3 === '-' ? '' : selected3,
+      OP_DEPT_CD: selected1,
+      AN_TYPE_GB: selected2,
+      OP_GB: selected3,
       PTNT_NM: patNm
     })
   }
@@ -285,11 +283,11 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
           handleStateChange([])
         }
         const setStorage: any = {
-          selected1,
-          selected2,
-          selected3,
-          patNm,
-          selectedDate
+          selectedDate: sendForm.OP_YMD,
+          selected1: sendForm.OP_DEPT_CD,
+          selected2: sendForm.AN_TYPE_GB,
+          selected3: sendForm.OP_GB,
+          patNm: sendForm.PTNT_NM
         }
         localStorage.setItem('filters', JSON.stringify(setStorage))
       })
@@ -302,9 +300,9 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
   const handleReset = () => {
     const newDate = moment().format('YYYY-MM-DD')
     localStorage.removeItem('filters')
-    setSelected1('-')
-    setSelected2('-')
-    setSelected3('-')
+    setSelected1(' ')
+    setSelected2(' ')
+    setSelected3(' ')
     setSelectedDate(newDate)
     setPatNm('')
   }
@@ -320,7 +318,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
         <Box className="Field1">
           <InputLabel>진료과</InputLabel>
           <Select value={selected1} onChange={handleSelect1}>
-            <MenuItem value="-">
+            <MenuItem value=" ">
               <em>진료과 선택</em>
             </MenuItem>
             {departments.map((department: Department, d) => (
@@ -331,7 +329,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
           </Select>
           <InputLabel>마취구분</InputLabel>
           <Select value={selected2} onChange={handleSelect2}>
-            <MenuItem value="-">
+            <MenuItem value=" ">
               <em>마취구분 선택</em>
             </MenuItem>
             {anesth.map((anesthesia: Anesthesia, a) => (
@@ -342,7 +340,7 @@ const SurgerySearch: React.FC<SurgerySearchProps> = ({ handleStateChange }) => {
           </Select>
           <InputLabel>수술구분</InputLabel>
           <Select value={selected3} onChange={handleSelect3}>
-            <MenuItem value="-">
+            <MenuItem value=" ">
               <em>구분 선택</em>
             </MenuItem>
             {surgery.map((surgery: Surgery, s) => (
