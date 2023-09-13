@@ -59,7 +59,6 @@ const PatientList = (props: PatientListProps) => {
   const state = useStateValue()
   const stateList: any[] = state?.list || []
   const tabValue = props.tabValue
-  console.log(state)
   // 조회된 데이터 양식에 맞게 포맷
   useEffect(() => {
     if (localStorage.getItem('patientList') !== 'undefined') {

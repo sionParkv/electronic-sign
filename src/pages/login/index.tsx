@@ -119,7 +119,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ isLoggedIn }) => {
             const data = result.data[0]
             setUserInfo({
               name: data.EMPL_NM,
-              dept: data.DEPT_GB
+              dept: data.DEPT_NM
             }) // 사용자 정보 업데이트
           } else if (result.code === 'FAIL') {
             setUserInfo({ name: '', dept: '' })
