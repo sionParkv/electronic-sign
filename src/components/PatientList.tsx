@@ -21,6 +21,7 @@ import { useRouter } from 'next/router'
 import React, { Fragment, useEffect, useState } from 'react'
 import { visuallyHidden } from '@mui/utils'
 
+// 환자 데이터의 구조를 정의하는 인터페이스
 interface Patient {
   [key: string]: string
   name: string
@@ -35,9 +36,12 @@ interface Patient {
   division: string
 }
 
+// 환자 목록 컴포넌트의 프로퍼티 타입
 interface PatientListProps {
   tabValue: number
 }
+
+// 내림차순 정렬을 위한 비교 함수
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -50,12 +54,14 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 }
 type Order = 'asc' | 'desc'
 
+// 정렬 방향에 따라 적절한 비교 함수를 반환하는 함수
 function getComparator(order: any, orderBy: any) {
   return order === 'desc'
     ? (a: any, b: any) => descendingComparator(a, b, orderBy)
     : (a: any, b: any) => -descendingComparator(a, b, orderBy)
 }
 
+// 정렬을 수행하는 함수
 function stableSort(array: any, comparator: any) {
   if (!array) return
   const stabilizedThis = array?.map((el: any, index: any) => [el, index])
@@ -70,6 +76,7 @@ function stableSort(array: any, comparator: any) {
 }
 
 const PatientList = (props: PatientListProps) => {
+  // 테이블 열 헤더 정보
   const colHeaders = [
     { id: 'name', label: '환자명' },
     { id: 'birth', label: '생년월일' },
@@ -198,20 +205,24 @@ const PatientList = (props: PatientListProps) => {
     localStorage.setItem('sendToPatientInfo', JSON.stringify(sendInfo[index]))
     router.push('/patient')
   }
+
   const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState<keyof Patient>('name')
 
+  // 정렬 요청 이벤트
   const handleRequestSort = (event: any, property: any) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
   }
 
+  //정렬된 목록을 테이블 바디에 그려주는 훅
   const visibleRows = React.useMemo(
     () => stableSort(list, getComparator(order, orderBy)),
     [list, order, orderBy]
   )
 
+  // 정렬 아이콘 클릭 이벤트함수
   const createSortHandler =
     (property: keyof Patient) => (event: React.MouseEvent<unknown>) => {
       handleRequestSort(event, property)
