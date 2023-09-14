@@ -14,10 +14,12 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  TableSortLabel
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import React, { Fragment, useEffect, useState } from 'react'
+import { visuallyHidden } from '@mui/utils'
 
 interface Patient {
   [key: string]: string
@@ -37,17 +39,47 @@ interface PatientListProps {
   tabValue: number
 }
 
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1
+  }
+  return 0
+}
+type Order = 'asc' | 'desc'
+
+function getComparator(order: any, orderBy: any) {
+  return order === 'desc'
+    ? (a: any, b: any) => descendingComparator(a, b, orderBy)
+    : (a: any, b: any) => -descendingComparator(a, b, orderBy)
+}
+
+function stableSort(array: any, comparator: any) {
+  if (!array) return
+  const stabilizedThis = array?.map((el: any, index: any) => [el, index])
+  stabilizedThis.sort((a: any, b: any) => {
+    const order = comparator(a[0], b[0])
+    if (order !== 0) {
+      return order
+    }
+    return a[1] - b[1]
+  })
+  return stabilizedThis.map((el: any) => el[0])
+}
+
 const PatientList = (props: PatientListProps) => {
   const colHeaders = [
-    '환자명',
-    '생년월일',
-    '나이',
-    '성별',
-    '등록번호',
-    '진료의',
-    '진료과',
-    '진료일',
-    '진단명'
+    { id: 'name', label: '환자명' },
+    { id: 'birth', label: '생년월일' },
+    { id: 'age', label: '나이' },
+    { id: 'sex', label: '성별' },
+    { id: 'number', label: '등록번호' },
+    { id: 'doctor', label: '진료의' },
+    { id: 'department', label: '진료과' },
+    { id: 'date', label: '진료일' },
+    { id: 'diagnosis', label: '진단명' }
   ]
 
   const router = useRouter()
@@ -166,6 +198,24 @@ const PatientList = (props: PatientListProps) => {
     localStorage.setItem('sendToPatientInfo', JSON.stringify(sendInfo[index]))
     router.push('/patient')
   }
+  const [order, setOrder] = React.useState<Order>('asc')
+  const [orderBy, setOrderBy] = React.useState<keyof Patient>('name')
+
+  const handleRequestSort = (event: any, property: any) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
+
+  const visibleRows = React.useMemo(
+    () => stableSort(list, getComparator(order, orderBy)),
+    [list, order, orderBy]
+  )
+
+  const createSortHandler =
+    (property: keyof Patient) => (event: React.MouseEvent<unknown>) => {
+      handleRequestSort(event, property)
+    }
 
   // 전체 환자 수
   const total = list?.length
@@ -184,7 +234,22 @@ const PatientList = (props: PatientListProps) => {
               <TableHead>
                 <TableRow>
                   {colHeaders.map((header, h) => (
-                    <TableCell key={h}>{header}</TableCell>
+                    <TableCell key={h}>
+                      <TableSortLabel
+                        active={orderBy === header.id}
+                        direction={orderBy === header.id ? order : 'asc'}
+                        onClick={createSortHandler(header.id)}
+                      >
+                        {header.label}
+                        {orderBy === header.id ? (
+                          <Box component="span" sx={visuallyHidden}>
+                            {order === 'desc'
+                              ? 'sorted descending'
+                              : 'sorted ascending'}
+                          </Box>
+                        ) : null}
+                      </TableSortLabel>
+                    </TableCell>
                   ))}
                 </TableRow>
               </TableHead>
@@ -204,7 +269,7 @@ const PatientList = (props: PatientListProps) => {
                   </TableRow>
                 ) : (
                   <Fragment>
-                    {list?.map((patient: Patient, p: number) => {
+                    {visibleRows?.map((patient: Patient, p: number) => {
                       const columns = Object.keys(patient).slice(0, -2)
                       return (
                         <TableRow key={p}>

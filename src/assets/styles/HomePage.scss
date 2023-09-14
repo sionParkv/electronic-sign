@@ -333,32 +333,34 @@
               border-width: 1px 0;
               @include font(700, 14px, 1.5);
             }
-
-            :nth-child(1) {
+            .MuiBox-root {
+              width: 12px;
+            }
+            &:nth-child(1) {
               min-width: 5em;
             }
-            :nth-child(2) {
+            &:nth-child(2) {
               min-width: 6em;
             }
-            :nth-child(3) {
+            &:nth-child(3) {
               min-width: 3em;
             }
-            :nth-child(4) {
+            &:nth-child(4) {
               min-width: 3em;
             }
-            :nth-child(5) {
+            &:nth-child(5) {
               min-width: 6em;
             }
-            :nth-child(6) {
+            &:nth-child(6) {
               min-width: 3em;
             }
-            :nth-child(7) {
+            &:nth-child(7) {
               min-width: 8em;
             }
-            :nth-child(8) {
+            &:nth-child(8) {
               min-width: 8em;
             }
-            :nth-child(9) {
+            &:nth-child(9) {
               width: 100%;
             }
           }
